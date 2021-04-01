@@ -1,3 +1,8 @@
+RIGHT_TURN_SHIFT = 1
+LEFT_TURN_SHIFT = -1
+REVERSE_SHIFT = 2
+
+
 class Direction:
     delta = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     direction_name = ['N', 'E', 'S', 'W']
@@ -17,13 +22,13 @@ class Direction:
         return current_delta[0] + coords[0], current_delta[1] + coords[1]
 
     def turnRight(self):
-        self.index += 1
-        self.index %= 4
+        self.index += RIGHT_TURN_SHIFT
+        self.index %= len(self.direction_name)
 
     def turnLeft(self):
-        self.index -= 1
-        self.index %= 4
+        self.index += LEFT_TURN_SHIFT
+        self.index %= len(self.direction_name)
 
     def reverse(self):
-        self.index += 2
-        self.index %= 4
+        self.index += REVERSE_SHIFT
+        self.index %= len(self.direction_name)
