@@ -1,5 +1,5 @@
 import pytest
-from src.engine.Direction import Direction
+from src.engine.direction import Direction
 
 
 def test_direction_creation():
