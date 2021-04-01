@@ -1,7 +1,7 @@
 
 class Field:
-    flat_layer = EmptyFlat()
-    convex_layer = EmptyConvex()
+    flat_layer = None
+    convex_layer = None
     snake_layer = None
     texture = None
     coordinates = (0, 0)
@@ -18,40 +18,55 @@ class Field:
         return self.board.give_field(coordinates)
 
     # snake
-    def check_snake_move(self, snake):
-        return self.convex_layer.check_snake_move(snake)
+    def check_snake_move(self, direction):
+        if self.convex_layer is None:
+            return True
+        else:
+            return self.convex_layer.check_snake_move(direction)
 
-    def snake_entered(self, snake, direction):
+    def snake_entered(self, snake):
         if self.snake_layer is not None:
             self.snake_layer.interact_with_snake(snake)
-        self.convex_layer.interact_with_snake(snake, direction)
-        self.flat_layer.interact_with_snake(snake)
+        elif self.convex_layer is not None:
+            self.convex_layer.interact_with_snake(snake)
+
+        if self.snake_layer is None:
+            self.flat_layer.interact_with_snake(snake)
 
     def snake_left(self):
         self.snake_layer = None
 
+    def remove_snake(self):
+        self.snake_layer = None
+
     # flat
     def remove_flat(self):
-        self.flat_layer = EmptyFlat()
+        self.flat_layer = None
 
     def place_flat(self, flat):
         self.flat_layer = flat
 
     # convex
     def check_convex_move(self, direction):
-        return self.convex_layer.interact_with_convex(direction)
+        if self.convex_layer is None:
+            return True
+        else:
+            return self.convex_layer.interact_with_convex(direction)
 
     def convex_entered(self, convex, direction):
-        self.convex_layer.interact_with_convex(direction)
         if self.snake_layer is not None:
             self.snake_layer.perform_death()
-        self.flat_layer.interact_with_convex(convex) #czy potrzebne direction?
+        elif self.convex_layer is not None:
+            self.convex_layer.interact_with_convex(direction)
+
+        if self.flat_layer is not None:
+            self.flat_layer.interact_with_convex(convex)
 
     def convex_left(self):
         self.convex_layer = None
 
     def remove_convex(self):
-        self.convex_layer = EmptyConvex()
+        self.convex_layer = None
 
     def place_convex(self, convex):
         self.convex_layer = convex
