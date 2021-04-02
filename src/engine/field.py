@@ -1,16 +1,13 @@
 
 class Field:
-    flat_layer = None
-    convex_layer = None
-    snake_layer = None
-    texture = None
-    coordinates = (0, 0)
-    board = None
 
     def __init__(self, texture, coordinates, board):
         self.texture = texture
         self.coordinates = coordinates
         self.board = board
+        self.flat_layer = None
+        self.convex_layer = None
+        self.snake_layer = None
 
     # orientation
     def give_field_in_direction(self, direction):
