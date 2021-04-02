@@ -3,6 +3,8 @@ from src.engine.direction import Direction
 import pytest
 import pygame
 
+
+
 def test_wall_and_snake_cannot_interact():
     try:
         Wall().interact_with_snake('snake')

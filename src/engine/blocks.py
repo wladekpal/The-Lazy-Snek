@@ -18,6 +18,9 @@ class Block(metaclass=ABCMeta):
     def self_draw(self, frame, x, y):
         frame.blit(self.texture, (x, y))
 
+    def set_field(self, field):
+        self.field = field
+
 
 class Flat(Block):
     def __init__(self):
@@ -39,7 +42,7 @@ class Flat(Block):
 
 class Convex(Block):
     def __init__(self):
-        pass
+        super().__init__()
 
     @property
     @abstractmethod
@@ -62,11 +65,12 @@ class Convex(Block):
     def check_snake_move(self) -> bool:
         pass
 
-    def self_draw(self, frame, x, y):
+    def self_draw(self, frame, x, y, side_length):
         if not self.is_alive:
             self.destroy()
             return
-        frame.blit(self.texture, (x, y))
+        displayed_texture = pygame.transform.scale(self.texture, (side_length, side_length)) 
+        frame.blit(displayed_texture, (x, y))
 
     def kill(self):
         self.is_alive = False
@@ -82,11 +86,11 @@ class WallInteractionError(Exception):
 
 class Wall(Convex):
     def __init__(self):
-        pass
+        super().__init__()
     
     @property
     def texture(self):
-        return pygame.image.load('assets/wall.png')
+        return pygame.image.load('../assets/wall.png')
     
     def check_move(self, direction) -> bool:
         return False
