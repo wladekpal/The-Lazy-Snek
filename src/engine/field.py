@@ -18,11 +18,11 @@ class Field:
         return self.board.give_field(coordinates)
 
     # snake
-    def check_snake_move(self, direction):
+    def check_snake_move(self, snake):
         if self.convex_layer is None:
             return True
         else:
-            return self.convex_layer.check_snake_move(direction)
+            return self.convex_layer.check_snake_move(snake)
 
     def snake_entered(self, snake):
         if self.snake_layer is not None:
@@ -32,6 +32,8 @@ class Field:
 
         if self.snake_layer is None:
             self.flat_layer.interact_with_snake(snake)
+
+        self.snake_layer = snake
 
     def snake_left(self):
         self.snake_layer = None
@@ -51,16 +53,18 @@ class Field:
         if self.convex_layer is None:
             return True
         else:
-            return self.convex_layer.interact_with_convex(direction)
+            return self.convex_layer.check_move(direction)
 
     def convex_entered(self, convex, direction):
         if self.snake_layer is not None:
-            self.snake_layer.perform_death()
+            self.snake_layer.interact_with_convex()
         elif self.convex_layer is not None:
-            self.convex_layer.interact_with_convex(direction)
+            self.convex_layer.move(direction)
 
         if self.flat_layer is not None:
             self.flat_layer.interact_with_convex(convex)
+
+        self.convex_layer = convex
 
     def convex_left(self):
         self.convex_layer = None
