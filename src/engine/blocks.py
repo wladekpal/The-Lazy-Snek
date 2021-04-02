@@ -3,20 +3,20 @@ import pygame
 
 class Block(metaclass=ABCMeta):
     def __init__(self):
-        pass
+        self.field = None
+        self.is_alive = True
 
     @property
     @abstractmethod
-    def texture(self) -> pygame.Surface:
+    def texture(self):
         pass
 
     @abstractmethod
     def interact_with_snake(self, snake):
         pass
 
-    def self_draw(self, frame : pygame.Surface, x, y):
+    def self_draw(self, frame, x, y):
         frame.blit(self.texture, (x, y))
-        pass
 
 
 class Flat(Block):
@@ -55,12 +55,25 @@ class Convex(Block):
         pass
 
     @abstractmethod
-    def move(self, direction) -> bool:
+    def move(self, direction):
         pass
 
     @abstractmethod
     def check_snake_move(self) -> bool:
         pass
+
+    def self_draw(self, frame, x, y):
+        if not self.is_alive:
+            self.destroy()
+            return
+        frame.blit(self.texture, (x, y))
+
+    def kill(self):
+        self.is_alive = False
+
+    def destroy(self):
+        self.kill()
+        self.field.remove_convex()
 
 
 class WallInteractionError(Exception):
@@ -86,7 +99,3 @@ class Wall(Convex):
 
     def check_snake_move(self, direction) -> bool:
         return False
-
-
-
-
