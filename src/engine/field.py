@@ -51,6 +51,7 @@ class Field:
 
     def place_flat(self, flat):
         self.flat_layer = flat
+        self.flat_layer.set_field(self)
 
     # convex
     def check_convex_move(self, direction) -> bool:
@@ -69,6 +70,7 @@ class Field:
             self.flat_layer.interact_with_convex(convex)
 
         self.convex_layer = convex
+        self.convex_layer.set_field(self)
 
     def convex_left(self):
         self.convex_layer = None
@@ -78,6 +80,7 @@ class Field:
 
     def place_convex(self, convex):
         self.convex_layer = convex
+        self.convex_layer.set_field(self)
 
     # display
     def self_draw(self, frame, x, y, side_length):
