@@ -99,3 +99,10 @@ class Wall(Convex):
 
     def check_snake_move(self, direction) -> bool:
         return False
+
+    def kill(self):
+        raise WallInteractionError
+    
+    def destroy(self):
+        raise WallInteractionError
+    

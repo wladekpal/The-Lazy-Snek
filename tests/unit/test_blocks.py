@@ -68,7 +68,7 @@ def test_snake_cant_move_towards_wall_when_next_to_it():
 
 def test_block_class_object_cant_be_created():
     try:
-        block = Block()
+        Block()
         assert False
     except TypeError:
         assert True
@@ -76,7 +76,7 @@ def test_block_class_object_cant_be_created():
 
 def test_convex_class_object_cant_be_created():
     try:
-        convex = Convex()
+        Convex()
         assert False
     except TypeError:
         assert True
@@ -84,14 +84,31 @@ def test_convex_class_object_cant_be_created():
 
 def test_flat_class_object_cant_be_created():
     try:
-        flat = Flat()
+        Flat()
         assert False
     except TypeError:
         assert True
 
+
 def test_wall_class_object_can_be_created():
     try:
-        wall = Wall()
+        Wall()
         assert True
     except:
         assert False
+
+
+def test_wall_class_object_cant_be_killed():
+    try:
+        Wall().kill()
+        assert False
+    except WallInteractionError:
+        assert True
+
+
+def test_wall_class_object_cant_be_destroyed():
+    try:
+        Wall().destroy()
+        assert False
+    except WallInteractionError:
+        assert True
