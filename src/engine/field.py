@@ -1,21 +1,28 @@
+import pygame
+
 
 class Field:
 
-    def __init__(self, texture, coordinates, board):
-        self.texture = texture
+    def __init__(self, coordinates):
+        self.texture = "abcd"
         self.coordinates = coordinates
-        self.board = board
+        self.board = None
         self.flat_layer = None
         self.convex_layer = None
         self.snake_layer = None
+        self.texture = pygame.image.load("../assets/field.png")
 
     # orientation
     def give_field_in_direction(self, direction):
         coordinates = direction.move_in_direction(self.coordinates)
         return self.board.give_field(coordinates)
 
+    # board
+    def set_board(self, board):
+        self.board = board
+
     # snake
-    def check_snake_move(self, snake):
+    def check_snake_move(self, snake) -> bool:
         if self.convex_layer is None:
             return True
         else:
@@ -46,7 +53,7 @@ class Field:
         self.flat_layer = flat
 
     # convex
-    def check_convex_move(self, direction):
+    def check_convex_move(self, direction) -> bool:
         if self.convex_layer is None:
             return True
         else:
@@ -73,5 +80,11 @@ class Field:
         self.convex_layer = convex
 
     # display
-    def self_display(self, frame, x, y, side_length):
-        pass
+    def self_draw(self, frame, x, y, side_length):
+        displayed_texture = pygame.transform.scale(self.texture, (side_length, side_length))
+        frame.blit(displayed_texture, (x, y))
+
+        if self.flat_layer is not None:
+            self.flat_layer.self_display(frame, x, y, side_length)
+        if self.convex_layer is not None:
+            self.convex_layer.self_display(frame, x, y, side_length)
