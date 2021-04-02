@@ -1,5 +1,6 @@
 import json
-
+from src.engine.blocks import Block, Wall
+from src.engine.field import Field
 
 class Level:
     def __init__(self, file_name):
@@ -32,7 +33,7 @@ class Level:
             board.append([])
             for j in self.block_placement[i]:
                 if j == 1:
-                    board[i].append(Field())
+                    board[i].append(Field((j, i)))
                 elif j == 2:
                     field = Field((j, i))
                     wall = Wall()
@@ -45,3 +46,6 @@ class Level:
 
     def tick(self):
         pass
+
+    def self_draw(self, frame, x, y, side_length):
+        self.board.self_draw(frame, x, y, side_length)
