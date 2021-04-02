@@ -1,6 +1,6 @@
 from src.engine.direction import Direction
-# from src.engine.field import Field
-# from src.engine.board import Board
+from src.engine.field import Field
+from src.engine.board import Board
 
 
 class Snake:
