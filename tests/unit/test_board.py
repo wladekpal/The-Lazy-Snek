@@ -84,7 +84,7 @@ def test_higher_than_max_y_value():
 
 
 def test_none_field_request():
-    fields = build_matrix(10, 8, field)
+    fields = build_matrix(10, 8, None)
     board = Board(fields)
 
     try:
@@ -112,10 +112,18 @@ def test_too_small_board():
 
     frame = mock.Mock()
     frame.get_width.return_value = 8
-    frame.get_width.return_value = 8
+    frame.get_height.return_value = 8
 
     try:
         board.self_draw(frame)
         assert False
     except ImpossibleToDraw:
         assert True
+
+
+def test_make_tick():
+    fields = build_matrix(10, 8, field)
+    board = Board(fields)
+
+    board.make_tick()
+    assert field.make_tick.call_count == len(fields) * len(fields[0])
