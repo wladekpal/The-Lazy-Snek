@@ -5,8 +5,10 @@ class Block(metaclass=ABCMeta):
     def __init__(self):
         self.field = None
         self.is_alive = True
+        self.displayed_texture = None
+        self.displayed_side_length = None
 
-    @property
+    @staticmethod
     @abstractmethod
     def texture(self):
         pass
@@ -15,8 +17,14 @@ class Block(metaclass=ABCMeta):
     def interact_with_snake(self, snake):
         pass
 
-    def self_draw(self, frame, x, y):
-        frame.blit(self.texture, (x, y))
+    def self_draw(self, frame, x, y, side_length):
+        if not self.is_alive:
+            self.destroy()
+            return
+        if self.displayed_side_length != side_length:
+            self.displayed_side_length = side_length
+            self.displayed_texture = pygame.transform.scale(self.texture, (side_length, side_length)) 
+        frame.blit(self.displayed_texture, (x, y))
 
     def set_field(self, field):
         self.field = field
@@ -24,9 +32,9 @@ class Block(metaclass=ABCMeta):
 
 class Flat(Block):
     def __init__(self):
-        pass
+        super().__init__()
 
-    @property
+    @staticmethod
     @abstractmethod
     def texture(self):
         pass
@@ -44,7 +52,7 @@ class Convex(Block):
     def __init__(self):
         super().__init__()
 
-    @property
+    @staticmethod
     @abstractmethod
     def texture(self):
         pass
@@ -69,8 +77,7 @@ class Convex(Block):
         if not self.is_alive:
             self.destroy()
             return
-        displayed_texture = pygame.transform.scale(self.texture, (side_length, side_length)) 
-        frame.blit(displayed_texture, (x, y))
+        super().self_draw(frame, x, y, side_length)
 
     def kill(self):
         self.is_alive = False
