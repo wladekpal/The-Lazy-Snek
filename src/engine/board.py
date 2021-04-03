@@ -6,9 +6,13 @@ class Board:
         self.fields = fields
         self.state = 'running'
 
+        if len(fields) == 0:
+            raise WrongMatrix
+
         for row in self.fields:
             for field in row:
-                field.set_board()
+                if field is not None:
+                    field.set_board(self)
 
     def self_draw(self, frame: pygame.Surface):
         board_height = frame.get_height()
@@ -28,15 +32,17 @@ class Board:
         start_x = (board_width - field_area_width) // 2
         start_y = (board_height - field_area_height) // 2
 
+        # i - y-coordinate
+        # j - x-coordinate
         for i in range(len(self.fields)):
             for j in range(len(self.fields[i])):
                 if self.fields[i][j] is not None:
                     self.fields[i][j].self_draw(frame, start_x+j*field_side, start_y+i*field_side, field_side)
 
     def request_field(self, x, y):
-        if len(self.fields) > x > 0 and len(self.fields[0]) > y > 0:
-            if self.fields[x][y] is not None:
-                return self.fields[x][y]
+        if len(self.fields) > y > 0 and len(self.fields[0]) > x > 0:
+            if self.fields[y][x] is not None:
+                return self.fields[y][x]
             else:
                 raise NotExistingField
         else:
@@ -64,4 +70,8 @@ class ImpossibleToDraw(Exception):
 
 
 class NotExistingField(Exception):
+    pass
+
+
+class WrongMatrix(Exception):
     pass
