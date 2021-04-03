@@ -30,7 +30,7 @@ def test_direction_changing_coordinates():
     coordinates = (0, 0)
     direction = Direction('N')
     coordinates = direction.move_in_direction(coordinates)
-    assert coordinates == (0, 1)
+    assert coordinates == (0, -1)
 
     coordinates = (0, 0)
     direction = Direction('E')
@@ -40,7 +40,7 @@ def test_direction_changing_coordinates():
     coordinates = (0, 0)
     direction = Direction('S')
     coordinates = direction.move_in_direction(coordinates)
-    assert coordinates == (0, -1)
+    assert coordinates == (0, 1)
 
     coordinates = (0, 0)
     direction = Direction('W')

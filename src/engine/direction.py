@@ -4,7 +4,7 @@ REVERSE_SHIFT = 2
 
 
 class Direction:
-    delta = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    delta = [(0, -1), (1, 0), (0, 1), (-1, 0)]
     direction_name = ['N', 'E', 'S', 'W']
     index = 0
 
