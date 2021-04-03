@@ -88,6 +88,6 @@ class Field:
         frame.blit(displayed_texture, (x, y))
 
         if self.flat_layer is not None:
-            self.flat_layer.self_display(frame, x, y, side_length)
+            self.flat_layer.self_draw(frame, x, y, side_length)
         if self.convex_layer is not None:
-            self.convex_layer.self_display(frame, x, y, side_length)
+            self.convex_layer.self_draw(frame, x, y, side_length)
