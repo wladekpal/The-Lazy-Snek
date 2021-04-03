@@ -18,9 +18,6 @@ class Block(metaclass=ABCMeta):
         pass
 
     def self_draw(self, frame, x, y, side_length):
-        if not self.is_alive:
-            self.destroy()
-            return
         if self.displayed_side_length != side_length:
             self.displayed_side_length = side_length
             self.displayed_texture = pygame.transform.scale(self.texture, (side_length, side_length)) 
