@@ -1,9 +1,4 @@
-from src.engine.direction import Direction
-from src.engine.field import Field
-from src.engine.board import Board
-
 import pygame
-
 
 class Snake:
     is_alive = True
@@ -36,18 +31,21 @@ class Snake:
         field_area_height = field_side * len(self.board.fields)
         field_area_width = field_side * len(self.board[0].fields)
 
+        start_x = (board_width - field_area_width) // 2
+        start_y = (board_height - field_area_height) // 2
+
         resized_head_texture = pygame.transform.scale(self.head_texture, (field_side, field_side))
         resized_body_texture = pygame.transform.scale(self.body_texture, (field_side, field_side))
         resized_tail_texture = pygame.transform.scale(self.tail_texture, (field_side, field_side))
 
-        disp_coords = (field_area_width + field_side * self.segments[0][0], field_area_height + field_side * self.segments[0][1])
+        disp_coords = (start_x + field_side * self.segments[0][0], start_y + field_side * self.segments[0][1])
         frame.blit(resized_head_texture, disp_coords)
 
         for body_segment in self.segments[1:1]:
-            disp_coords = (field_area_width + field_side * body_segment[0], field_area_height + field_side * body_segment[1])
+            disp_coords = (start_x + field_side * body_segment[0], start_y + field_side * body_segment[1])
             frame.blit(resized_body_texture, disp_coords)
 
-        disp_coords = (field_area_width + field_side * self.segments[-1][0], field_area_height + field_side * self.segments[-1][1])
+        disp_coords = (start_x + field_side * self.segments[-1][0], start_y + field_side * self.segments[-1][1])
         frame.blit(resized_tail_texture, disp_coords)
 
     def move(self):
