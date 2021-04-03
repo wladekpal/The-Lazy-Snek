@@ -1,6 +1,9 @@
 import json
-from src.engine.blocks import Block, Wall
-from src.engine.field import Field
+from engine.blocks import Block, Wall
+from engine.field import Field
+from engine.board import Board
+from engine.snake import Snake
+from engine.direction import Direction
 
 
 class Level:
@@ -18,6 +21,9 @@ class Level:
         self.board = None
         self.snakes = None
 
+        self.is_game_won = False
+        self.is_game_lost = False
+
         self.convert_board()
         self.convert_snakes()
 
@@ -32,6 +38,9 @@ class Level:
         self.board = None
         self.snakes = None
 
+        self.is_game_won = False
+        self.is_game_lost = False
+
         self.convert_board()
         self.convert_snakes()
 
@@ -39,10 +48,10 @@ class Level:
         board = []
         for i in range(len(self.block_placement)):
             board.append([])
-            for j in self.block_placement[i]:
-                if j == 1:
+            for j in range(len(self.block_placement[i])):
+                if self.block_placement[i][j] == 1:
                     board[i].append(Field((j, i)))
-                elif j == 2:
+                elif self.block_placement[i][j] == 2:
                     field = Field((j, i))
                     wall = Wall()
                     field.place_convex(wall)
@@ -56,22 +65,42 @@ class Level:
         self.snakes = []
         for snake_d in self.snake_data:
             snake = Snake(
-                snake_d["placement"],
+                [(item[0], item[1]) for item in snake_d["placement"]],
                 snake_d["color"],
-                snake_d["direction"],
+                Direction(snake_d["direction"]),
                 self.board
             )
             self.snakes.append(snake)
 
-    def tick(self) -> bool:
+    def tick(self) -> int:
         self.snakes[self.snake_pointer].move()
+
+        if self.is_game_lost:
+            return -1
+        if self.is_game_won:
+            return 1
+
+        self.update_snake_pointer()
+        return 0
+
+    def update_snake_pointer(self):
+        is_any_alive = False
+        for snake in self.snakes:
+            is_any_alive = is_any_alive or snake.is_alive
+        if not is_any_alive:
+            raise Exception
+
         self.snake_pointer += 1
         self.snake_pointer %= len(self.snakes)
+        while not self.snakes[self.snake_pointer].is_alive:
+            self.snake_pointer += 1
+            self.snake_pointer %= len(self.snakes)
 
-        for snake in self.snakes:
-            if not snake.is_alive:
-                return False
-        return True
+    def game_won(self):
+        self.is_game_won = True
 
-    def self_draw(self, frame, x, y, side_length):
-        self.board.self_draw(frame, x, y, side_length)
+    def game_lost(self):
+        self.is_game_lost = True
+
+    def self_draw(self, frame, draw_coords, side_length):
+        self.board.self_draw(frame, draw_coords, side_length)
