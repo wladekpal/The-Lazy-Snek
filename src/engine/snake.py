@@ -14,14 +14,17 @@ class Snake:
         self.color = color
         self.direction = direction
         self.board = board
-        self.head_texture = pygame.image.load('../assets/snek-head-' + color + '.png')
-        self.body_texture = pygame.image.load('../assets/snek-body-' + color + '.png')
-        self.tail_texture = pygame.image.load('../assets/snek-tail-' + color + '.png')
+        head_path = 'assets/snek-head-' + color + '.png'
+        body_path = 'assets/snek-body-' + color + '.png'
+        tail_path = 'assets/snek-tail-' + color + '.png'
+        self.head_texture = pygame.image.load(head_path)
+        self.body_texture = pygame.image.load(body_path)
+        self.tail_texture = pygame.image.load(tail_path)
 
     def self_draw(self, frame):
         if not self.is_alive:
             pass
-        
+
         board_height = frame.get_height()
         board_width = frame.get_width()
 
@@ -31,14 +34,21 @@ class Snake:
         field_side = min(max_field_height, max_field_width)
 
         field_area_height = field_side * len(self.board.fields)
-        field_are_width = field_side * len(self.board[0].fields)
+        field_area_width = field_side * len(self.board[0].fields)
 
-        frame.blit(self.head_texture, (field_area_width + field_side * self.segments[0][0], field_area_height + field_side * self.segments[0][1]))
+        resized_head_texture = pygame.transform.scale(self.head_texture, (field_side, field_side))
+        resized_body_texture = pygame.transform.scale(self.body_texture, (field_side, field_side))
+        resized_tail_texture = pygame.transform.scale(self.tail_texture, (field_side, field_side))
 
-        for body_segment in segments[1:1]:
-            frame.blit(self.body_texture, (field_area_width + field_side * body_segment[0], field_area_height + field_side * body_segment[1]))
+        disp_coords = (field_area_width + field_side * self.segments[0][0], field_area_height + field_side * self.segments[0][1])
+        frame.blit(resized_head_texture, disp_coords)
 
-        frame.blit(self.tail_texture, (field_area_width + field_side * self.segments[-1][0], field_area_height + field_side * self.segments[-1][1]))
+        for body_segment in self.segments[1:1]:
+            disp_coords = (field_area_width + field_side * body_segment[0], field_area_height + field_side * body_segment[1])
+            frame.blit(resized_body_texture, disp_coords)
+
+        disp_coords = (field_area_width + field_side * self.segments[-1][0], field_area_height + field_side * self.segments[-1][1])
+        frame.blit(resized_tail_texture, disp_coords)
 
     def move(self):
         current_head_coords = self.segments[-1]
@@ -65,10 +75,9 @@ class Snake:
 
     def destroy(self):
         for segment_coords in self.segments:
-            field = self.board.request_field(segment)
+            field = self.board.request_field(segment_coords)
             field.remove_snake()
         self.is_alive = False
-        self.board.snake_died(self)
 
     def interact_with_snake(self, other_snake):
         snake_head_coords = self.segments[-1]
@@ -76,4 +85,3 @@ class Snake:
         if snake_head_coords == other_head_coords:
             self.destroy()
         other_snake.destroy()
-        
