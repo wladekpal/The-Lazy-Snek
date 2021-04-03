@@ -4,7 +4,6 @@ import pygame
 class Field:
 
     def __init__(self, coordinates):
-        self.texture = "abcd"
         self.coordinates = coordinates
         self.board = None
         self.flat_layer = None
@@ -89,5 +88,7 @@ class Field:
 
         if self.flat_layer is not None:
             self.flat_layer.self_draw(frame, x, y, side_length)
+        if self.snake_layer is not None:
+            self.snake_layer.draw_segment(frame, x, y, side_length, self.coordinates)
         if self.convex_layer is not None:
             self.convex_layer.self_draw(frame, x, y, side_length)
