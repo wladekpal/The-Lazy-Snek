@@ -20,15 +20,21 @@ class Snake:
             field_to_place = self.board.request_field(segment)
             field_to_place.place_snake(self)
 
-    def draw_segment(self, frame, segment_coords, draw_coords):
+    def draw_segment(self, frame, x_coord, y_coord, side_length, segment_coords):
+        # Wyjątek segment_coords poza segments
+        draw_coords = x_coord, y_coord
+        resized_head_texture = pygame.transform.scale(self.head_texture, (field_side, field_side))
+        resized_body_texture = pygame.transform.scale(self.body_texture, (field_side, field_side))
+        resized_tail_texture = pygame.transform.scale(self.tail_texture, (field_side, field_side))
+
         if not self.is_alive:
             pass
         if self.segments[-1] == segment_coords:
-            frame.blit(self.head_texture, draw_coords)
+            frame.blit(resized_body_texture, draw_coords)
         elif self.segments[0] == segment_coords:
-            frame.blit(self.tail_texture, draw_coords)
+            frame.blit(resized_tail_texture, draw_coords)
         else:
-            frame.blit(self.body_texture, draw_coords)
+            frame.blit(resized_body_texture, draw_coords)
 
     def move(self):
         current_head_coords = self.segments[-1]
