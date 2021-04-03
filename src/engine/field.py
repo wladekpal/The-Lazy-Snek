@@ -33,16 +33,20 @@ class Field:
         elif self.convex_layer is not None:
             self.convex_layer.interact_with_snake(snake)
 
-        if self.snake_layer is None:
+        if self.snake_layer is None and self.flat_layer is not None:
             self.flat_layer.interact_with_snake(snake)
 
-        self.snake_layer = snake
+        if snake.is_alive:
+            self.snake_layer = snake
 
     def snake_left(self):
         self.snake_layer = None
 
     def remove_snake(self):
         self.snake_layer = None
+
+    def place_snake(self, snake):
+        self.snake_layer = snake
 
     # flat
     def remove_flat(self):
@@ -82,13 +86,13 @@ class Field:
         self.convex_layer.set_field(self)
 
     # display
-    def self_draw(self, frame, x, y, side_length):
+    def self_draw(self, frame, draw_coords, side_length):
         displayed_texture = pygame.transform.scale(self.texture, (side_length, side_length))
-        frame.blit(displayed_texture, (x, y))
+        frame.blit(displayed_texture, draw_coords)
 
         if self.flat_layer is not None:
-            self.flat_layer.self_draw(frame, x, y, side_length)
+            self.flat_layer.self_draw(frame, draw_coords, side_length)
         if self.snake_layer is not None:
-            self.snake_layer.draw_segment(frame, x, y, side_length, self.coordinates)
+            self.snake_layer.draw_segment(frame, draw_coords, side_length, self.coordinates)
         if self.convex_layer is not None:
-            self.convex_layer.self_draw(frame, x, y, side_length)
+            self.convex_layer.self_draw(frame, draw_coords, side_length)
