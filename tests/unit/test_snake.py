@@ -14,7 +14,6 @@ def test_snake_creation():
     assert snake.color == "green"
     assert snake.segments == [(1,1), (1,2), (2,2)]
 
-
 def test_snake_destroyed():
     mock_board = mock.Mock()
     segments = [(1,1), (1,2), (2,2)]
@@ -105,7 +104,7 @@ def test_snake_enters_field_and_grows():
     assert snake.segments == [(1,1), (1,2), (2,2), (2,3)]
     assert snake.grow_at_next_move == False
 
-def growing_snake_dies_when_entering_field():
+def test_growing_snake_dies_when_entering_field():
     mock_board = mock.Mock()
     segments = [(1,1), (1,2), (2,2)]
     color = "green"
