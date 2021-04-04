@@ -113,7 +113,7 @@ def test_snake_enters_field_no_grow():
 
     snake.move()
 
-    mock_field.snake_entered.assert_called_once_with(snake, mock_direction)
+    mock_field.snake_entered.assert_called_once_with(snake)
     assert snake.segments == [(1,2), (2,2), (2,1)]
 
 def test_snake_enters_field_and_grows():
@@ -131,7 +131,7 @@ def test_snake_enters_field_and_grows():
     snake.grow()
     snake.move()
 
-    mock_field.snake_entered.assert_called_once_with(snake, mock_direction)
+    mock_field.snake_entered.assert_called_once_with(snake)
     assert snake.segments == [(1,1), (1,2), (2,2), (2,1)]
     assert snake.grow_at_next_move == False
 
@@ -145,13 +145,13 @@ def test_growing_snake_dies_when_entering_field():
 
     mock_field = mock.Mock()
     mock_field.check_snake_move.return_value = True
-    mock_field.snake_entered.side_effect = lambda snake, direction: snake.destroy() 
+    mock_field.snake_entered.side_effect = lambda snake: snake.destroy() 
     mock_board.request_field.return_value = mock_field
 
     snake.grow()
     snake.move()
 
-    mock_field.snake_entered.assert_called_once_with(snake, mock_direction)
+    mock_field.snake_entered.assert_called_once_with(snake)
     assert mock_field.remove_snake.call_count == 4
     assert snake.is_alive == False
     assert snake.segments == [(1,1), (1,2), (2,2), (2,1)]

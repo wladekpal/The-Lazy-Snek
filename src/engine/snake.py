@@ -2,8 +2,6 @@ import pygame
 import os
 from src.engine.direction import Direction
 
-dirname = os.path.dirname(__file__)
-
 
 class Snake:
     is_alive = True
@@ -14,6 +12,7 @@ class Snake:
         self.color = color
         self.direction = direction
         self.board = board
+        dirname = os.path.dirname(__file__)
         head_path = os.path.join(dirname, '../../assets/snek-head-' + color + '.png')
         body_path = os.path.join(dirname, '../../assets/snek-body-' + color + '.png')
         bent_body_path = os.path.join(dirname, '../../assets/snek-bent-body-' + color + '.png')
@@ -83,14 +82,14 @@ class Snake:
         segment_texture = self.get_segment_texture(segment_coords, neighbours_directions)
         resized_segment_texture = pygame.transform.scale(segment_texture, (side_length, side_length))
 
-        if neighbours_directions in ['N', 'NE', 'EN']:
+        if neighbours_directions in ['N', 'NE', 'EN', 'NS', 'SN']:
             rotated_segment_texture = resized_segment_texture
-        elif neighbours_directions in ['E', 'ES', 'SE']:
-            rotated_segment_texture = pygame.transform.scale(resized_segment_texture, -90)
+        elif neighbours_directions in ['E', 'ES', 'SE', 'EW', 'WE']:
+            rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -90)
         elif neighbours_directions in ['S', 'SW', 'WS']:
-            rotated_segment_texture = pygame.transform.scale(resized_segment_texture, -180)
+            rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -180)
         elif neighbours_directions in ['W', 'WN', 'NW']:
-            rotated_segment_texture = pygame.transform.scale(resized_segment_texture, -270)
+            rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -270)
 
         frame.blit(rotated_segment_texture, draw_coords)
 
@@ -111,7 +110,7 @@ class Snake:
             self.grow_at_next_move = False
 
         self.segments.append(new_head_coords)
-        new_field.snake_entered(self, self.direction)
+        new_field.snake_entered(self)
 
     def grow(self):
         self.grow_at_next_move = True
