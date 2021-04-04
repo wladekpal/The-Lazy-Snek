@@ -1,5 +1,5 @@
 import pytest
-import mock
+from unittest import mock
 from src.engine.board import Board, OutOfRange, NotExistingField, ImpossibleToDraw, WrongMatrix
 
 field = mock.Mock()
@@ -64,7 +64,7 @@ def test_higher_than_max_x_value():
     width = len(fields[0])
 
     try:
-        board.request_field(width+1, 0)
+        board.request_field(width + 1, 0)
         assert False
     except OutOfRange:
         assert True
@@ -77,7 +77,7 @@ def test_higher_than_max_y_value():
     height = len(fields)
 
     try:
-        board.request_field(height+1, 0)
+        board.request_field(height + 1, 0)
         assert False
     except OutOfRange:
         assert True
@@ -94,13 +94,20 @@ def test_none_field_request():
         assert True
 
 
+def test_good_field_request():
+    fields = build_matrix(10, 8, field)
+    board = Board(fields)
+
+    assert board.request_field(0, 0) == field
+
+
 def test_self_draw():
     fields = build_matrix(10, 8, field)
     board = Board(fields)
 
     frame = mock.Mock()
-    frame.get_width.return_value = 500
-    frame.get_height.return_value = 400
+    frame.get_width.return_value = 400
+    frame.get_height.return_value = 500
 
     board.self_draw(frame)
     assert field.self_draw.call_count == len(fields) * len(fields[0])

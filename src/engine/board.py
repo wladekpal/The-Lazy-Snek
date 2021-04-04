@@ -37,7 +37,7 @@ class Board:
         for i in range(len(self.fields)):
             for j in range(len(self.fields[i])):
                 if self.fields[i][j] is not None:
-                    self.fields[i][j].self_draw(frame, start_x+j*field_side, start_y+i*field_side, field_side)
+                    self.fields[i][j].self_draw(frame, (start_x+j*field_side, start_y+i*field_side), field_side)
 
     def request_field(self, x, y):
         if len(self.fields) > y >= 0 and len(self.fields[0]) > x >= 0:
@@ -53,12 +53,6 @@ class Board:
             for field in row:
                 if field is not None:
                     field.make_tick()
-
-    def game_over(self):
-        self.state = 'lost'
-
-    def game_won(self):
-        self.state = 'won'
 
 
 class OutOfRange(Exception):
