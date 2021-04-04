@@ -98,7 +98,6 @@ def test_convex_class_has_empty_method_check_move():
 
 def test_block_self_draw_when_drawing_same_size_as_remembered():
     Block().__abstractmethods__ = set()
-    #def self_draw(self, frame, position, side_length):
     frame = mock.Mock()
     position = mock.Mock()
     displayed_texture = mock.Mock()
