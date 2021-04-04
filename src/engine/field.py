@@ -65,7 +65,7 @@ class Field:
 
     def convex_entered(self, convex, direction):
         if self.snake_layer is not None:
-            self.snake_layer.interact_with_convex()
+            self.snake_layer.interact_with_convex(convex)
         elif self.convex_layer is not None:
             self.convex_layer.move(direction)
 
