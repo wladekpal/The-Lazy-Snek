@@ -27,8 +27,9 @@ def test_negative_x_value():
     fields = build_matrix(10, 8, field)
     board = Board(fields)
 
+    x_neg_pos = (-1, 0)
     try:
-        board.request_field(-1, 0)
+        board.request_field(x_neg_pos)
         assert False
     except OutOfRange:
         assert True
@@ -38,8 +39,9 @@ def test_negative_y_value():
     fields = build_matrix(10, 8, field)
     board = Board(fields)
 
+    y_neg_pos = (0, -1)
     try:
-        board.request_field(0, -1)
+        board.request_field(y_neg_pos)
         assert False
     except OutOfRange:
         assert True
@@ -49,8 +51,9 @@ def test_both_negative_values():
     fields = build_matrix(10, 8, field)
     board = Board(fields)
 
+    both_neg_pos = (-1, -1)
     try:
-        board.request_field(-1, -1)
+        board.request_field(both_neg_pos)
         assert False
     except OutOfRange:
         assert True
@@ -62,8 +65,9 @@ def test_higher_than_max_x_value():
 
     width = len(fields[0])
 
+    x_too_big_pos = (width + 1, 0)
     try:
-        board.request_field(width + 1, 0)
+        board.request_field(x_too_big_pos)
         assert False
     except OutOfRange:
         assert True
@@ -75,8 +79,9 @@ def test_higher_than_max_y_value():
 
     height = len(fields)
 
+    y_too_big_pos = (0, height + 1)
     try:
-        board.request_field(height + 1, 0)
+        board.request_field(y_too_big_pos)
         assert False
     except OutOfRange:
         assert True
@@ -86,8 +91,9 @@ def test_none_field_request():
     fields = build_matrix(10, 8, None)
     board = Board(fields)
 
+    correct_pos = (0, 0)
     try:
-        board.request_field(0, 0)
+        board.request_field(correct_pos)
         assert False
     except NotExistingField:
         assert True
@@ -97,7 +103,8 @@ def test_good_field_request():
     fields = build_matrix(10, 8, field)
     board = Board(fields)
 
-    assert board.request_field(0, 0) == field
+    correct_pos = (0, 0)
+    assert board.request_field(correct_pos) == field
 
 
 def test_self_draw():

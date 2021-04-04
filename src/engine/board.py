@@ -39,7 +39,8 @@ class Board:
                 if self.fields[i][j] is not None:
                     self.fields[i][j].self_draw(frame, (start_x+j*field_side, start_y+i*field_side), field_side)
 
-    def request_field(self, x, y):
+    def request_field(self, position):
+        x, y = position
         if len(self.fields) > y >= 0 and len(self.fields[0]) > x >= 0:
             if self.fields[y][x] is not None:
                 return self.fields[y][x]
