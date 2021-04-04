@@ -1,4 +1,3 @@
-import pytest
 from unittest import mock
 from src.engine.board import Board, OutOfRange, NotExistingField, ImpossibleToDraw, WrongMatrix
 
