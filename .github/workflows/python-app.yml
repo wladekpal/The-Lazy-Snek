@@ -34,6 +34,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest tests --cov=src --cov-fail-under=50 > pytest-coverage.txt
+        pytest tests --cov=src --cov-fail-under=50 | tee pytest-coverage.txt
     - name: Comment coverage
       uses: coroo/pytest-coverage-commentator@v1.0.2
