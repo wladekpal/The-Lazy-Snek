@@ -50,11 +50,11 @@ def test_direction_changing_coordinates():
 
 def test_changing_direction():
     direction = Direction('N')
-    direction.turnLeft()
+    direction.turn_left()
     assert 'W' == str(direction)
 
     direction.reverse()
     assert 'E' == str(direction)
 
-    direction.turnRight()
+    direction.turn_right()
     assert 'S' == str(direction)

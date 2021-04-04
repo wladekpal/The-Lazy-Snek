@@ -93,4 +93,49 @@ class Wall(Convex):
     
     def destroy(self):
         raise WallInteractionError
+
+
+class TurnLeft(Flat):
+    def __init__(self):
+        super().__init__()
+
+    @staticmethod
+    def texture():
+        return pygame.image.load('../assets/turn_left.png')
+
+    def interact_with_snake(self, snake):
+        snake.direction.turn_left()
+
+    def interact_with_convex(self, convex):
+        pass
+
+
+class TurnLeft(Flat):
+    def __init__(self):
+        super().__init__()
+
+    @staticmethod
+    def texture():
+        return pygame.image.load('../assets/turn_left.png')
+
+    def interact_with_snake(self, snake):
+        snake.direction.turn_left()
+
+    def interact_with_convex(self, convex):
+        pass
+
+
+class TurnRight(Flat):
+    def __init__(self):
+        super().__init__()
+
+    @staticmethod
+    def texture():
+        return pygame.image.load('../assets/turn_right.png')
+
+    def interact_with_snake(self, snake):
+        snake.direction.turn_right()
+
+    def interact_with_convex(self, convex):
+        pass
     
