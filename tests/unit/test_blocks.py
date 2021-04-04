@@ -76,8 +76,7 @@ def test_block_class_set_field():
 def test_flat_class_has_empty_method_interact_with_convex():
     Flat.__abstractmethods__ = set()
     convex = mock.Mock()
-    direction = mock.Mock()
-    assert Flat().interact_with_convex(convex, direction) is None
+    assert Flat().interact_with_convex(convex) is None
 
 
 def test_convex_class_has_empty_method_move():

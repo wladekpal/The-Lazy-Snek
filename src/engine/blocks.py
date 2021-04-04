@@ -30,7 +30,7 @@ class Block(metaclass=ABCMeta):
 class Flat(Block):
 
     @abstractmethod
-    def interact_with_convex(self, convex, direction):
+    def interact_with_convex(self, convex):
         pass
 
 
