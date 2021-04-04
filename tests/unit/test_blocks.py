@@ -136,11 +136,11 @@ def test_convex_that_is_alive_self_draw_will_draw_in_frame_when_remembered_size_
 
 
 def test_turn_left_creation():
-    turn_left = TurnLeft()
+    TurnLeft()
 
 
 def test_turn_righ_creation():
-    turn_right = TurnRight()
+    TurnRight()
 
 
 def test_turn_left_changes_snake_direction():
@@ -150,10 +150,10 @@ def test_turn_left_changes_snake_direction():
 
     snake.direction.turn_left.assert_called_once()
 
+
 def test_turn_right_changes_snake_direction():
     turn_right = TurnRight()
     snake = mock.Mock()
     turn_right.interact_with_snake(snake)
 
     snake.direction.turn_right.assert_called_once()
-
