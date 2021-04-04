@@ -1,4 +1,5 @@
 import pygame
+import os
 
 
 class Field:
@@ -9,7 +10,7 @@ class Field:
         self.flat_layer = None
         self.convex_layer = None
         self.snake_layer = None
-        self.texture = pygame.image.load("../assets/field.png")
+        self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/field.png"))
 
     # orientation
     def give_field_in_direction(self, direction):
