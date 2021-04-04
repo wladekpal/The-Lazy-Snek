@@ -1,4 +1,9 @@
 import pygame
+import os
+from src.engine.direction import Direction
+
+dirname = os.path.dirname(__file__)
+
 
 class Snake:
     is_alive = True
@@ -9,10 +14,10 @@ class Snake:
         self.color = color
         self.direction = direction
         self.board = board
-        head_path = '../assets/snek-head-' + color + '.png'
-        body_path = '../assets/snek-body-' + color + '.png'
-        bent_body_path = '../assets/snek-bent-body-' + color + '.png'
-        tail_path = '../assets/snek-tail-' + color + '.png'
+        head_path = os.path.join(dirname, '../../assets/snek-head-' + color + '.png')
+        body_path = os.path.join(dirname, '../../assets/snek-body-' + color + '.png')
+        bent_body_path = os.path.join(dirname, '../../assets/snek-bent-body-' + color + '.png')
+        tail_path = os.path.join(dirname, '../../assets/snek-tail-' + color + '.png')
         self.head_texture = pygame.image.load(head_path)
         self.body_texture = pygame.image.load(body_path)
         self.bent_body_texture = pygame.image.load(bent_body_path)
@@ -22,82 +27,72 @@ class Snake:
             field_to_place = self.board.request_field(segment)
             field_to_place.place_snake(self)
 
+    def get_direction_betwen_segments(segment, other_segments):
+        possible_direcitons = ['N', 'E', 'S', 'W']
+
+        for direction_letter in possible_direcitons:
+            direction = Direction(direction_letter)
+            if direction.move_in_direction(segment) == other_segments:
+                return str(direction)
+
+        raise BadSegmentOrientation
+
+    def calculate_neighbours_directions(self, segment):
+        segment_index = self.segments.index(segment)
+        neighbours_directions = ''
+
+        if segment_index + 1 < len(self.segments):
+            prev_segment = self.segments[segment_index + 1]
+        else:
+            prev_segment = None
+
+        if segment_index - 1 >= 0:
+            next_segment = self.segments[segment_index - 1]
+        else:
+            next_segment = None
+
+        if prev_segment is not None:
+            neighbours_directions += Snake.get_direction_betwen_segments(segment, prev_segment)
+        else:
+            return str(self.direction)
+
+        if next_segment is not None:
+            neighbours_directions += Snake.get_direction_betwen_segments(segment, next_segment)
+
+        return neighbours_directions
+
+    def get_segment_texture(self, segment, neighbours_directions):
+        bent_directions = ['NE', 'EN', 'ES', 'SE', 'SW', 'WS', 'WN', 'NW']
+        if segment == self.segments[0]:
+            return self.tail_texture
+        elif segment == self.segments[-1]:
+            return self.head_texture
+        elif neighbours_directions in bent_directions:
+            return self.bent_body_texture
+        else:
+            return self.body_texture
+
     def draw_segment(self, frame, draw_coords, side_length, segment_coords):
-        # Wyjątek segment_coords poza segments
+        if segment_coords not in self.segments:
+            raise SegmentNotInSnake
 
         if not self.is_alive:
             return
 
-        if self.segments[-1] == segment_coords:
-            resized_head_texture = pygame.transform.scale(self.head_texture, (field_side, field_side))
-            if str(self.direction) == 'N':
-                segment_texutre = resized_head_texture
-            elif str(self.direction) == 'E':
-                segment_texutre = pygame.transform.rotate(resized_head_texture, -90)
-            elif str(self.direction) == 'S':
-                segment_texutre = pygame.transform.rotate(resized_head_texture, -180)
-            else:
-                segment_texutre = pygame.transform.rotate(resized_head_texture, -270)   
-        elif self.segments[0] == segment_coords:
-            possible_direcitons = ['N', 'E', 'S', 'W']
-            tail_coords = self.segments[0]
-            last_body_coords = self.segments[1]
+        neighbours_directions = self.calculate_neighbours_directions(segment_coords)
+        segment_texture = self.get_segment_texture(segment_coords, neighbours_directions)
+        resized_segment_texture = pygame.transform.scale(segment_texture, (side_length, side_length))
 
-            for direction_letter in possible_direcitons:
-                direction = Direction(direction_letter)
-                if direction.move_in_direction(tail_coords) == last_body_coords:
-                    break
+        if neighbours_directions in ['N', 'NE', 'EN']:
+            rotated_segment_texture = resized_segment_texture
+        elif neighbours_directions in ['E', 'ES', 'SE']:
+            rotated_segment_texture = pygame.transform.scale(resized_segment_texture, -90)
+        elif neighbours_directions in ['S', 'SW', 'WS']:
+            rotated_segment_texture = pygame.transform.scale(resized_segment_texture, -180)
+        elif neighbours_directions in ['W', 'WN', 'NW']:
+            rotated_segment_texture = pygame.transform.scale(resized_segment_texture, -270)
 
-            result_direction = str(direction)
-
-            resized_tail_texture = pygame.transform.scale(self.tail_texture, (field_side, field_side))
-
-            if result_direction == 'N':
-                segment_texutre = resized_tail_texture
-            elif result_direction == 'E':
-                segment_texutre = pygame.transform.rotate(resized_tail_texture, -90)
-            elif result_direction == 'S':
-                segment_texutre = pygame.transform.rotate(resized_tail_texture, -180)
-            else:
-                segment_texutre = pygame.transform.rotate(resized_tail_texture, -270)
-        else:
-            possible_direcitons = ['N', 'E', 'S', 'W']
-            current_segment_coords = segment_coords
-            prev_segment_coords = self.segments[self.segments.index(segment_coords) + 1]
-            next_segment_coords = self.segments[self.segments.index(segment_coords) - 1]
-
-            for direction_letter in possible_direcitons:
-                direction = Direction(direction_letter)
-                if direction.move_in_direction(current_segment_coords) == prev_segment_coords:
-                    prev_direction = str(direction)
-
-                if direction.move_in_direction(current_segment_coords) == next_segment_coords:
-                    next_direction = str(direction)
-
-            direction_string = prev_direction + next_direction
-
-            if direction_string == 'NS' or direction_string == 'SN':
-                resized_body_texture = pygame.transform.scale(self.body_texture, (field_side, field_side))
-                segment_texutre = resized_body_texture
-            elif direction_string == 'WE' or direction_string == 'EW':
-                resized_body_texture = pygame.transform.scale(self.body_texture, (field_side, field_side))
-                segment_texutre = pygame.transform.rotate(resized_body_texture, -90)
-            elif direction_string == 'NE' or direction_string == 'EN':
-                resized_body_texture = pygame.transform.scale(self.bent_body_texture, (field_side, field_side))
-                segment_texutre = pygame.transform.rotate(resized_body_texture, -180)
-            elif direction_string == 'ES' or direction_string == 'SE':
-                resized_body_texture = pygame.transform.scale(self.bent_body_texture, (field_side, field_side))
-                segment_texutre = pygame.transform.rotate(resized_body_texture, 90)
-            elif direction_string == 'SW' or direction_string == 'WS':
-                resized_body_texture = pygame.transform.scale(self.bent_body_texture, (field_side, field_side))
-                segment_texutre = resized_body_texture
-            elif direction_string == 'WN' or direction_string == 'NW':
-                resized_body_texture = pygame.transform.scale(self.bent_body_texture, (field_side, field_side))
-                segment_texutre = pygame.transform.rotate(resized_body_texture, -90)
-            else:
-                raise Exception("Bad segment orientation")
-
-        frame.blit(segment_texutre, draw_coords)
+        frame.blit(rotated_segment_texture, draw_coords)
 
     def move(self):
         current_head_coords = self.segments[-1]
@@ -133,3 +128,11 @@ class Snake:
         if snake_head_coords == other_head_coords:
             self.destroy()
         other_snake.destroy()
+
+
+class BadSegmentOrientation(Exception):
+    pass
+
+
+class SegmentNotInSnake(Exception):
+    pass
