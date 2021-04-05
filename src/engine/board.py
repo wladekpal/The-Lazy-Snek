@@ -4,7 +4,7 @@ import pygame
 class Board:
     def __init__(self, fields):
         self.fields = fields
-        self.state = 'running'
+        self.state = "running"
 
         if len(fields) == 0:
             raise WrongMatrix
@@ -48,12 +48,6 @@ class Board:
                 raise NotExistingField
         else:
             raise OutOfRange
-
-    def make_tick(self):
-        for row in self.fields:
-            for field in row:
-                if field is not None:
-                    field.make_tick()
 
 
 class OutOfRange(Exception):
