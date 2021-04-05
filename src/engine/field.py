@@ -43,8 +43,9 @@ class Field:
     def snake_left(self):
         self.snake_layer = None
 
-    def remove_snake(self):
-        self.snake_layer = None
+    def remove_snake(self, snake):
+        if self.snake_layer == snake:
+            self.snake_layer = None
 
     def place_snake(self, snake):
         self.snake_layer = snake
