@@ -3,12 +3,12 @@ from src.engine.direction import Direction
 
 
 def test_direction_creation():
-    north = Direction('N')
-    east = Direction('E')
-    south = Direction('S')
-    west = Direction('W')
+    Direction('N')
+    Direction('E')
+    Direction('S')
+    Direction('W')
     with pytest.raises(Exception) as exceptionInfo:
-        bad_direction = Direction('X')
+        Direction('X')
     assert "Wrong initial direction name" in str(exceptionInfo)
 
 

@@ -132,4 +132,3 @@ def test_too_small_board():
         assert False
     except ImpossibleToDraw:
         assert True
-

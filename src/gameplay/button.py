@@ -64,5 +64,3 @@ class CancelButton(Button):
 
     def action_when_clicked(self):
         self.simulation.cancel()
-
-    
