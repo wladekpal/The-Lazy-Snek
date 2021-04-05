@@ -11,7 +11,7 @@ FPS = 15
 FRAMES_PER_SIMULATION_TICK = 7
 
 # example levels
-EXAMPLE_LEVEL_PATH = os.path.join(os.path.dirname(__file__), "../assets/data.json")
+EXAMPLE_LEVEL_PATH = os.path.join(os.path.dirname(__file__), "../assets/example1.json")
 
 
 def handle_events(levelView):
