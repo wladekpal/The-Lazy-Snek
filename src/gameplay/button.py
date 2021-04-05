@@ -1,9 +1,10 @@
 import pygame
-import os
 from abc import ABCMeta, abstractmethod
 from .simulation import SimulationState
 
+
 class Button(metaclass=ABCMeta):
+
     def __init__(self, simulation, texture):
         self.simulation = simulation
         self.texture = texture
@@ -58,9 +59,10 @@ class PlayButton(Button):
     def action_when_clicked(self):
         self.simulation.play()
 
+
 class CancelButton(Button):
-   
+
     def action_when_clicked(self):
         self.simulation.cancel()
 
-        
+    

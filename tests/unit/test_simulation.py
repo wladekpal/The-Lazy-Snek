@@ -1,6 +1,7 @@
 from src.gameplay.simulation import SimulationState, Simulation
 import mock
 
+
 def test_simulation_play_method_pauses_while_running():
     simulation = Simulation(mock.Mock(), mock.Mock())
     simulation.state = SimulationState.RUNNING
@@ -70,6 +71,7 @@ def test_simulation_tick_calls_level_tick_when_running():
     simulation.tick()
     level.tick.assert_called_once()
 
+
 def test_simulation_tick_does_not_call_level_tick_when_not_running():
     for state in [SimulationState.LOSS, SimulationState.WIN, SimulationState.PAUSED, SimulationState.INACTIVE]:
         level = mock.Mock()
@@ -88,10 +90,10 @@ def test_simulation_cancel_reloads_level():
 
 
 def test_simulation_cancel_sets_state_to_inactive():
-    for state in [SimulationState.LOSS, SimulationState.WIN, SimulationState.PAUSED, SimulationState.INACTIVE, SimulationState.RUNNING]:
+    for state in [SimulationState.LOSS, SimulationState.WIN, SimulationState.PAUSED, 
+                  SimulationState.INACTIVE, SimulationState.RUNNING]:
         simulation = Simulation(mock.Mock(), mock.Mock())
         simulation.state = state
         simulation.cancel()
         assert simulation.get_state() == SimulationState.INACTIVE
-
 

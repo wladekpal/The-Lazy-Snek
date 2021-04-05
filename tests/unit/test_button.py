@@ -2,11 +2,13 @@ from src.gameplay.button import Button, CancelButton, PlayButton, RestartButton
 import mock
 import pytest
 
+
 def test_cant_instantiate_button_object():
     simulation = mock.Mock()
     texture = mock.Mock()
     with pytest.raises(TypeError):
         Button(simulation, texture)
+
 
 def test_instantiate_cancel_button_object():
     simulation = mock.Mock()
@@ -50,7 +52,3 @@ def test_button_replace_texture():
     new_texture = mock.Mock()
     button.replace_texture(new_texture)
     assert button.texture == new_texture
-
-
-
-

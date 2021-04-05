@@ -2,7 +2,6 @@ import pygame
 import os
 from .button import PlayButton, CancelButton, RestartButton
 from .simulation import Simulation, SimulationState
-import enum
 
 # frames and their elements display details
 BOARD_FRAME_HEIGHT_PERCENTAGE = 85
@@ -40,11 +39,12 @@ class LevelView():
 
         def create_buttons():
             buttons = []
-            buttons.append(PlayButton(self.simulation, pygame.image.load(PLAY_BUTTON_TEXTURE_PATH), pygame.image.load(PAUSE_BUTTON_TEXTURE_PATH)))
+            buttons.append(PlayButton(self.simulation, pygame.image.load(PLAY_BUTTON_TEXTURE_PATH), 
+                                      pygame.image.load(PAUSE_BUTTON_TEXTURE_PATH)))
             buttons.append(RestartButton(self.simulation, pygame.image.load(RESET_BUTTON_TEXTURE_PATH)))
             buttons.append(CancelButton(self.simulation, pygame.image.load(STOP_BUTTON_TEXTURE_PATH)))
             return buttons
-        
+ 
         self.messages_font = pygame.font.Font(pygame.font.get_default_font(), MESSAGES_FONT_SIZE)
         self.frames_per_simulation_tick = frames_per_simulation_tick
         self.frames_till_next_tick = frames_per_simulation_tick
@@ -83,12 +83,12 @@ class LevelView():
                 text_rectangle = text.get_rect()
                 text_rectangle.center = self.board_frame.get_rect().center
                 self.board_frame.blit(text, text_rectangle)
-        
+
         self.frames_till_next_tick -= 1
         if self.frames_till_next_tick == 0:
             self.simulation.tick()
             self.frames_till_next_tick = self.frames_per_simulation_tick
-        
+
         refresh_backgrounds()
         refresh_board()
         refresh_buttons()
