@@ -1,6 +1,7 @@
 import pygame
 from engine.level import Level
 from gameplay.level_screen import LevelView
+import os
 
 # window dimensions
 GAME_WINDOW_WIDTH = 1600
