@@ -1,5 +1,5 @@
 import json
-from .blocks import Block, Wall, TurnLeft, TurnRight
+from .blocks import Wall, TurnLeft, TurnRight
 from .field import Field
 from .board import Board
 from .snake import Snake
@@ -112,5 +112,5 @@ class Level:
     def game_lost(self):
         self.is_game_lost = True
 
-    def self_draw(self, frame, draw_coords, side_length):
-        self.board.self_draw(frame, draw_coords, side_length)
+    def self_draw(self, frame):
+        self.board.self_draw(frame)
