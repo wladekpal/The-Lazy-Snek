@@ -1,6 +1,6 @@
 import pygame
 from engine.level import Level
-from gameplay.level_screen import LevelView
+from gameplay.level_view import LevelView
 import os
 
 # window dimensions
