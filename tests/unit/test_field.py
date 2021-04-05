@@ -1,5 +1,4 @@
 from src.engine.field import Field
-import pytest
 import mock
 
 
@@ -229,4 +228,3 @@ def test_self_draw_convex():
     field.self_draw(mock_frame, draw_coords, side_length)
     assert mock_frame.blit.call_count == 1
     mock_convex.self_draw.assert_called_once_with(mock_frame, draw_coords, side_length)
-

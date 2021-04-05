@@ -39,12 +39,12 @@ class LevelView():
 
         def create_buttons():
             buttons = []
-            buttons.append(PlayButton(self.simulation, pygame.image.load(PLAY_BUTTON_TEXTURE_PATH), 
+            buttons.append(PlayButton(self.simulation, pygame.image.load(PLAY_BUTTON_TEXTURE_PATH),
                                       pygame.image.load(PAUSE_BUTTON_TEXTURE_PATH)))
             buttons.append(RestartButton(self.simulation, pygame.image.load(RESET_BUTTON_TEXTURE_PATH)))
             buttons.append(CancelButton(self.simulation, pygame.image.load(STOP_BUTTON_TEXTURE_PATH)))
             return buttons
- 
+
         self.messages_font = pygame.font.Font(pygame.font.get_default_font(), MESSAGES_FONT_SIZE)
         self.frames_per_simulation_tick = frames_per_simulation_tick
         self.frames_till_next_tick = frames_per_simulation_tick

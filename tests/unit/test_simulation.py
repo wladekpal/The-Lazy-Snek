@@ -90,10 +90,9 @@ def test_simulation_cancel_reloads_level():
 
 
 def test_simulation_cancel_sets_state_to_inactive():
-    for state in [SimulationState.LOSS, SimulationState.WIN, SimulationState.PAUSED, 
+    for state in [SimulationState.LOSS, SimulationState.WIN, SimulationState.PAUSED,
                   SimulationState.INACTIVE, SimulationState.RUNNING]:
         simulation = Simulation(mock.Mock(), mock.Mock())
         simulation.state = state
         simulation.cancel()
         assert simulation.get_state() == SimulationState.INACTIVE
-
