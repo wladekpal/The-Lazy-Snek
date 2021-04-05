@@ -21,11 +21,11 @@ class Direction:
         current_delta = self.delta[self.index]
         return current_delta[0] + coords[0], current_delta[1] + coords[1]
 
-    def turnRight(self):
+    def turn_right(self):
         self.index += RIGHT_TURN_SHIFT
         self.index %= len(self.direction_name)
 
-    def turnLeft(self):
+    def turn_left(self):
         self.index += LEFT_TURN_SHIFT
         self.index %= len(self.direction_name)
 

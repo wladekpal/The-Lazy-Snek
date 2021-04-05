@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import pygame
 
+
 class Block(metaclass=ABCMeta):
     def __init__(self):
         self.field = None
@@ -20,7 +21,7 @@ class Block(metaclass=ABCMeta):
     def self_draw(self, frame, position, side_length):
         if self.displayed_side_length != side_length:
             self.displayed_side_length = side_length
-            self.displayed_texture = pygame.transform.scale(self.texture(), (side_length, side_length)) 
+            self.displayed_texture = pygame.transform.scale(self.texture(), (side_length, side_length))
         frame.blit(self.displayed_texture, position)
 
     def set_field(self, field):
@@ -71,11 +72,11 @@ class WallInteractionError(Exception):
 class Wall(Convex):
     def __init__(self):
         super().__init__()
-    
+
     @staticmethod
     def texture():
         return pygame.image.load('../assets/wall.png')
-    
+
     def check_move(self, direction) -> bool:
         return False
 
@@ -90,7 +91,36 @@ class Wall(Convex):
 
     def kill(self):
         raise WallInteractionError
-    
+
     def destroy(self):
         raise WallInteractionError
-    
+
+
+class TurnLeft(Flat):
+    def __init__(self):
+        super().__init__()
+
+    @staticmethod
+    def texture():
+        return pygame.image.load('../assets/turn_left.png')
+
+    def interact_with_snake(self, snake):
+        snake.direction.turn_left()
+
+    def interact_with_convex(self, convex):
+        pass
+
+
+class TurnRight(Flat):
+    def __init__(self):
+        super().__init__()
+
+    @staticmethod
+    def texture():
+        return pygame.image.load('../assets/turn_right.png')
+
+    def interact_with_snake(self, snake):
+        snake.direction.turn_right()
+
+    def interact_with_convex(self, convex):
+        pass
