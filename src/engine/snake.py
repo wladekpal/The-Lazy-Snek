@@ -70,7 +70,7 @@ class Snake:
         elif segment == self.segments[-1] and neighbours_directions in bent_directions:
             if neighbours_directions in mirror_head_directions:
                 mirrored_bent_head_texture = pygame.transform.flip(self.bent_head_texture, True, False)
-                return pygame.transform.rotate(mirrored_bent_head_texture, 180)
+                return pygame.transform.rotate(mirrored_bent_head_texture, -90)
             else:
                 return self.bent_head_texture
         elif segment == self.segments[-1]:
