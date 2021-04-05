@@ -17,11 +17,11 @@ def test_snake_creation():
 
 def test_get_direction_betwen_segments():
     segment_one_list = [(0, 0), (1, 4), (5, 5), (4, 10)]
-    segmetn_two_list = [(0, 1), (0, 4), (6, 5), (4, 9)]
+    segment_two_list = [(0, 1), (0, 4), (6, 5), (4, 9)]
     direction = ['S', 'W', 'E', 'N']
 
     for i in range(len(segment_one_list)):
-        assert Snake.get_direction_betwen_segments(segment_one_list[i], segmetn_two_list[i]) == direction[i]
+        assert Snake.get_direction_betwen_segments(segment_one_list[i], segment_two_list[i]) == direction[i]
 
     with pytest.raises(BadSegmentOrientation):
         Snake.get_direction_betwen_segments((1, 0), (10, 10))
@@ -35,7 +35,7 @@ def test_calculate_neighbours_directions():
     mock_direction.__str__.return_value = 'E'
     snake = Snake(segments, color, mock_direction, mock_board)
 
-    directions_list = [['S'], ['NE', 'EN'], ['WS', 'SW'], ['NS', 'SN'], ['NE', 'EN'], ['WE', 'EW'], ['E']]
+    directions_list = [['S'], ['NE', 'EN'], ['WS', 'SW'], ['NS', 'SN'], ['NE', 'EN'], ['WE', 'EW'], ['EW', 'WE']]
 
     for i in range(len(segments)):
         assert snake.calculate_neighbours_directions(segments[i]) in directions_list[i]
