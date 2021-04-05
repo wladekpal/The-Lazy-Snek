@@ -133,10 +133,3 @@ def test_too_small_board():
     except ImpossibleToDraw:
         assert True
 
-
-def test_make_tick():
-    fields = build_matrix(10, 8, field)
-    board = Board(fields)
-
-    board.make_tick()
-    assert field.make_tick.call_count == len(fields) * len(fields[0])
