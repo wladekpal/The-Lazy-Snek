@@ -1,10 +1,6 @@
 import pygame
-from engine.blocks import Wall
-from engine.field import Field
-from engine.board import Board
 from engine.level import Level
 from gameplay.level_screen import LevelView
-import os, sys
 
 # window dimensions
 GAME_WINDOW_WIDTH = 1600

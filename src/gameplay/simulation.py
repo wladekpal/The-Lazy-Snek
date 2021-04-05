@@ -1,11 +1,13 @@
 import enum
 
+
 class SimulationState(enum.Enum):
     INACTIVE = 1
     RUNNING = 2
     PAUSED = 3
     WIN = 4
     LOSS = 5
+
 
 class Simulation():
     def __init__(self, level, levelView):
