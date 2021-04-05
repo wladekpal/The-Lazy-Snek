@@ -1,6 +1,6 @@
 import pygame
 import os
-from src.engine.direction import Direction
+from .direction import Direction
 
 
 class Snake:
@@ -14,7 +14,7 @@ class Snake:
         self.board = board
         dirname = os.path.dirname(__file__)
         head_path = os.path.join(dirname, '../../assets/snek-head-' + color + '.png')
-        bent_head_path = os.path.join(dirname, '../../assets/snek-bent-head' + color + '.png')
+        bent_head_path = os.path.join(dirname, '../../assets/snek-bent-head-' + color + '.png')
         body_path = os.path.join(dirname, '../../assets/snek-body-' + color + '.png')
         bent_body_path = os.path.join(dirname, '../../assets/snek-bent-body-' + color + '.png')
         tail_path = os.path.join(dirname, '../../assets/snek-tail-' + color + '.png')
@@ -70,7 +70,9 @@ class Snake:
         elif segment == self.segments[-1] and neighbours_directions in bent_directions:
             if neighbours_directions in mirror_head_directions:
                 mirrored_bent_head_texture = pygame.transform.flip(self.bent_head_texture, True, False)
-                return pygame.transform.rotate(mirror_head_directions, 180)
+                return pygame.transform.rotate(mirrored_bent_head_texture, 180)
+            else:
+                return self.bent_head_texture
         elif segment == self.segments[-1]:
             return self.head_texture
         elif neighbours_directions in bent_directions:
@@ -89,13 +91,13 @@ class Snake:
         segment_texture = self.get_segment_texture(segment_coords, neighbours_directions)
         resized_segment_texture = pygame.transform.scale(segment_texture, (side_length, side_length))
 
-        if neighbours_directions in ['N', 'NE', 'EN', 'NS', 'SN']:
+        if neighbours_directions in ['N', 'NE', 'EN', 'NS']:
             rotated_segment_texture = resized_segment_texture
-        elif neighbours_directions in ['E', 'ES', 'SE', 'EW', 'WE']:
+        elif neighbours_directions in ['E', 'ES', 'SE', 'EW']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -90)
-        elif neighbours_directions in ['S', 'SW', 'WS']:
+        elif neighbours_directions in ['S', 'SW', 'WS', 'SN']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -180)
-        elif neighbours_directions in ['W', 'WN', 'NW']:
+        elif neighbours_directions in ['W', 'WN', 'NW', 'WE']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -270)
 
         frame.blit(rotated_segment_texture, draw_coords)
