@@ -1,9 +1,9 @@
 import json
-from engine.blocks import Block, Wall
-from engine.field import Field
-from engine.board import Board
-from engine.snake import Snake
-from engine.direction import Direction
+from .blocks import Block, Wall, TurnLeft, TurnRight
+from .field import Field
+from .board import Board
+from .snake import Snake
+from .direction import Direction
 
 
 class Level:
@@ -55,6 +55,16 @@ class Level:
                     field = Field((j, i))
                     wall = Wall()
                     field.place_convex(wall)
+                    board[i].append(field)
+                elif self.block_placement[i][j] == 3:
+                    field = Field((j, i))
+                    turn_left = TurnLeft()
+                    field.place_flat(turn_left)
+                    board[i].append(field)
+                elif self.block_placement[i][j] == 4:
+                    field = Field((j, i))
+                    turn_right = TurnRight()
+                    field.place_flat(turn_right)
                     board[i].append(field)
                 else:
                     board[i].append(None)
