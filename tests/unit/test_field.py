@@ -121,7 +121,10 @@ def test_snake_left():
 
 def test_remove_snake():
     field, mock_snake = create_field_snake((1, 1))
-    field.remove_snake()
+    mock_snake2 = mock.Mock()
+    field.remove_snake(mock_snake2)
+    assert field.snake_layer is not None
+    field.remove_snake(mock_snake)
     assert field.snake_layer is None
 
 
