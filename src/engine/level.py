@@ -21,9 +21,6 @@ class Level:
         self.board = None
         self.snakes = None
 
-        self.is_game_won = False
-        self.is_game_lost = False
-
         self.convert_board()
         self.convert_snakes()
 
@@ -37,9 +34,6 @@ class Level:
         self.snake_pointer = 0
         self.board = None
         self.snakes = None
-
-        self.is_game_won = False
-        self.is_game_lost = False
 
         self.convert_board()
         self.convert_snakes()
@@ -82,22 +76,23 @@ class Level:
             )
             self.snakes.append(snake)
 
+    def is_any_alive(self):
+        alive = False
+        for snake in self.snakes:
+            alive = alive or snake.is_alive
+        return alive
+
     def tick(self) -> int:
         self.snakes[self.snake_pointer].move()
 
-        if self.is_game_lost:
+        if not self.is_any_alive():
             return -1
-        if self.is_game_won:
-            return 1
 
         self.update_snake_pointer()
         return 0
 
     def update_snake_pointer(self):
-        is_any_alive = False
-        for snake in self.snakes:
-            is_any_alive = is_any_alive or snake.is_alive
-        if not is_any_alive:
+        if not self.is_any_alive():
             raise Exception
 
         self.snake_pointer += 1
@@ -105,12 +100,6 @@ class Level:
         while not self.snakes[self.snake_pointer].is_alive:
             self.snake_pointer += 1
             self.snake_pointer %= len(self.snakes)
-
-    def game_won(self):
-        self.is_game_won = True
-
-    def game_lost(self):
-        self.is_game_lost = True
 
     def self_draw(self, frame):
         self.board.self_draw(frame)
