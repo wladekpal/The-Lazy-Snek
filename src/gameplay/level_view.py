@@ -2,10 +2,15 @@ import pygame
 import os
 from .button import PlayButton, CancelButton, RestartButton
 from .simulation import Simulation, SimulationState
+from .items_frame import BlocksPane
+from .item import Item
+
+#temp
+from engine.blocks import Wall, TurnLeft, TurnRight
 
 # frames and their elements display details
 BOARD_FRAME_HEIGHT_PERCENTAGE = 85
-BOARD_FRAME_WIDTH_PERCENTAGE = 100
+BOARD_FRAME_WIDTH_PERCENTAGE = 85
 CONTROLS_BUTTON_HEIGHT_PERCENTAGE = 60
 CONTROLS_BUTTONS_INTERSPACE = 40
 MAIN_FRAME_BACKGROUND_COLOR = (0, 0, 0)
@@ -27,16 +32,6 @@ STOP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets
 class LevelView():
     def __init__(self, screen, level, frames_per_simulation_tick):
 
-        def create_board_frame(screen):
-            frame_width = screen.get_width() * BOARD_FRAME_WIDTH_PERCENTAGE // 100
-            frame_height = screen.get_height() * BOARD_FRAME_HEIGHT_PERCENTAGE // 100
-            return screen.subsurface(pygame.Rect(0, 0, frame_width, frame_height))
-
-        def create_controls_frame(screen, board_frame):
-            width = board_frame.get_width()
-            height = screen.get_height() - board_frame.get_height()
-            return screen.subsurface(pygame.Rect(0, board_frame.get_height(), width, height))
-
         def create_buttons():
             buttons = []
             buttons.append(PlayButton(self.simulation, pygame.image.load(PLAY_BUTTON_TEXTURE_PATH),
@@ -49,13 +44,30 @@ class LevelView():
         self.frames_per_simulation_tick = frames_per_simulation_tick
         self.frames_till_next_tick = frames_per_simulation_tick
         self.level = level
-        self.simulation = Simulation(level, self)
         self.main_frame = screen
-        self.board_frame = create_board_frame(self.main_frame)
-        self.controls_frame = create_controls_frame(self.main_frame, self.board_frame)
+        self.simulation = Simulation(level, self)
         self.buttons = create_buttons()
+        self.blocks_pane = BlocksPane(self.level.get_board(), 
+                                      [Wall(pane_index=0), Wall(pane_index=1), TurnLeft(pane_index=2), TurnRight(pane_index=3)], 
+                                      self)
+        self.flowing_item = None
 
     def refresh(self):
+
+        def create_board_frame(screen):
+            frame_width = screen.get_width() * BOARD_FRAME_WIDTH_PERCENTAGE // 100
+            frame_height = screen.get_height() * BOARD_FRAME_HEIGHT_PERCENTAGE // 100
+            return screen.subsurface(pygame.Rect(0, 0, frame_width, frame_height))
+
+        def create_controls_frame(screen, board_frame):
+            width = board_frame.get_width()
+            height = screen.get_height() - board_frame.get_height()
+            return screen.subsurface(pygame.Rect(0, board_frame.get_height(), width, height))
+
+        def create_items_frame(screen, board_frame):
+            width = screen.get_width() - board_frame.get_width()
+            height = screen.get_height()
+            return screen.subsurface(pygame.Rect(board_frame.get_width(), 0, width, height))
 
         def refresh_backgrounds():
             self.main_frame.fill(MAIN_FRAME_BACKGROUND_COLOR)
@@ -73,8 +85,13 @@ class LevelView():
                 button.self_draw(self.main_frame, (x, y), side_length)
                 x += side_length + CONTROLS_BUTTONS_INTERSPACE
 
-        def refresh_board():
-            self.level.self_draw(self.board_frame)
+        def refresh_board_and_blocks_pane():
+            side_length = self.level.self_draw(self.board_frame)
+            self.blocks_pane.self_draw(self.main_frame, self.items_frame, side_length)
+
+        def refresh_items():
+            if self.flowing_item is not None:
+                self.flowing_item.self_draw(self.main_frame)
 
         def refresh_message():
             if self.simulation.get_state() in [SimulationState.WIN, SimulationState.LOSS]:
@@ -84,20 +101,50 @@ class LevelView():
                 text_rectangle.center = self.board_frame.get_rect().center
                 self.board_frame.blit(text, text_rectangle)
 
-        self.frames_till_next_tick -= 1
-        if self.frames_till_next_tick == 0:
-            self.simulation.tick()
-            self.frames_till_next_tick = self.frames_per_simulation_tick
+        self.board_frame = create_board_frame(self.main_frame)
+        self.controls_frame = create_controls_frame(self.main_frame, self.board_frame)
+        self.items_frame = create_items_frame(self.main_frame, self.board_frame)
+
+        if self.simulation.get_state() != SimulationState.INACTIVE:
+            self.frames_till_next_tick -= 1
+            if self.frames_till_next_tick == 0:
+                self.simulation.tick()
+                self.frames_till_next_tick = self.frames_per_simulation_tick
 
         refresh_backgrounds()
-        refresh_board()
+        refresh_board_and_blocks_pane()
         refresh_buttons()
+        refresh_items()
         refresh_message()
 
-    def handle_click(self):
+    def handle_click(self, pos):
+
+        def try_move_from_board(pos):
+            field = self.level.board.request_field_on_screen(pos)
+            if field is not None and field.has_removable():
+                block = field.request_removable()
+                self.flowing_item = Item(block, self, pos, self.level.board.request_offset(field, pos, block.displayed_side_length), block.displayed_side_length)
+
         for button in self.buttons:
-            mouse_position = pygame.mouse.get_pos()
-            button.process_mouse_click(mouse_position)
+            button.process_mouse_click(pos)
+        self.blocks_pane.handle_click(pos)
+        try_move_from_board(pos)
+        
+
+    def handle_motion(self, pos):
+        if self.flowing_item is not None:
+            self.flowing_item.handle_motion(pos)
+    
+    def handle_unclick(self, pos):
+        if self.flowing_item is not None:
+            self.flowing_item.handle_unclick(pos)
+
+    def handle_leftclick(self, pos):
+        field = self.level.board.request_field_on_screen(pos)
+        if field is not None:
+            removable = field.request_removable()
+            if removable is not None:
+                self.blocks_pane.return_block(removable)
 
     def reset_simulation_ticks(self):
         self.frames_till_next_tick = self.frames_per_simulation_tick

@@ -102,4 +102,7 @@ class Level:
             self.snake_pointer %= len(self.snakes)
 
     def self_draw(self, frame):
-        self.board.self_draw(frame)
+        return self.board.self_draw(frame)
+
+    def get_board(self):
+        return self.board
