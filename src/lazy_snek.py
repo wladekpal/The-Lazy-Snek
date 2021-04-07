@@ -7,8 +7,8 @@ import os
 GAME_WINDOW_WIDTH = 1600
 GAME_WINDOW_HEIGHT = 900
 
-FPS = 15
-FRAMES_PER_SIMULATION_TICK = 7
+FPS = 40
+FRAMES_PER_SIMULATION_TICK = 10
 
 # example levels
 EXAMPLE_LEVEL_PATH = os.path.join(os.path.dirname(__file__), "../assets/example2.json")
@@ -19,8 +19,14 @@ def handle_events(levelView):
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        if event.type == pygame.MOUSEBUTTONUP:
-            levelView.handle_click()
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            levelView.handle_click(event.pos)
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            levelView.handle_unclick(event.pos)
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+            levelView.handle_leftclick(event.pos)
+        if event.type == pygame.MOUSEMOTION:
+            levelView.handle_motion(event.pos)
 
 
 if __name__ == "__main__":
