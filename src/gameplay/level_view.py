@@ -1,6 +1,6 @@
 import pygame
 import os
-from .button import PlayButton, CancelButton, RestartButton
+from .button import PlayButton, CancelButton, RestartButton, StepByStepButton
 from .simulation import Simulation, SimulationState
 from .items_frame import BlocksPane
 from .item import Item
@@ -27,6 +27,9 @@ PLAY_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets
 PAUSE_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/pause-button.png")
 RESET_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/restart-button.png")
 STOP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/stop-button.png")
+ACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/step-by-step-active.png")
+INACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__),
+                                                       "../../assets/step-by-step-inactive.png")
 
 
 class LevelView():
@@ -38,6 +41,8 @@ class LevelView():
                                       pygame.image.load(PAUSE_BUTTON_TEXTURE_PATH)))
             buttons.append(RestartButton(self.simulation, pygame.image.load(RESET_BUTTON_TEXTURE_PATH)))
             buttons.append(CancelButton(self.simulation, pygame.image.load(STOP_BUTTON_TEXTURE_PATH)))
+            buttons.append(StepByStepButton(self.simulation, pygame.image.load(ACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH),
+                                      pygame.image.load(INACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH)))
             return buttons
 
         self.messages_font = pygame.font.Font(pygame.font.get_default_font(), MESSAGES_FONT_SIZE)
