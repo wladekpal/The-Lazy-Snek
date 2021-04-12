@@ -1,10 +1,9 @@
-from engine.blocks import Block, Wall, TurnLeft
-from gameplay.simulation import SimulationState, Simulation
 from .item import Item
-import pygame
+
 
 ITEMS_INTERSPACE = 20
 MAXIMUM_ITEM_WIDTH_PERCENTAGE = 80
+
 
 class BlocksPane():
 
@@ -26,7 +25,7 @@ class BlocksPane():
 
         def self_draw(self, screen):
             self.block.self_draw(screen, self.pos, self.side_length)
-            
+
     def __init__(self, board, blocks, level_view):
         self.board = board
         self.blocks = blocks
@@ -38,7 +37,7 @@ class BlocksPane():
     def self_draw(self, screen, items_frame, block_side_length):
 
         self.side_length = block_side_length
-        
+
         def create_top_lefts(main_frame, own_frame, block_side_length):
 
             block_side_length = min(own_frame.get_width() * MAXIMUM_ITEM_WIDTH_PERCENTAGE // 100, block_side_length)
@@ -58,8 +57,9 @@ class BlocksPane():
         self.item_areas = []
 
         for i in range(len(top_lefts)):
-            self.item_areas.append(self.ItemArea(top_lefts[i], block_side_length, self.blocks[i]))
-        
+            item_area = self.ItemArea(top_lefts[i], block_side_length, self.blocks[i])
+            self.item_areas.append(item_area)
+
         for i in range(len(self.item_areas)):
             if i != self.inactive_index:
                 self.item_areas[i].self_draw(screen)
@@ -70,7 +70,8 @@ class BlocksPane():
             if clicked_block is not None and i != self.inactive_index:
                 x_offset = pos[0] - self.item_areas[i].pos[0]
                 y_offset = pos[1] - self.item_areas[i].pos[1]
-                self.level_view.flowing_item = Item(self.blocks[i], self.level_view, pos, (x_offset, y_offset), self.side_length)
+                item = Item(self.blocks[i], self.level_view, pos, (x_offset, y_offset), self.side_length)
+                self.level_view.flowing_item = item
                 self.inactive_index = i
 
     def notify_flowing_block_placed(self):
@@ -87,5 +88,3 @@ class BlocksPane():
     def set_available_blocks(self, blocks):
         self.blocks = blocks
         self.inactive_index = None
-
-

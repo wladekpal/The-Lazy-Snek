@@ -41,7 +41,7 @@ class Board:
             for j in range(len(self.fields[i])):
                 if self.fields[i][j] is not None:
                     self.fields[i][j].self_draw(frame, (start_x+j*field_side, start_y+i*field_side), field_side)
-        
+
         self.displayed_field_side = field_side
         return field_side
 
@@ -62,7 +62,7 @@ class Board:
         y = (position[1] - self.top_left_corner[1]) // self.displayed_field_side
         try:
             return self.request_field((x, y))
-        except:
+        except (OutOfRange, NotExistingField):
             return None
 
     def request_offset(self, field, pos, field_side):
