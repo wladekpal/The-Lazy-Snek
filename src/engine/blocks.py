@@ -1,13 +1,15 @@
 from abc import ABCMeta, abstractmethod
 import pygame
+import os
 
 
 class Block(metaclass=ABCMeta):
-    def __init__(self):
+    def __init__(self, pane_index=None):
         self.field = None
         self.is_alive = True
         self.displayed_texture = None
         self.displayed_side_length = None
+        self.pane_index = pane_index
 
     @staticmethod
     @abstractmethod
@@ -36,8 +38,6 @@ class Flat(Block):
 
 
 class Convex(Block):
-    def __init__(self):
-        super().__init__()
 
     @abstractmethod
     def check_move(self, direction) -> bool:
@@ -70,12 +70,11 @@ class WallInteractionError(Exception):
 
 
 class Wall(Convex):
-    def __init__(self):
-        super().__init__()
 
     @staticmethod
     def texture():
-        return pygame.image.load('../assets/wall.png')
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/wall.png")
+        return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
         return False
@@ -97,12 +96,11 @@ class Wall(Convex):
 
 
 class TurnLeft(Flat):
-    def __init__(self):
-        super().__init__()
 
     @staticmethod
     def texture():
-        return pygame.image.load('../assets/turn_left.png')
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/turn_left.png")
+        return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
         snake.direction.turn_left()
@@ -112,12 +110,11 @@ class TurnLeft(Flat):
 
 
 class TurnRight(Flat):
-    def __init__(self):
-        super().__init__()
 
     @staticmethod
     def texture():
-        return pygame.image.load('../assets/turn_right.png')
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/turn_right.png")
+        return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
         snake.direction.turn_right()

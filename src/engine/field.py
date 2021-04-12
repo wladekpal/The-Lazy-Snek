@@ -1,5 +1,6 @@
 import pygame
 import os
+from .blocks import Flat, Convex
 
 
 class Field:
@@ -98,3 +99,37 @@ class Field:
             self.snake_layer.draw_segment(frame, draw_coords, side_length, self.coordinates)
         if self.convex_layer is not None:
             self.convex_layer.self_draw(frame, draw_coords, side_length)
+
+    def try_placing(self, block):
+        if self.flat_layer is None and self.convex_layer is None and self.snake_layer is None:
+            if isinstance(block, Convex):
+                self.convex_layer = block
+            elif isinstance(block, Flat):
+                self.flat_layer = block
+            else:
+                raise UnknownBlockType
+            return True
+        else:
+            return False
+
+    def has_removable(self):
+        if self.flat_layer is not None and self.flat_layer.pane_index is not None:
+            return True
+        if self.convex_layer is not None and self.convex_layer.pane_index is not None:
+            return True
+        return False
+
+    def request_removable(self):
+        if self.flat_layer is not None and self.flat_layer.pane_index is not None:
+            returned = self.flat_layer
+            self.flat_layer = None
+            return returned
+        if self.convex_layer is not None and self.convex_layer.pane_index is not None:
+            returned = self.convex_layer
+            self.convex_layer = None
+            return returned
+        return None
+
+
+class UnknownBlockType(Exception):
+    pass

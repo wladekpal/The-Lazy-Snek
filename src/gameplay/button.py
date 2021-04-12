@@ -64,3 +64,25 @@ class CancelButton(Button):
 
     def action_when_clicked(self):
         self.simulation.cancel()
+
+
+class StepByStepButton(Button):
+
+    def __init__(self, simulation, texture, secondary_texture):
+        super().__init__(simulation, texture)
+        self.primary_texture = texture
+        self.secondary_texture = secondary_texture
+
+    def self_draw(self, frame, position, side_length):
+        if self.simulation.get_state() == SimulationState.RUNNING:
+            self.texture = self.secondary_texture
+            self.displayed_side_length = None
+        else:
+            self.texture = self.primary_texture
+            self.displayed_side_length = None
+        super().self_draw(frame, position, side_length)
+
+    def action_when_clicked(self):
+        if self.simulation.get_state() == SimulationState.PAUSED \
+                or self.simulation.get_state() == SimulationState.INACTIVE:
+            self.simulation.stepbystep()

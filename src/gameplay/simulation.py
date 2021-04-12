@@ -7,11 +7,12 @@ class SimulationState(enum.Enum):
     PAUSED = 3
     WIN = 4
     LOSS = 5
+    STEPBYSTEP = 6
 
 
 class Simulation():
-    def __init__(self, level, levelView):
-        self.levelView = levelView
+    def __init__(self, level, level_view):
+        self.levelView = level_view
         self.state = SimulationState.INACTIVE
         self.level = level
 
@@ -23,22 +24,30 @@ class Simulation():
 
     def restart(self):
         self.level.reload_level()
-        if self.state == SimulationState.INACTIVE:
-            return
+        self.state = SimulationState.INACTIVE
+        self.levelView.blocks_pane.set_available_blocks(self.level.available_blocks)
         self.levelView.reset_simulation_ticks()
-        self.state = SimulationState.RUNNING
 
     def cancel(self):
-        self.level.reload_level()
         self.state = SimulationState.INACTIVE
+        self.level.reload_simulation()
+        self.levelView.reset_simulation_ticks()
+
+    def stepbystep(self):
+        self.state = SimulationState.STEPBYSTEP
 
     def get_state(self):
         return self.state
 
     def tick(self):
+        tick_result = 0
         if self.state == SimulationState.RUNNING:
             tick_result = self.level.tick()
-            if tick_result == -1:
-                self.state = SimulationState.LOSS
-            elif tick_result == 1:
-                self.state = SimulationState.WIN
+        elif self.state == SimulationState.STEPBYSTEP:
+            tick_result = self.level.tick()
+            self.state = SimulationState.PAUSED
+
+        if tick_result == -1:
+            self.state = SimulationState.LOSS
+        elif tick_result == 1:
+            self.state = SimulationState.WIN

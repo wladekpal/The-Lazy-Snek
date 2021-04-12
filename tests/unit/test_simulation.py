@@ -56,14 +56,6 @@ def test_simulation_restart_has_no_effect_when_inactive():
     assert simulation.get_state() == SimulationState.INACTIVE
 
 
-def test_simulation_restart_sets_state_to_running_when_not_inactive():
-    for state in [SimulationState.LOSS, SimulationState.WIN, SimulationState.PAUSED, SimulationState.RUNNING]:
-        simulation = Simulation(mock.Mock(), mock.Mock())
-        simulation.state = state
-        simulation.restart()
-        assert simulation.get_state() == SimulationState.RUNNING
-
-
 def test_simulation_tick_calls_level_tick_when_running():
     level = mock.Mock()
     simulation = Simulation(level, mock.Mock())
@@ -81,12 +73,12 @@ def test_simulation_tick_does_not_call_level_tick_when_not_running():
         level.tick.assert_not_called()
 
 
-def test_simulation_cancel_reloads_level():
+def test_simulation_cancel_reloads_simulation():
     level = mock.Mock()
     simulation = Simulation(level, mock.Mock())
     simulation.state = SimulationState.RUNNING
     simulation.cancel()
-    level.reload_level.assert_called_once()
+    level.reload_simulation.assert_called_once()
 
 
 def test_simulation_cancel_sets_state_to_inactive():
