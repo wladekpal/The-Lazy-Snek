@@ -27,7 +27,6 @@ class Item():
                 self.level_view.blocks_pane.notify_flowing_block_placed()
                 self.level_view.flowing_item = None
                 return
-
         # block placing unsuccessful, returning to block pane
         if self.level_view.blocks_pane.inactive_index is None:
             # block was dragged from board

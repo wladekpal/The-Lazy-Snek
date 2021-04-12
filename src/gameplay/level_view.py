@@ -19,8 +19,8 @@ CONTROLS_FRAME_BACKGROUND_COLOR = (33, 47, 61)
 
 # messages details
 MESSAGES_FONT_SIZE = 100
-MESSAGE_WIN = 'YOU WON'
-MESSAGE_LOSS = 'YOU LOST'
+MESSAGE_WIN = 'YOU WIN'
+MESSAGE_LOSS = 'YOU LOSE'
 
 # buttons textures
 PLAY_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/play-button.png")
@@ -127,11 +127,17 @@ class LevelView():
 
         for button in self.buttons:
             button.process_mouse_click(pos)
+        if self.simulation.get_state() != SimulationState.INACTIVE:
+            return
         self.blocks_pane.handle_click(pos)
         try_move_from_board(pos)
-        
 
+
+        
+        
     def handle_motion(self, pos):
+        if self.simulation.get_state() != SimulationState.INACTIVE:
+            return
         if self.flowing_item is not None:
             self.flowing_item.handle_motion(pos)
     
@@ -140,6 +146,8 @@ class LevelView():
             self.flowing_item.handle_unclick(pos)
 
     def handle_leftclick(self, pos):
+        if self.simulation.get_state() != SimulationState.INACTIVE:
+            return
         field = self.level.board.request_field_on_screen(pos)
         if field is not None:
             removable = field.request_removable()

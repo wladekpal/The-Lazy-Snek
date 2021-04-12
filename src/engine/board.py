@@ -56,6 +56,8 @@ class Board:
             raise OutOfRange
 
     def request_field_on_screen(self, position):
+        if not self.top_left_corner:
+            return None
         x = (position[0] - self.top_left_corner[0]) // self.displayed_field_side
         y = (position[1] - self.top_left_corner[1]) // self.displayed_field_side
         try:

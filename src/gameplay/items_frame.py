@@ -1,4 +1,5 @@
 from engine.blocks import Block, Wall, TurnLeft
+from gameplay.simulation import SimulationState, Simulation
 from .item import Item
 import pygame
 
@@ -76,14 +77,15 @@ class BlocksPane():
         if self.inactive_index is not None:
             del self.blocks[self.inactive_index]
             self.inactive_index = None
-        else:
-            # placed block was from board
-            return
 
     def return_block(self, block):
         index = 0
         while index < len(self.blocks) and self.blocks[index].pane_index < block.pane_index:
             index += 1
         self.blocks.insert(index, block)
+
+    def set_available_blocks(self, blocks):
+        self.blocks = blocks
+        self.inactive_index = None
 
 
