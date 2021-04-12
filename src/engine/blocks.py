@@ -3,11 +3,12 @@ import pygame
 
 
 class Block(metaclass=ABCMeta):
-    def __init__(self):
+    def __init__(self, pane_index=None):
         self.field = None
         self.is_alive = True
         self.displayed_texture = None
         self.displayed_side_length = None
+        self.pane_index = pane_index
 
     @staticmethod
     @abstractmethod
@@ -36,8 +37,6 @@ class Flat(Block):
 
 
 class Convex(Block):
-    def __init__(self):
-        super().__init__()
 
     @abstractmethod
     def check_move(self, direction) -> bool:
@@ -70,8 +69,6 @@ class WallInteractionError(Exception):
 
 
 class Wall(Convex):
-    def __init__(self):
-        super().__init__()
 
     @staticmethod
     def texture():
@@ -97,8 +94,6 @@ class Wall(Convex):
 
 
 class TurnLeft(Flat):
-    def __init__(self):
-        super().__init__()
 
     @staticmethod
     def texture():
@@ -112,8 +107,6 @@ class TurnLeft(Flat):
 
 
 class TurnRight(Flat):
-    def __init__(self):
-        super().__init__()
 
     @staticmethod
     def texture():
