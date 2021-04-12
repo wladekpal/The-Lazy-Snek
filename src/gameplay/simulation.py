@@ -11,8 +11,8 @@ class SimulationState(enum.Enum):
 
 
 class Simulation():
-    def __init__(self, level, levelView):
-        self.levelView = levelView
+    def __init__(self, level, level_view):
+        self.levelView = level_view
         self.state = SimulationState.INACTIVE
         self.level = level
 
