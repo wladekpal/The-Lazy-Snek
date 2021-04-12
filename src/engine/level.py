@@ -16,26 +16,27 @@ class Level:
         self.level_creator = self.level_description["level_creator"]
         self.block_placement = self.level_description["block_placement"]
         self.snake_data = self.level_description["snake_data"]
-        self.available_blocks = self.level_description["available_blocks"]
+        self.available_blocks_data = self.level_description["available_blocks"]
 
         self.snake_pointer = 0
         self.board = None
         self.snakes = None
         self.simulation_tick_counter = 0
         self.board_backup = None
+        self.available_blocks = None
 
         self.convert_board()
         self.convert_snakes()
+        self.convert_available_blocks()
 
     def reload_level(self):
-        self.available_blocks = self.level_description["available_blocks"]
-
         self.snake_pointer = 0
         self.simulation_tick_counter = 0
         self.board_backup = None
 
         self.convert_board()
         self.convert_snakes()
+        self.convert_available_blocks()
 
     def reload_simulation(self):
         if self.simulation_tick_counter == 0:
@@ -48,13 +49,15 @@ class Level:
 
         self.reload_board()
         self.convert_snakes()
+        self.convert_available_blocks()
 
     def backup_board(self):
         self.board_backup = []
-        for row in self.board:
+        for row in self.board.fields:
+            self.board_backup.append([])
             for field in row:
                 if field is None:
-                    self.board_backup.append(None)
+                    self.board_backup[-1].append(None)
                 else:
                     field_layers = [None, None]
 
@@ -63,14 +66,15 @@ class Level:
                     if field.convex_layer is not None:
                         field_layers[1] = (type(field.convex_layer), field.convex_layer.pane_index)
 
-                    self.board_backup.append(field_layers)
+                    self.board_backup[-1].append(field_layers)
 
     def reload_board(self):
         board = []
         for i in range(len(self.board_backup)):
+            board.append([])
             for j in range(len(self.board_backup[i])):
                 if self.board_backup[i][j] is None:
-                    board.append(None)
+                    board[-1].append(None)
                 else:
                     field = Field((j, i))
                     flat_layer, convex_layer = self.board_backup[i][j]
@@ -82,7 +86,7 @@ class Level:
                         convex = convex_layer[0](convex_layer[1])
                         field.place_convex(convex)
 
-                    board.append(field)
+                    board[-1].append(field)
 
         self.board = Board(board)
 
@@ -123,6 +127,21 @@ class Level:
                 self.board
             )
             self.snakes.append(snake)
+
+    def convert_available_blocks(self):
+        self.available_blocks = []
+        cur_pane_index = 0
+        for block_id, count in self.available_blocks_data:
+            if block_id == 2:
+                block_type = Wall
+            elif block_id == 3:
+                block_type = TurnLeft
+            else:
+                block_type = TurnRight
+
+            for i in range(count):
+                self.available_blocks.append(block_type(cur_pane_index))
+                cur_pane_index += 1
 
     def is_any_alive(self):
         alive = False
