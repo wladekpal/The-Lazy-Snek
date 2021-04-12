@@ -137,9 +137,6 @@ class LevelView():
         self.blocks_pane.handle_click(pos)
         try_move_from_board(pos)
 
-
-        
-        
     def handle_motion(self, pos):
         if self.simulation.get_state() != SimulationState.INACTIVE:
             return
