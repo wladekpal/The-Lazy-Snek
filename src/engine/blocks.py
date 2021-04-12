@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import pygame
+import os
 
 
 class Block(metaclass=ABCMeta):
@@ -75,7 +76,8 @@ class Wall(Convex):
 
     @staticmethod
     def texture():
-        return pygame.image.load('../assets/wall.png')
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/wall.png")
+        return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
         return False
@@ -102,7 +104,8 @@ class TurnLeft(Flat):
 
     @staticmethod
     def texture():
-        return pygame.image.load('../assets/turn_left.png')
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/turn_left.png")
+        return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
         snake.direction.turn_left()
@@ -117,7 +120,8 @@ class TurnRight(Flat):
 
     @staticmethod
     def texture():
-        return pygame.image.load('../assets/turn_right.png')
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/turn_right.png")
+        return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
         snake.direction.turn_right()
