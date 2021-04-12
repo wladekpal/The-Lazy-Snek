@@ -99,7 +99,7 @@ class Field:
             self.snake_layer.draw_segment(frame, draw_coords, side_length, self.coordinates)
         if self.convex_layer is not None:
             self.convex_layer.self_draw(frame, draw_coords, side_length)
-    
+
     def try_placing(self, block):
         if self.flat_layer is None and self.convex_layer is None and self.snake_layer is None:
             if isinstance(block, Convex):

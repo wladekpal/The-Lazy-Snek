@@ -15,7 +15,7 @@ class Item():
 
     def self_draw(self, frame):
         self.block.self_draw(frame, self.pos, self.side_length)
-    
+
     def handle_motion(self, pos):
         self.pos = self.apply_offset(pos)
 
@@ -36,5 +36,3 @@ class Item():
             # block was dragged from block pane
             self.level_view.blocks_pane.inactive_index = None
             self.level_view.flowing_item = None
-        
-            

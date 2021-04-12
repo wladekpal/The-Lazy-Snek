@@ -25,6 +25,7 @@ class Simulation():
     def restart(self):
         self.level.reload_level()
         self.state = SimulationState.INACTIVE
+        self.levelView.blocks_pane.set_available_blocks(self.level.available_blocks)
         self.levelView.reset_simulation_ticks()
 
     def cancel(self):
