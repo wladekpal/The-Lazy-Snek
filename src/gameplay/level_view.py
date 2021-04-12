@@ -145,7 +145,7 @@ class LevelView():
         if self.flowing_item is not None:
             self.flowing_item.handle_unclick(pos)
 
-    def handle_leftclick(self, pos):
+    def handle_rightclick(self, pos):
         if self.simulation.get_state() != SimulationState.INACTIVE:
             return
         field = self.level.board.request_field_on_screen(pos)
