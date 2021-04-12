@@ -24,14 +24,13 @@ class Simulation():
 
     def restart(self):
         self.level.reload_level()
-        if self.state == SimulationState.INACTIVE:
-            return
+        self.state = SimulationState.INACTIVE
         self.levelView.reset_simulation_ticks()
-        self.state = SimulationState.RUNNING
 
     def cancel(self):
-        self.level.reload_level()
         self.state = SimulationState.INACTIVE
+        self.level.reload_simulation()
+        self.levelView.reset_simulation_ticks()
 
     def stepbystep(self):
         self.state = SimulationState.STEPBYSTEP

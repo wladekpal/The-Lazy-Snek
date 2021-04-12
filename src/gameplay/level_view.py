@@ -53,7 +53,7 @@ class LevelView():
         self.simulation = Simulation(level, self)
         self.buttons = create_buttons()
         self.blocks_pane = BlocksPane(self.level.get_board(), 
-                                      [Wall(pane_index=0), Wall(pane_index=1), TurnLeft(pane_index=2), TurnRight(pane_index=3)], 
+                                      self.level.available_blocks, 
                                       self)
         self.flowing_item = None
 
