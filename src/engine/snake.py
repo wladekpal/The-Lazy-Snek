@@ -138,7 +138,7 @@ class Snake:
         other_snake.destroy()
 
     def interact_with_convex(self, convex):
-        self.destroy
+        self.destroy()
 
 
 class BadSegmentOrientation(Exception):
