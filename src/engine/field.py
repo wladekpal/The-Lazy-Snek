@@ -16,7 +16,7 @@ class Field:
     # orientation
     def give_field_in_direction(self, direction):
         coordinates = direction.move_in_direction(self.coordinates)
-        return self.board.give_field(coordinates)
+        return self.board.request_field(coordinates)
 
     # board
     def set_board(self, board):
