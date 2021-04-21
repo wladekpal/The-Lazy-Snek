@@ -60,7 +60,7 @@ def test_give_field_in_direction():
     field = Field((5, 5))
     field.set_board(mock_board)
     field.give_field_in_direction(mock_direction)
-    mock_board.give_field.assert_called_once_with((5, 6))
+    mock_board.request_field.assert_called_once_with((5, 6))
 
 
 def test_check_snake_move_no_convex():

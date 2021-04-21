@@ -1,4 +1,4 @@
-from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight
+from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box
 import pytest
 import mock
 
@@ -157,3 +157,93 @@ def test_turn_right_changes_snake_direction():
     turn_right.interact_with_snake(snake)
 
     snake.direction.turn_right.assert_called_once()
+
+
+def test_box_creation():
+    Box()
+
+
+def test_box_check_move_call_appropriate_method():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    return_mock = mock.Mock()
+    direction_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+    field_two_mock.check_convex_move.return_value = return_mock
+
+    box = Box()
+    box.set_field(field_one_mock)
+
+    assert box.check_move(direction_mock) == return_mock
+    field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
+    field_two_mock.check_convex_move.assert_called_once_with(direction_mock)
+
+
+def test_box_moves():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    direction_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+
+    box = Box()
+    box.set_field(field_one_mock)
+    box.move(direction_mock)
+
+    field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
+    field_one_mock.convex_left.assert_called_once_with()
+    field_two_mock.convex_entered.assert_called_once_with(box, direction_mock)
+
+
+def test_box_destroys_snake_when_cant_be_moved():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    snake_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+    field_two_mock.check_convex_move.return_value = False
+
+    box = Box()
+    box.set_field(field_one_mock)
+    box.interact_with_snake(snake_mock)
+
+    snake_mock.destroy.assert_called_once()
+
+
+def test_box_moves_after_ineracting_with_snake():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    direction_mock = mock.Mock()
+    snake_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+    snake_mock.direction = direction_mock
+
+    box = Box()
+    box.set_field(field_one_mock)
+    box.interact_with_snake(snake_mock)
+
+    field_one_mock.give_field_in_direction.assert_called_with(direction_mock)
+    assert field_one_mock.give_field_in_direction.call_count == 2
+    field_one_mock.convex_left.assert_called_once_with()
+    field_two_mock.convex_entered.assert_called_once_with(box, direction_mock)
+    snake_mock.destroy.assert_not_called()
+
+
+def test_box_checks_snake_move():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    return_mock = mock.Mock()
+    direction_mock = mock.Mock()
+    snake_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+    field_two_mock.check_convex_move.return_value = return_mock
+    snake_mock.direction = direction_mock
+
+    box = Box()
+    box.set_field(field_one_mock)
+
+    assert box.check_snake_move(snake_mock) == return_mock
+    field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)

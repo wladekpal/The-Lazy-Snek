@@ -121,3 +121,30 @@ class TurnRight(Flat):
 
     def interact_with_convex(self, convex):
         pass
+
+
+class Box(Convex):
+
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/box.png")
+        return pygame.image.load(texture_path)
+
+    def check_move(self, direction) -> bool:
+        field_in_direction = self.field.give_field_in_direction(direction)
+        return field_in_direction.check_convex_move(direction)
+
+    def move(self, direction):
+        field_in_direction = self.field.give_field_in_direction(direction)
+        self.field.convex_left()
+        field_in_direction.convex_entered(self, direction)
+
+    def interact_with_snake(self, snake):
+        if self.check_move(snake.direction):
+            self.move(snake.direction)
+        else:
+            snake.destroy()
+
+    def check_snake_move(self, snake) -> bool:
+        field_in_direction = self.field.give_field_in_direction(snake.direction)
+        return field_in_direction.check_convex_move(snake.direction)
