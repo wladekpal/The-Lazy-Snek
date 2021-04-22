@@ -148,3 +148,16 @@ class Box(Convex):
     def check_snake_move(self, snake) -> bool:
         field_in_direction = self.field.give_field_in_direction(snake.direction)
         return field_in_direction.check_convex_move(snake.direction)
+
+
+class Spikes(Flat):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/spikes.png")
+        return pygame.image.load(texture_path)
+
+    def interact_with_snake(self, snake):
+        snake.destroy()
+
+    def interact_with_convex(self, convex):
+        pass

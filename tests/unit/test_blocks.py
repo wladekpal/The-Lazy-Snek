@@ -1,4 +1,4 @@
-from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box
+from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box, Spikes
 import pytest
 import mock
 
@@ -247,3 +247,23 @@ def test_box_checks_snake_move():
 
     assert box.check_snake_move(snake_mock) == return_mock
     field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
+
+
+def test_spikes_creation():
+    Spikes()
+
+
+def test_spikes_destroy_snake():
+    snake_mock = mock.Mock()
+    spikes = Spikes()
+    spikes.interact_with_snake(snake_mock)
+
+    snake_mock.interact_with_snake.destroy()
+
+
+def test_spikes_not_interacting_with_convex():
+    convex_mock = mock.Mock()
+    spikes = Spikes()
+    spikes.interact_with_convex(convex_mock)
+
+    assert convex_mock.mock_calls == []
