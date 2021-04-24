@@ -207,3 +207,26 @@ class Apple(Convex):
     def check_snake_move(self, snake) -> bool:
         snake.grow()
         return True
+
+
+class Infinity_tail(Convex):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/infinity_tail.png")
+        return pygame.image.load(texture_path)
+
+    def check_move(self, direction) -> bool:
+        field_in_direction = self.field.give_field_in_direction(direction)
+        return field_in_direction.check_convex_move(direction)
+
+    def move(self, direction):
+        field_in_direction = self.field.give_field_in_direction(direction)
+        self.field.convex_left()
+        field_in_direction.convex_entered(self, direction)
+
+    def interact_with_snake(self, snake):
+        self.destroy()
+
+    def check_snake_move(self, snake) -> bool:
+        snake.enable_infinite_grow()
+        return True
