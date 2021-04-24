@@ -141,8 +141,8 @@ class Snake:
         self.destroy()
 
     def reverse(self):
+        self.direction = Direction(Snake.get_direction_betwen_segments(self.segments[1], self.segments[0]))
         self.segments.reverse()
-        self.direction.reverse()
 
 
 class BadSegmentOrientation(Exception):

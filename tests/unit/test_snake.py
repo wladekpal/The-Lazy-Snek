@@ -231,4 +231,3 @@ def test_snake_reverses():
 
     snake.reverse()
     assert snake.segments == [(3, 2), (2, 2), (1, 2)]
-    mock_direction.reverse.assert_called_once()
