@@ -1,4 +1,4 @@
-from src.gameplay.button import Button, CancelButton, PlayButton, RestartButton
+from src.display.button import Button, CancelButton, PlayButton, RestartButton
 import mock
 import pytest
 

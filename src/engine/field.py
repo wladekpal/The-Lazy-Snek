@@ -108,6 +108,7 @@ class Field:
                 self.flat_layer = block
             else:
                 raise UnknownBlockType
+            block.set_field(self)
             return True
         else:
             return False
