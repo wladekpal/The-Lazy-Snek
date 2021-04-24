@@ -1,4 +1,4 @@
-from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box, Spikes, Reverse, Skull
+from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box, Spikes, Skull, Apple
 import pytest
 import mock
 
@@ -269,17 +269,6 @@ def test_spikes_not_interacting_with_convex():
     assert convex_mock.mock_calls == []
 
 
-def test_reverse_creation():
-    Reverse()
-
-
-def test_reverse_informs_snake_to_reverse():
-    snake_mock = mock.Mock()
-    reverse = Reverse()
-    reverse.interact_with_snake(snake_mock)
-    snake_mock.reverse.assert_called_once()
-
-    
 def test_skull_creation():
     Skull()
 
@@ -334,3 +323,59 @@ def test_skull_check_snake_move_always_true():
     snake_mock = mock.Mock()
 
     assert skull.check_snake_move(snake_mock)
+
+
+def test_apple_creation():
+    Apple()
+
+
+def test_apple_check_move_calls_appropriate_methods():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    return_mock = mock.Mock()
+    direction_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+    field_two_mock.check_convex_move.return_value = return_mock
+
+    apple = Apple()
+    apple.set_field(field_one_mock)
+
+    assert apple.check_move(direction_mock) == return_mock
+    field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
+    field_two_mock.check_convex_move.assert_called_once_with(direction_mock)
+
+
+def test_apple_moves():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    direction_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+
+    apple = Apple()
+    apple.set_field(field_one_mock)
+    apple.move(direction_mock)
+
+    field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
+    field_one_mock.convex_left.assert_called_once_with()
+    field_two_mock.convex_entered.assert_called_once_with(apple, direction_mock)
+
+
+def test_apple_destroyed_after_interacting_with_snake():
+    snake_mock = mock.Mock()
+    field_mock = mock.Mock()
+    apple = Apple()
+    apple.set_field(field_mock)
+
+    apple.interact_with_snake(snake_mock)
+    assert snake_mock.mock_calls == []
+    assert not apple.is_alive
+    field_mock.remove_convex.assert_called_once()
+
+
+def test_apple_informs_snake_to_grow():
+    snake_mock = mock.Mock()
+    apple = Apple()
+    assert apple.check_snake_move(snake_mock)
+    snake_mock.grow.assert_called_once()

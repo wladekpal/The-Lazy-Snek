@@ -162,17 +162,6 @@ class Spikes(Flat):
     def interact_with_convex(self, convex):
         pass
 
-class Reverse(Flat):
-    @staticmethod
-    def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/reverse.png")
-        return pygame.image.load(texture_path)
-
-    def interact_with_snake(self, snake):
-        snake.reverse()
-
-    def interact_with_convex(self, convex):
-        pass
 
 class Skull(Convex):
     @staticmethod
@@ -194,4 +183,27 @@ class Skull(Convex):
         self.destroy()
 
     def check_snake_move(self, snake) -> bool:
+        return True
+
+
+class Apple(Convex):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/apple.png")
+        return pygame.image.load(texture_path)
+
+    def check_move(self, direction) -> bool:
+        field_in_direction = self.field.give_field_in_direction(direction)
+        return field_in_direction.check_convex_move(direction)
+
+    def move(self, direction):
+        field_in_direction = self.field.give_field_in_direction(direction)
+        self.field.convex_left()
+        field_in_direction.convex_entered(self, direction)
+
+    def interact_with_snake(self, snake):
+        self.destroy()
+
+    def check_snake_move(self, snake) -> bool:
+        snake.grow()
         return True
