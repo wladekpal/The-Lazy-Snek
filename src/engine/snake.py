@@ -6,6 +6,7 @@ from .direction import Direction
 class Snake:
     is_alive = True
     grow_at_next_move = False
+    infinite_grow = False
 
     def __init__(self, segments, color, direction, board):
         self.segments = segments
@@ -116,12 +117,16 @@ class Snake:
             field_to_remove.remove_snake(self)
             self.segments.pop(0)
         else:
-            self.grow_at_next_move = False
+            self.grow_at_next_move = self.infinite_grow
 
         self.segments.append(new_head_coords)
         new_field.snake_entered(self)
 
     def grow(self):
+        self.grow_at_next_move = True
+
+    def enable_infinite_grow(self):
+        self.infinite_grow = True
         self.grow_at_next_move = True
 
     def destroy(self):

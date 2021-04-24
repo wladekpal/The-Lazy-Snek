@@ -231,3 +231,14 @@ def test_snake_reverses():
 
     snake.reverse()
     assert snake.segments == [(3, 2), (2, 2), (1, 2)]
+
+
+def test_snake_infinite_growth():
+    mock_board = mock.Mock()
+    segments = [(1, 1), (1, 2), (2, 2)]
+    color = "green"
+    mock_direction = mock.Mock()
+    snake = Snake(segments, color, mock_direction, mock_board)
+    assert not snake.infinite_grow
+    snake.enable_infinite_grow()
+    assert snake.infinite_grow
