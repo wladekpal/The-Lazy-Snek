@@ -161,3 +161,16 @@ class Spikes(Flat):
 
     def interact_with_convex(self, convex):
         pass
+
+
+class Reverse(Flat):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/reverse.png")
+        return pygame.image.load(texture_path)
+
+    def interact_with_snake(self, snake):
+        snake.reverse()
+
+    def interact_with_convex(self, convex):
+        pass

@@ -220,3 +220,15 @@ def test_snake_collides_with_itself():
 
     snake.interact_with_snake(snake)
     assert not snake.is_alive
+
+
+def test_snake_reverses():
+    mock_board = mock.Mock()
+    segments = [(1, 2), (2, 2), (3, 2)]
+    color = "green"
+    mock_direction = mock.Mock()
+    snake = Snake(segments, color, mock_direction, mock_board)
+
+    snake.reverse()
+    assert snake.segments == [(3, 2), (2, 2), (1, 2)]
+    mock_direction.reverse.assert_called_once()
