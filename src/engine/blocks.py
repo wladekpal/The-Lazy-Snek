@@ -230,3 +230,16 @@ class Infinity_tail(Convex):
     def check_snake_move(self, snake) -> bool:
         snake.enable_infinite_grow()
         return True
+
+
+class Reverse(Flat):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/reverse.png")
+        return pygame.image.load(texture_path)
+
+    def interact_with_snake(self, snake):
+        snake.reverse()
+
+    def interact_with_convex(self, convex):
+        pass
