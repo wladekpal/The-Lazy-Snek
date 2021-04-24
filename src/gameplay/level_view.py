@@ -4,6 +4,7 @@ from .button import PlayButton, CancelButton, RestartButton, StepByStepButton
 from .simulation import Simulation, SimulationState
 from .items_frame import BlocksPane
 from .item import Item
+from .view_controller import ApplicationView
 
 
 # frames and their elements display details
@@ -29,9 +30,16 @@ ACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), 
 INACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__),
                                                        "../../assets/step-by-step-inactive.png")
 
+# mouse buttons
+LEFT_MOUSE_BUTTON = 1
+SCROLL_MOUSE_BUTTON = 2
+RIGHT_MOUSE_BUTTON = 3
 
-class LevelView():
+
+class LevelView(ApplicationView):
     def __init__(self, screen, level, frames_per_simulation_tick):
+
+        super().__init__(screen)
 
         def create_buttons():
             buttons = []
@@ -118,6 +126,16 @@ class LevelView():
         self.refresh_buttons()
         self.refresh_items()
         self.refresh_message()
+
+    def handle_pygame_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
+            self.handle_click(event.pos)
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == LEFT_MOUSE_BUTTON:
+            self.handle_unclick(event.pos)
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT_MOUSE_BUTTON:
+            self.handle_rightclick(event.pos)
+        elif event.type == pygame.MOUSEMOTION:
+            self.handle_motion(event.pos)
 
     def handle_click(self, pos):
 
