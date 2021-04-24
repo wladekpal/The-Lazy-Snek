@@ -16,7 +16,7 @@ BLOCKS_DICT = {
     6 : (lambda: Spikes()),
     7 : (lambda: Apple()),
     8 : (lambda: Box()),
-    9 : (lambda: InfityTail())
+    9 : (lambda: InfinityTail())
 }
 
 # for swapping block id to object it represents
