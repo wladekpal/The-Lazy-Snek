@@ -1,5 +1,5 @@
 import json
-from .blocks import Wall, TurnLeft, TurnRight, Box, Spikes
+from .blocks import Wall, TurnLeft, TurnRight, Box, Spikes, Skull
 from .field import Field
 from .board import Board
 from .snake import Snake
@@ -121,6 +121,11 @@ class Level:
                     field = Field((j, i))
                     spikes = Spikes()
                     field.place_flat(spikes)
+                    board[i].append(field)
+                elif self.block_placement[i][j] == 7:
+                    field = Field((j, i))
+                    skull = Skull()
+                    field.place_convex(skull)
                     board[i].append(field)
                 else:
                     board[i].append(None)

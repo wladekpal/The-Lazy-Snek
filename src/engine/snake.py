@@ -140,6 +140,10 @@ class Snake:
     def interact_with_convex(self, convex):
         self.destroy()
 
+    def reverse(self):
+        self.direction = Direction(Snake.get_direction_betwen_segments(self.segments[1], self.segments[0]))
+        self.segments.reverse()
+
 
 class BadSegmentOrientation(Exception):
     pass
