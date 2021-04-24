@@ -1,5 +1,5 @@
 from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError
-from src.engine.blocks import TurnLeft, TurnRight, Box, Spikes, Skull, Apple, Infinity_tail
+from src.engine.blocks import TurnLeft, TurnRight, Box, Spikes, Skull, Apple, Infinity_tail, Reverse
 import pytest
 import mock
 
@@ -436,3 +436,14 @@ def test_apple_informs_snake_to_grow_infinitely():
     infinity_tail = Infinity_tail()
     assert infinity_tail.check_snake_move(snake_mock)
     snake_mock.enable_infinite_grow.assert_called_once()
+
+
+def test_reverse_creation():
+    Reverse()
+
+
+def test_reverse_informs_snake_to_reverse():
+    snake_mock = mock.Mock()
+    reverse = Reverse()
+    reverse.interact_with_snake(snake_mock)
+    snake_mock.reverse.assert_called_once()
