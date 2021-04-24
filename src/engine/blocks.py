@@ -162,6 +162,7 @@ class Spikes(Flat):
     def interact_with_convex(self, convex):
         pass
 
+
 class Skull(Convex):
     @staticmethod
     def texture():
@@ -183,7 +184,8 @@ class Skull(Convex):
 
     def check_snake_move(self, snake) -> bool:
         return True
-      
+
+
 class Apple(Convex):
     @staticmethod
     def texture():

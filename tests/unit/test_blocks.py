@@ -1,4 +1,4 @@
-from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box, Spikes, Reverse, Skull, Apple
+from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box, Spikes, Skull, Apple
 import pytest
 import mock
 
@@ -323,9 +323,9 @@ def test_skull_check_snake_move_always_true():
     snake_mock = mock.Mock()
 
     assert skull.check_snake_move(snake_mock)
-    
-    
- def test_apple_creation():
+
+
+def test_apple_creation():
     Apple()
 
 
