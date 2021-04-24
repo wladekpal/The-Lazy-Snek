@@ -1,6 +1,6 @@
 import pygame
-from .gameplay.menu_view import MenuView
-from .gameplay.view_controller import ViewController
+from .display.menu_view import MenuView
+from .display.view_controller import ViewController
 
 # window dimensions
 GAME_WINDOW_WIDTH = 1600

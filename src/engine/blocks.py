@@ -209,7 +209,7 @@ class Apple(Convex):
         return True
 
 
-class Infinity_tail(Convex):
+class InfinityTail(Convex):
     @staticmethod
     def texture():
         texture_path = os.path.join(os.path.dirname(__file__), "../../assets/infinity_tail.png")

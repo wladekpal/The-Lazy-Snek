@@ -1,5 +1,5 @@
 from unittest import mock
-from src.gameplay.menu_view import MenuView
+from src.display.menu_view import MenuView
 
 
 def test_instantiate_menu_view():

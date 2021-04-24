@@ -70,6 +70,8 @@ class PickView(ApplicationView):
         all_tiles_height = number_of_tiles * (height + TILES_INTERSPACE) - TILES_INTERSPACE
         x, y = self.tiles_frame.get_rect().center
         next_point = (x - width // 2, y - all_tiles_height // 2)
+        for tile in self.tiles:
+            tile.pos = None
         for tile in self.tiles[self.first_tile_index:self.first_tile_index + self.current_tiles_capacity]:
             tile.self_draw(self.tiles_frame, next_point, (width, height))
             old_x, old_y = next_point
@@ -156,6 +158,8 @@ class Tile(metaclass=ABCMeta):
         frame.blit(text, text_rectangle)
 
     def handle_click(self, pos):
+        if self.pos is None:
+            return None
         self_x, self_y = self.pos
         mouse_x, mouse_y = pos
         if self_x <= mouse_x <= self_x + self.width and self_y <= mouse_y <= self_y + self.height:

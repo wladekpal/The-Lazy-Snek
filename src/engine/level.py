@@ -1,9 +1,10 @@
 import json
-from .blocks import Wall, TurnLeft, TurnRight, Box, Spikes, Skull, Reverse
+from .blocks import Wall, TurnLeft, TurnRight, Box, Spikes, Skull, Reverse, Convex, Flat
 from .field import Field
 from .board import Board
 from .snake import Snake
 from .direction import Direction
+from .id_parser import get_block_from_id
 
 
 class Level:
@@ -95,40 +96,21 @@ class Level:
         for i in range(len(self.block_placement)):
             board.append([])
             for j in range(len(self.block_placement[i])):
-                if self.block_placement[i][j] == 1:
-                    board[i].append(Field((j, i)))
-                elif self.block_placement[i][j] == 2:
-                    field = Field((j, i))
-                    wall = Wall()
-                    field.place_convex(wall)
-                    board[i].append(field)
-                elif self.block_placement[i][j] == 3:
-                    field = Field((j, i))
-                    turn_left = TurnLeft()
-                    field.place_flat(turn_left)
-                    board[i].append(field)
-                elif self.block_placement[i][j] == 4:
-                    field = Field((j, i))
-                    turn_right = TurnRight()
-                    field.place_flat(turn_right)
-                    board[i].append(field)
-                elif self.block_placement[i][j] == 5:
-                    field = Field((j, i))
-                    box = Box()
-                    field.place_convex(box)
-                    board[i].append(field)
-                elif self.block_placement[i][j] == 6:
-                    field = Field((j, i))
-                    spikes = Spikes()
-                    field.place_flat(spikes)
-                    board[i].append(field)
-                elif self.block_placement[i][j] == 7:
-                    field = Field((j, i))
-                    rev = Reverse()
-                    field.place_flat(rev)
-                    board[i].append(field)
-                else:
+                if self.block_placement[i][j] == 0:
                     board[i].append(None)
+                else:
+                    field = Field((j, i))
+                    block = get_block_from_id(self.block_placement[i][j])
+                    if block is not None:
+                        if isinstance(block, Convex):
+                            field.place_convex(block)
+                        elif isinstance(block, Flat):
+                            field.place_flat(block)
+                        block.set_field(field)
+                    else:
+                        # it's custom field
+                        pass
+                    board[i].append(field)
 
         self.board = Board(board)
 
