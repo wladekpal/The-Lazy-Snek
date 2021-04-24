@@ -1,4 +1,4 @@
-from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box, Spikes, Skull
+from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError, TurnLeft, TurnRight, Box, Spikes, Reverse, Skull
 import pytest
 import mock
 
@@ -269,6 +269,17 @@ def test_spikes_not_interacting_with_convex():
     assert convex_mock.mock_calls == []
 
 
+def test_reverse_creation():
+    Reverse()
+
+
+def test_reverse_informs_snake_to_reverse():
+    snake_mock = mock.Mock()
+    reverse = Reverse()
+    reverse.interact_with_snake(snake_mock)
+    snake_mock.reverse.assert_called_once()
+
+    
 def test_skull_creation():
     Skull()
 
