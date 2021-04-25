@@ -1,5 +1,5 @@
 from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError
-from src.engine.blocks import TurnLeft, TurnRight, Box, Spikes, Skull, Apple, InfinityTail, Reverse
+from src.engine.blocks import TurnLeft, TurnRight, Box, Spikes, Skull, Apple, InfinityTail, Reverse, VeniceBlock
 import pytest
 import mock
 
@@ -447,3 +447,47 @@ def test_reverse_informs_snake_to_reverse():
     reverse = Reverse()
     reverse.interact_with_snake(snake_mock)
     snake_mock.reverse.assert_called_once()
+
+
+def test_venice_creation():
+    direction_mock = mock.Mock()
+    venice = VeniceBlock(direction=direction_mock)
+    assert venice.direction == direction_mock
+
+
+def test_venice_interact_with_snake_has_no_effect():
+    direction_mock = mock.Mock()
+    venice = VeniceBlock(direction=direction_mock)
+    snake_mock = mock.Mock()
+    venice.interact_with_snake(snake_mock)
+    assert snake_mock.mock_calls == []
+
+
+def test_venice_interact_with_convex_has_no_effect():
+    direction_mock = mock.Mock()
+    venice = VeniceBlock(direction=direction_mock)
+    convex_mock = mock.Mock()
+    venice.interact_with_convex(convex_mock)
+    assert convex_mock.mock_calls == []
+
+
+def test_venice_check_move():
+    direction_mock = mock.Mock()
+    direction2_mock = mock.Mock()
+    venice = VeniceBlock(direction=direction_mock)
+
+    assert venice.check_move(direction_mock)
+    assert not venice.check_move(direction2_mock)
+
+
+def test_venice_check_snake_move():
+    direction_mock = mock.Mock()
+    direction2_mock = mock.Mock()
+    venice = VeniceBlock(direction=direction_mock)
+    snake_mock = mock.Mock()
+    snake_mock.direction = direction_mock
+    snake2_mock = mock.Mock()
+    snake2_mock.direction = direction2_mock
+
+    assert venice.check_snake_move(snake_mock)
+    assert not venice.check_snake_move(snake2_mock)
