@@ -39,7 +39,7 @@ class Flat(Block):
     def interact_with_convex(self, convex):
         pass
 
-    def check_snake_move(sefl, direction):
+    def check_snake_move(self, direction):
         return True
 
     def check_move(self, direction):
