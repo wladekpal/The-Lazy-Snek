@@ -3,6 +3,7 @@ import os
 import enum
 from .direction import Direction
 
+
 class SnakeState(enum.Enum):
     ALIVE = 1,
     DEAD = 2,
@@ -164,6 +165,22 @@ class Snake:
     def change_color(self, new_color):
         self.color = new_color
         self.reload_textures()
+
+    def give_segment_direction(self, coordinates):
+        index = self.segments.index(coordinates)
+        if index == len(self.segments)-1:
+            return self.direction
+        else:
+            x_delta = self.segments[index+1][0]-self.segments[index][0]
+            y_delta = self.segments[index+1][1]-self.segments[index][1]
+            if x_delta > 0:
+                return Direction('E')
+            elif x_delta < 0:
+                return Direction('W')
+            elif y_delta > 0:
+                return Direction('S')
+            else:
+                return Direction('N')
 
 
 class BadSegmentOrientation(Exception):

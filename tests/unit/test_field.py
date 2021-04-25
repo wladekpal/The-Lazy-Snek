@@ -4,7 +4,8 @@ import mock
 
 
 def create_field_snake_flat(coords):
-    field = Field(coords)
+    field = Field()
+    field.set_coordinates(coords)
     flat = mock.Mock()
     snake = mock.Mock()
     field.place_snake(snake)
@@ -13,7 +14,8 @@ def create_field_snake_flat(coords):
 
 
 def create_field_convex_flat(coords):
-    field = Field(coords)
+    field = Field()
+    field.set_coordinates(coords)
     flat = mock.Mock()
     convex = mock.Mock()
     field.place_convex(convex)
@@ -22,33 +24,36 @@ def create_field_convex_flat(coords):
 
 
 def create_field_convex(coords):
-    field = Field(coords)
+    field = Field()
+    field.set_coordinates(coords)
     convex = mock.Mock()
     field.place_convex(convex)
     return field, convex
 
 
 def create_field_snake(coords):
-    field = Field(coords)
+    field = Field()
+    field.set_coordinates(coords)
     snake = mock.Mock()
     field.place_snake(snake)
     return field, snake
 
 
 def create_field_flat(coords):
-    field = Field(coords)
+    field = Field()
+    field.set_coordinates(coords)
     flat = mock.Mock()
     field.place_flat(flat)
     return field, flat
 
 
 def test_field_creation():
-    field = Field((1, 2))
-    assert field.coordinates == (1, 2)
+    Field()
 
 
 def test_self_board():
-    field = Field((1, 1))
+    field = Field()
+    field.set_coordinates((1, 1))
     mock_board = mock.Mock()
     field.set_board(mock_board)
     assert field.board == mock_board
@@ -58,20 +63,23 @@ def test_give_field_in_direction():
     mock_direction = mock.Mock()
     mock_direction.move_in_direction.side_effect = lambda x: (x[0], x[1]+1)
     mock_board = mock.Mock()
-    field = Field((5, 5))
+    field = Field()
+    field.set_coordinates((5, 5))
     field.set_board(mock_board)
     field.give_field_in_direction(mock_direction)
     mock_board.request_field.assert_called_once_with((5, 6))
 
 
 def test_check_snake_move_no_convex():
-    field = Field((3, 3))
+    field = Field()
+    field.set_coordinates((3, 3))
     mock_snake = mock.Mock()
     assert field.check_snake_move(mock_snake)
 
 
 def test_check_snake_move_with_convex():
-    field = Field((3, 3))
+    field = Field()
+    field.set_coordinates((3, 3))
     mock_snake = mock.Mock()
     mock_convex = mock.Mock()
     mock_convex.check_snake_move.return_value = True
@@ -131,7 +139,8 @@ def test_remove_snake():
 
 
 def test_place_snake():
-    field = Field((1, 1))
+    field = Field()
+    field.set_coordinates((1, 1))
     mock_snake = mock.Mock()
     field.place_snake(mock_snake)
     assert field.snake_layer == mock_snake
@@ -144,7 +153,8 @@ def test_remove_flat():
 
 
 def test_place_flat():
-    field = Field((1, 1))
+    field = Field()
+    field.set_coordinates((1, 1))
     mock_flat = mock.Mock()
     field.place_flat(mock_flat)
     assert field.flat_layer == mock_flat
@@ -152,13 +162,15 @@ def test_place_flat():
 
 
 def test_check_convex_move_no_convex():
-    field = Field((3, 3))
+    field = Field()
+    field.set_coordinates((3, 3))
     mock_direction = mock.Mock()
     assert field.check_convex_move(mock_direction)
 
 
 def test_check_convex_move_with_convex():
-    field = Field((3, 3))
+    field = Field()
+    field.set_coordinates((3, 3))
     mock_direction = mock.Mock()
     mock_convex = mock.Mock()
     mock_convex.check_move.return_value = True
@@ -190,7 +202,7 @@ def test_convex_entered_snake_not_on_field():
 
 def test_convex_left():
     field, mock_convex = create_field_convex((1, 1))
-    field.convex_left()
+    field.convex_left(mock.Mock())
     assert field.convex_layer is None
 
 

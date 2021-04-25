@@ -6,13 +6,16 @@ from .snake import SnakeState
 
 class Field:
 
-    def __init__(self, coordinates):
-        self.coordinates = coordinates
+    def __init__(self):
+        self.coordinates = None
         self.board = None
         self.flat_layer = None
         self.convex_layer = None
         self.snake_layer = None
         self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/field.png"))
+
+    def set_coordinates(self, coordinates):
+        self.coordinates = coordinates
 
     # orientation
     def give_field_in_direction(self, direction):
@@ -79,7 +82,7 @@ class Field:
         self.convex_layer = convex
         self.convex_layer.set_field(self)
 
-    def convex_left(self):
+    def convex_left(self, direction):
         self.convex_layer = None
 
     def remove_convex(self):
