@@ -193,7 +193,7 @@ def test_box_moves():
     box.move(direction_mock)
 
     field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
-    field_one_mock.convex_left.assert_called_once_with()
+    field_one_mock.convex_left.assert_called_once_with(direction_mock)
     field_two_mock.convex_entered.assert_called_once_with(box, direction_mock)
 
 
@@ -227,7 +227,7 @@ def test_box_moves_after_ineracting_with_snake():
 
     field_one_mock.give_field_in_direction.assert_called_with(direction_mock)
     assert field_one_mock.give_field_in_direction.call_count == 2
-    field_one_mock.convex_left.assert_called_once_with()
+    field_one_mock.convex_left.assert_called_once_with(direction_mock)
     field_two_mock.convex_entered.assert_called_once_with(box, direction_mock)
     snake_mock.destroy.assert_not_called()
 
@@ -302,7 +302,7 @@ def test_skull_moves():
     skull.move(direction_mock)
 
     field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
-    field_one_mock.convex_left.assert_called_once_with()
+    field_one_mock.convex_left.assert_called_once_with(direction_mock)
     field_two_mock.convex_entered.assert_called_once_with(skull, direction_mock)
 
 
@@ -359,7 +359,7 @@ def test_apple_moves():
     apple.move(direction_mock)
 
     field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
-    field_one_mock.convex_left.assert_called_once_with()
+    field_one_mock.convex_left.assert_called_once_with(direction_mock)
     field_two_mock.convex_entered.assert_called_once_with(apple, direction_mock)
 
 
@@ -415,7 +415,7 @@ def test_infinity_tail_moves():
     infinity_tail.move(direction_mock)
 
     field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
-    field_one_mock.convex_left.assert_called_once_with()
+    field_one_mock.convex_left.assert_called_once_with(direction_mock)
     field_two_mock.convex_entered.assert_called_once_with(infinity_tail, direction_mock)
 
 

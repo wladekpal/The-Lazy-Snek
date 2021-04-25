@@ -6,7 +6,7 @@ from .display.view_controller import ViewController
 GAME_WINDOW_WIDTH = 1600
 GAME_WINDOW_HEIGHT = 900
 
-FPS = 24
+FPS = 60
 
 
 def run_lazy_snek():

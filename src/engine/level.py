@@ -1,16 +1,19 @@
 import json
 import enum
-from .blocks import Wall, TurnLeft, TurnRight, Box, Spikes, Skull, Reverse, Convex, Flat
+from .blocks import Convex, Flat
 from .field import Field
 from .board import Board
 from .snake import Snake, SnakeState
+from .tunnel import Tunnel
 from .direction import Direction
-from .id_parser import get_block_from_id
+from .id_parser import EntityKind, get_entity_kind, get_block_from_id, get_field_from_id
+
 
 class LevelState(enum.Enum):
     UNDECIDED = 1,
     WIN = 2,
     LOSS = 3,
+
 
 class Level:
 
@@ -64,6 +67,8 @@ class Level:
             for field in row:
                 if field is None:
                     self.board_backup[-1].append(None)
+                elif isinstance(field, Tunnel):
+                    self.board_backup[-1].append(field.direction)
                 else:
                     field_layers = [None, None]
 
@@ -79,12 +84,17 @@ class Level:
         for i in range(len(self.board_backup)):
             board.append([])
             for j in range(len(self.board_backup[i])):
-                if self.board_backup[i][j] is None:
+                backup_obj = self.board_backup[i][j]
+                if backup_obj is None:
                     board[-1].append(None)
+                elif isinstance(backup_obj, Direction):
+                    tunnel = Tunnel(backup_obj)
+                    tunnel.set_coordinates((j, i))
+                    board[-1].append(tunnel)
                 else:
-                    field = Field((j, i))
-                    flat_layer, convex_layer = self.board_backup[i][j]
-
+                    field = Field()
+                    field.set_coordinates((j, i))
+                    flat_layer, convex_layer = backup_obj
                     if flat_layer is not None:
                         flat = flat_layer
                         field.place_flat(flat)
@@ -101,11 +111,17 @@ class Level:
         for i in range(len(self.block_placement)):
             board.append([])
             for j in range(len(self.block_placement[i])):
-                if self.block_placement[i][j] == 0:
+                id = self.block_placement[i][j]
+                if id == 0:
                     board[i].append(None)
+                elif get_entity_kind(id) == EntityKind.FIELD:
+                    field = get_field_from_id(id)
+                    field.set_coordinates((j, i))
+                    board[i].append(field)
                 else:
-                    field = Field((j, i))
-                    block = get_block_from_id(self.block_placement[i][j])
+                    field = Field()
+                    field.set_coordinates((j, i))
+                    block = get_block_from_id(id)
                     if block is not None:
                         if isinstance(block, Convex):
                             field.place_convex(block)

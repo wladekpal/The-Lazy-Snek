@@ -1,35 +1,43 @@
-from .blocks import *
+from .blocks import Wall, TurnLeft, TurnRight, Skull, Spikes, Apple, Box, InfinityTail, Finish, Dye
+from .field import Field
+from .tunnel import Tunnel
+from .direction import Direction
 import enum
+
 
 class EntityKind(enum.Enum):
     UNKNOWN = 1
     BLOCK = 2
     FIELD = 3
 
+
 # for swapping block id to object it represents
 BLOCKS_DICT = {
-    1 : (lambda: None),
-    2 : (lambda: Wall()),
-    3 : (lambda: TurnLeft()),
-    4 : (lambda: TurnRight()),
-    5 : (lambda: Skull()),
-    6 : (lambda: Spikes()),
-    7 : (lambda: Apple()),
-    8 : (lambda: Box()),
-    9 : (lambda: InfinityTail()),
-    10 : (lambda: Finish()),
-    11 : (lambda: Finish(color='green')),
-    12 : (lambda: Finish(color='red')),
-    13 : (lambda: Finish(color='blue')),
-    14 : (lambda: Dye(color='green')),
-    15 : (lambda: Dye(color='red')),
-    16 : (lambda: Dye(color='blue')),
+    2: (lambda: Wall()),
+    3: (lambda: TurnLeft()),
+    4: (lambda: TurnRight()),
+    5: (lambda: Skull()),
+    6: (lambda: Spikes()),
+    7: (lambda: Apple()),
+    8: (lambda: Box()),
+    9: (lambda: InfinityTail()),
+    10: (lambda: Finish()),
+    11: (lambda: Finish(color='green')),
+    12: (lambda: Finish(color='red')),
+    13: (lambda: Finish(color='blue')),
+    14: (lambda: Dye(color='green')),
+    15: (lambda: Dye(color='red')),
+    16: (lambda: Dye(color='blue')),
 }
+
 
 # for swapping block id to object it represents
 FIELDS_DICT = {
-
+    1: (lambda: Field()),
+    17: (lambda: Tunnel(direction=Direction('N'))),
+    18: (lambda: Tunnel(direction=Direction('E'))),
 }
+
 
 def get_entity_kind(id):
     if id in BLOCKS_DICT.keys():
@@ -39,19 +47,18 @@ def get_entity_kind(id):
     else:
         return EntityKind.UNKNOWN
 
+
 def get_block_from_id(id):
     if get_entity_kind(id) != EntityKind.BLOCK:
         raise EntityDifferentingKindError
     return BLOCKS_DICT[id]()
 
-def get_field_from_id():
+
+def get_field_from_id(id):
     if get_entity_kind(id) != EntityKind.FIELD:
         raise EntityDifferentingKindError
     return FIELDS_DICT[id]()
 
 
-
-
 class EntityDifferentingKindError(Exception):
     pass
-

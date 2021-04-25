@@ -139,7 +139,7 @@ class Box(Convex):
 
     def move(self, direction):
         field_in_direction = self.field.give_field_in_direction(direction)
-        self.field.convex_left()
+        self.field.convex_left(direction)
         field_in_direction.convex_entered(self, direction)
 
     def interact_with_snake(self, snake):
@@ -178,7 +178,7 @@ class Skull(Convex):
 
     def move(self, direction):
         field_in_direction = self.field.give_field_in_direction(direction)
-        self.field.convex_left()
+        self.field.convex_left(direction)
         field_in_direction.convex_entered(self, direction)
 
     def interact_with_snake(self, snake):
@@ -201,7 +201,7 @@ class Apple(Convex):
 
     def move(self, direction):
         field_in_direction = self.field.give_field_in_direction(direction)
-        self.field.convex_left()
+        self.field.convex_left(direction)
         field_in_direction.convex_entered(self, direction)
 
     def interact_with_snake(self, snake):
@@ -224,7 +224,7 @@ class InfinityTail(Convex):
 
     def move(self, direction):
         field_in_direction = self.field.give_field_in_direction(direction)
-        self.field.convex_left()
+        self.field.convex_left(direction)
         field_in_direction.convex_entered(self, direction)
 
     def interact_with_snake(self, snake):
@@ -248,8 +248,9 @@ class Reverse(Flat):
     def interact_with_convex(self, convex):
         pass
 
+
 class Finish(Flat):
-    
+
     def __init__(self, pane_index=None, color=None):
         self.color = color
         super().__init__(pane_index=pane_index)
@@ -301,7 +302,7 @@ class Dye(Convex):
 
     def move(self, direction):
         field_in_direction = self.field.give_field_in_direction(direction)
-        self.field.convex_left()
+        self.field.convex_left(direction)
         field_in_direction.convex_entered(self, direction)
 
     def interact_with_snake(self, snake):
