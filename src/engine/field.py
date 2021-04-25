@@ -28,10 +28,14 @@ class Field:
 
     # snake
     def check_snake_move(self, snake) -> bool:
-        if self.convex_layer is None:
-            return True
-        else:
-            return self.convex_layer.check_snake_move(snake)
+        flat_permission = True
+        convex_permission = True
+        if self.flat_layer is not None:
+            flat_permission = self.flat_layer.check_snake_move(snake)
+        if self.convex_layer is not None:
+            convex_permission = self.convex_layer.check_snake_move(snake)
+
+        return flat_permission and convex_permission
 
     def snake_entered(self, snake):
         if self.snake_layer is not None:
@@ -65,10 +69,14 @@ class Field:
 
     # convex
     def check_convex_move(self, direction) -> bool:
-        if self.convex_layer is None:
-            return True
-        else:
-            return self.convex_layer.check_move(direction)
+        flat_permission = True
+        convex_permission = True
+        if self.flat_layer is not None:
+            flat_permission = self.flat_layer.check_move(direction)
+        if self.convex_layer is not None:
+            convex_permission = self.convex_layer.check_move(direction)
+
+        return flat_permission and convex_permission
 
     def convex_entered(self, convex, direction):
         if self.snake_layer is not None:

@@ -39,6 +39,12 @@ class Flat(Block):
     def interact_with_convex(self, convex):
         pass
 
+    def check_snake_move(self, direction):
+        return True
+
+    def check_move(self, direction):
+        return True
+
 
 class Convex(Block):
 
@@ -314,3 +320,36 @@ class Dye(Convex):
 
     def copy(self):
         return type(self)(pane_index=self.pane_index, color=self.color)
+
+
+class VeniceBlock(Flat):
+    def __init__(self, pane_index=None, direction=None):
+        self.direction = direction
+        super().__init__(pane_index=pane_index)
+
+    def texture(self):
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/venice_block.png")
+        unoriented_texture = pygame.image.load(texture_path)
+        if str(self.direction) == 'E':
+            return pygame.transform.rotate(unoriented_texture, -90)
+        elif str(self.direction) == 'S':
+            return pygame.transform.rotate(unoriented_texture, -180)
+        elif str(self.direction) == 'W':
+            return pygame.transform.rotate(unoriented_texture, -270)
+        else:
+            return unoriented_texture
+
+    def interact_with_snake(self, snake):
+        pass
+
+    def interact_with_convex(self, convex):
+        pass
+
+    def check_move(self, direction):
+        return direction == self.direction
+
+    def check_snake_move(self, snake):
+        return snake.direction == self.direction
+
+    def copy(self):
+        return type(self)(pane_index=self.pane_index, direction=self.direction)
