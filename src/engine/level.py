@@ -1,11 +1,16 @@
 import json
+import enum
 from .blocks import Wall, TurnLeft, TurnRight, Box, Spikes, Skull, Reverse, Convex, Flat
 from .field import Field
 from .board import Board
-from .snake import Snake
+from .snake import Snake, SnakeState
 from .direction import Direction
 from .id_parser import get_block_from_id
 
+class LevelState(enum.Enum):
+    UNDECIDED = 1,
+    WIN = 2,
+    LOSS = 3,
 
 class Level:
 
@@ -63,9 +68,9 @@ class Level:
                     field_layers = [None, None]
 
                     if field.flat_layer is not None:
-                        field_layers[0] = (type(field.flat_layer), field.flat_layer.pane_index)
+                        field_layers[0] = field.flat_layer.copy()
                     if field.convex_layer is not None:
-                        field_layers[1] = (type(field.convex_layer), field.convex_layer.pane_index)
+                        field_layers[1] = field.convex_layer.copy()
 
                     self.board_backup[-1].append(field_layers)
 
@@ -81,10 +86,10 @@ class Level:
                     flat_layer, convex_layer = self.board_backup[i][j]
 
                     if flat_layer is not None:
-                        flat = flat_layer[0](flat_layer[1])
+                        flat = flat_layer
                         field.place_flat(flat)
                     if convex_layer is not None:
-                        convex = convex_layer[0](convex_layer[1])
+                        convex = convex_layer
                         field.place_convex(convex)
 
                     board[-1].append(field)
@@ -129,22 +134,22 @@ class Level:
         self.available_blocks = []
         cur_pane_index = 0
         for block_id, count in self.available_blocks_data:
-            if block_id == 2:
-                block_type = Wall
-            elif block_id == 3:
-                block_type = TurnLeft
-            else:
-                block_type = TurnRight
-
-            for i in range(count):
-                self.available_blocks.append(block_type(cur_pane_index))
+            for _ in range(count):
+                self.available_blocks.append(get_block_from_id(block_id))
+                self.available_blocks[-1].pane_index = cur_pane_index
                 cur_pane_index += 1
 
-    def is_any_alive(self):
-        alive = False
+    def is_any_dead(self):
         for snake in self.snakes:
-            alive = alive or snake.is_alive
-        return alive
+            if snake.state == SnakeState.DEAD:
+                return True
+        return False
+
+    def did_all_snakes_finish(self):
+        for snake in self.snakes:
+            if snake.state != SnakeState.FINISHED:
+                return False
+        return True
 
     def tick(self) -> int:
         if self.simulation_tick_counter == 0:
@@ -153,19 +158,22 @@ class Level:
 
         self.snakes[self.snake_pointer].move()
 
-        if not self.is_any_alive():
-            return -1
+        if self.did_all_snakes_finish():
+            return LevelState.WIN
+
+        if self.is_any_dead():
+            return LevelState.LOSS
 
         self.update_snake_pointer()
-        return 0
+        return LevelState.UNDECIDED
 
     def update_snake_pointer(self):
-        if not self.is_any_alive():
+        if self.is_any_dead():
             raise Exception
 
         self.snake_pointer += 1
         self.snake_pointer %= len(self.snakes)
-        while not self.snakes[self.snake_pointer].is_alive:
+        while self.snakes[self.snake_pointer].state != SnakeState.ALIVE:
             self.snake_pointer += 1
             self.snake_pointer %= len(self.snakes)
 

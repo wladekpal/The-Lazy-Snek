@@ -29,6 +29,9 @@ class Block(metaclass=ABCMeta):
     def set_field(self, field):
         self.field = field
 
+    def copy(self):
+        return type(self)(pane_index=self.pane_index)
+
 
 class Flat(Block):
 
@@ -233,6 +236,7 @@ class InfinityTail(Convex):
 
 
 class Reverse(Flat):
+
     @staticmethod
     def texture():
         texture_path = os.path.join(os.path.dirname(__file__), "../../assets/reverse.png")
@@ -243,3 +247,69 @@ class Reverse(Flat):
 
     def interact_with_convex(self, convex):
         pass
+
+class Finish(Flat):
+    
+    def __init__(self, pane_index=None, color=None):
+        self.color = color
+        super().__init__(pane_index=pane_index)
+
+    @staticmethod
+    def texture(color):
+        if color is None:
+            texture_path = os.path.join(os.path.dirname(__file__), "../../assets/finish.png")
+        else:
+            texture_path = os.path.join(os.path.dirname(__file__), f"../../assets/finish-{color}.png")
+        return pygame.image.load(texture_path)
+
+    def self_draw(self, frame, position, side_length):
+        if self.displayed_side_length != side_length:
+            self.displayed_side_length = side_length
+            self.displayed_texture = pygame.transform.scale(self.texture(self.color), (side_length, side_length))
+        frame.blit(self.displayed_texture, position)
+
+    def interact_with_convex(self, convex):
+        pass
+
+    def interact_with_snake(self, snake):
+        if self.color is None or self.color == snake.color:
+            snake.finish()
+
+    def copy(self):
+        return type(self)(pane_index=self.pane_index, color=self.color)
+
+
+class Dye(Convex):
+    def __init__(self, pane_index=None, color=None):
+        self.color = color
+        super().__init__(pane_index=pane_index)
+
+    @staticmethod
+    def texture(color):
+        texture_path = os.path.join(os.path.dirname(__file__), f"../../assets/dye-{color}.png")
+        return pygame.image.load(texture_path)
+
+    def self_draw(self, frame, position, side_length):
+        if self.displayed_side_length != side_length:
+            self.displayed_side_length = side_length
+            self.displayed_texture = pygame.transform.scale(self.texture(self.color), (side_length, side_length))
+        frame.blit(self.displayed_texture, position)
+
+    def check_move(self, direction) -> bool:
+        field_in_direction = self.field.give_field_in_direction(direction)
+        return field_in_direction.check_convex_move(direction)
+
+    def move(self, direction):
+        field_in_direction = self.field.give_field_in_direction(direction)
+        self.field.convex_left()
+        field_in_direction.convex_entered(self, direction)
+
+    def interact_with_snake(self, snake):
+        self.destroy()
+
+    def check_snake_move(self, snake) -> bool:
+        snake.change_color(self.color)
+        return True
+
+    def copy(self):
+        return type(self)(pane_index=self.pane_index, color=self.color)

@@ -1,4 +1,5 @@
 from src.engine.field import Field
+from src.engine.snake import SnakeState
 import mock
 
 
@@ -84,7 +85,8 @@ def test_check_snake_move_with_convex():
 
 
 def test_snake_entered_snake_on_field():
-    mock_snake_entering = mock.Mock()
+    mock_snake_entering = mock.MagicMock()
+    type(mock_snake_entering).state = mock.PropertyMock(return_value=SnakeState.ALIVE)
     field, mock_snake, mock_flat = create_field_snake_flat((1, 1))
     field.snake_entered(mock_snake_entering)
     assert mock_flat.interact_with_snake.call_count == 0
@@ -94,7 +96,8 @@ def test_snake_entered_snake_on_field():
 
 
 def test_snake_entered_snake_not_on_field():
-    mock_snake_entering = mock.Mock()
+    mock_snake_entering = mock.MagicMock()
+    type(mock_snake_entering).state = mock.PropertyMock(return_value=SnakeState.ALIVE)
     field, mock_convex, mock_flat = create_field_convex_flat((1, 1))
     field.snake_entered(mock_snake_entering)
     mock_convex.interact_with_snake.assert_called_once_with(mock_snake_entering)
@@ -106,7 +109,7 @@ def test_snake_entered_snake_not_on_field():
 def test_snake_entered_and_died_after():
     mock_snake_entering = mock.Mock()
     field, mock_convex, mock_flat = create_field_convex_flat((1, 1))
-    mock_snake_entering.is_alive = False
+    mock_snake_entering.state = SnakeState.DEAD
     field.snake_entered(mock_snake_entering)
 
     assert not field.snake_layer == mock_snake_entering
