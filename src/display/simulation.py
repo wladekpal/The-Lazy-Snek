@@ -1,4 +1,5 @@
 import enum
+from ..engine.level import LevelState
 
 
 class SimulationState(enum.Enum):
@@ -47,7 +48,7 @@ class Simulation():
             tick_result = self.level.tick()
             self.state = SimulationState.PAUSED
 
-        if tick_result == -1:
+        if tick_result == LevelState.LOSS:
             self.state = SimulationState.LOSS
-        elif tick_result == 1:
+        elif tick_result == LevelState.WIN:
             self.state = SimulationState.WIN

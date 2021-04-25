@@ -1,6 +1,7 @@
 import pygame
 import os
 from .blocks import Flat, Convex
+from .snake import SnakeState
 
 
 class Field:
@@ -38,7 +39,7 @@ class Field:
         if self.snake_layer is None and self.flat_layer is not None:
             self.flat_layer.interact_with_snake(snake)
 
-        if snake.is_alive:
+        if snake.state == SnakeState.ALIVE:
             self.snake_layer = snake
 
     def snake_left(self):

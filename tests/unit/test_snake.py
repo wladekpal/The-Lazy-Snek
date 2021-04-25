@@ -1,4 +1,4 @@
-from src.engine.snake import Snake, BadSegmentOrientation, SegmentNotInSnake
+from src.engine.snake import Snake, BadSegmentOrientation, SegmentNotInSnake, SnakeState
 import mock
 import pytest
 
@@ -81,7 +81,7 @@ def test_snake_destroyed():
         mock_field = mock_board.request_field(segment_coords)
 
     assert mock_field.remove_snake.call_count == len(segments)
-    assert not snake.is_alive
+    assert snake.state == SnakeState.DEAD
 
 
 def test_snake_noticed_grow():
@@ -117,7 +117,7 @@ def test_check_snake_move_false():
     mock_direction.move_in_direction.assert_called_once()
     mock_board.request_field.assert_any_call((2, 1))
 
-    assert not snake.is_alive
+    assert snake.state == SnakeState.DEAD
 
 
 def test_snake_enters_field_no_grow():
@@ -176,7 +176,7 @@ def test_growing_snake_dies_when_entering_field():
 
     mock_field.snake_entered.assert_called_once_with(snake)
     assert mock_field.remove_snake.call_count == 4
-    assert not snake.is_alive
+    assert snake.state == SnakeState.DEAD
     assert snake.segments == [(1, 1), (1, 2), (2, 2), (2, 1)]
     assert not snake.grow_at_next_move
 
@@ -192,8 +192,8 @@ def test_snake_collides_with_snake_body():
     other_snake = Snake(other_segments, color, mock_direction, mock_board)
 
     snake.interact_with_snake(other_snake)
-    assert not other_snake.is_alive
-    assert snake.is_alive
+    assert other_snake.state == SnakeState.DEAD
+    assert snake.state == SnakeState.ALIVE
 
 
 def test_snake_collides_with_snake_head():
@@ -207,8 +207,8 @@ def test_snake_collides_with_snake_head():
     other_snake = Snake(other_segments, color, mock_direction, mock_board)
 
     snake.interact_with_snake(other_snake)
-    assert not other_snake.is_alive
-    assert not snake.is_alive
+    assert other_snake.state == SnakeState.DEAD
+    assert snake.state == SnakeState.DEAD
 
 
 def test_snake_collides_with_itself():
@@ -219,7 +219,7 @@ def test_snake_collides_with_itself():
     snake = Snake(segments, color, mock_direction, mock_board)
 
     snake.interact_with_snake(snake)
-    assert not snake.is_alive
+    assert snake.state == SnakeState.DEAD
 
 
 def test_snake_reverses():

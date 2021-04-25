@@ -16,7 +16,14 @@ BLOCKS_DICT = {
     6 : (lambda: Spikes()),
     7 : (lambda: Apple()),
     8 : (lambda: Box()),
-    9 : (lambda: InfinityTail())
+    9 : (lambda: InfinityTail()),
+    10 : (lambda: Finish()),
+    11 : (lambda: Finish(color='green')),
+    12 : (lambda: Finish(color='red')),
+    13 : (lambda: Finish(color='blue')),
+    14 : (lambda: Dye(color='green')),
+    15 : (lambda: Dye(color='red')),
+    16 : (lambda: Dye(color='blue')),
 }
 
 # for swapping block id to object it represents
@@ -41,6 +48,7 @@ def get_field_from_id():
     if get_entity_kind(id) != EntityKind.FIELD:
         raise EntityDifferentingKindError
     return FIELDS_DICT[id]()
+
 
 
 
