@@ -13,6 +13,7 @@ class SnakeState(enum.Enum):
 class Snake:
     grow_at_next_move = False
     infinite_grow = False
+    wait_turns = 0
 
     def __init__(self, segments, color, direction, board):
         self.state = SnakeState.ALIVE
@@ -124,6 +125,10 @@ class Snake:
         frame.blit(rotated_segment_texture, draw_coords)
 
     def move(self):
+        if self.wait_turns > 0:
+            self.wait_turns -= 1
+            return
+
         current_head_coords = self.segments[-1]
         new_head_coords = self.direction.move_in_direction(current_head_coords)
         new_field = self.board.request_field(new_head_coords)
@@ -173,6 +178,9 @@ class Snake:
 
     def interact_with_convex(self, convex):
         self.destroy()
+
+    def wait(self, turns):
+        self.wait_turns = turns
 
     def reverse(self):
         self.direction = Direction(self.segments_orientation[0][0])
