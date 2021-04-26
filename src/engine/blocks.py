@@ -353,3 +353,26 @@ class VeniceBlock(Flat):
 
     def copy(self):
         return type(self)(pane_index=self.pane_index, direction=self.direction)
+
+
+class Timer(Convex):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/timer.png")
+        return pygame.image.load(texture_path)
+
+    def check_move(self, direction) -> bool:
+        field_in_direction = self.field.give_field_in_direction(direction)
+        return field_in_direction.check_convex_move(direction)
+
+    def move(self, direction):
+        field_in_direction = self.field.give_field_in_direction(direction)
+        self.field.convex_left(direction)
+        field_in_direction.convex_entered(self, direction)
+
+    def interact_with_snake(self, snake):
+        self.destroy()
+
+    def check_snake_move(self, snake) -> bool:
+        snake.wait(1)
+        return True
