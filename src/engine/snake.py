@@ -13,6 +13,7 @@ class SnakeState(enum.Enum):
 class Snake:
     grow_at_next_move = False
     infinite_grow = False
+    has_key = False
 
     def __init__(self, segments, color, direction, board):
         self.state = SnakeState.ALIVE
@@ -150,6 +151,9 @@ class Snake:
 
     def grow(self):
         self.grow_at_next_move = True
+
+    def get_key(self):
+        self.has_key = True
 
     def enable_infinite_grow(self):
         self.infinite_grow = True

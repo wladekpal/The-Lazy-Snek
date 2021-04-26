@@ -353,3 +353,52 @@ class VeniceBlock(Flat):
 
     def copy(self):
         return type(self)(pane_index=self.pane_index, direction=self.direction)
+
+
+class Key(Convex):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/key.png")
+        return pygame.image.load(texture_path)
+
+    def check_move(self, direction) -> bool:
+        field_in_direction = self.field.give_field_in_direction(direction)
+        return field_in_direction.check_convex_move(direction)
+
+    def move(self, direction):
+        field_in_direction = self.field.give_field_in_direction(direction)
+        self.field.convex_left()
+        field_in_direction.convex_entered(self, direction)
+
+    def interact_with_snake(self, snake):
+        self.destroy()
+
+    def check_snake_move(self, snake) -> bool:
+        snake.get_key()
+        return True
+
+
+class DoorInteractionError(Exception):
+    pass
+
+
+class Door(Convex):
+    @staticmethod
+    def texture():
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/door.png")
+        return pygame.image.load(texture_path)
+
+    def check_move(self, direction) -> bool:
+        return False
+
+    def move(self, direction):
+        raise DoorInteractionError
+
+    def interact_with_snake(self, snake):
+        if snake.has_key:
+            self.destroy()
+        else:
+            snake.destroy()
+
+    def check_snake_move(self, direction) -> bool:
+        return True
