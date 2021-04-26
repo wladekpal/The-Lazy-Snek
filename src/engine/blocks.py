@@ -371,8 +371,8 @@ class Timer(Convex):
         field_in_direction.convex_entered(self, direction)
 
     def interact_with_snake(self, snake):
+        snake.wait(1)
         self.destroy()
 
     def check_snake_move(self, snake) -> bool:
-        snake.wait(1)
         return True
