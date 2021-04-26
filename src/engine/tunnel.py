@@ -6,8 +6,7 @@ from .field import Field
 class Tunnel(Field):
 
     def __init__(self, direction):
-        self.coordinates = None
-        self.board = None
+        super().__init__()
         self.lower_field = Field()
         self.upper_field = Field()
         self.direction = direction
@@ -20,6 +19,9 @@ class Tunnel(Field):
             lower_texture = pygame.transform.rotate(lower_texture, -90)
         self.lower_field.texture = lower_texture
         self.upper_field.texture = upper_texture
+
+    def copy(self):
+        return type(self)(direction=self.direction)
 
     def set_coordinates(self, coordinates):
         self.coordinates = coordinates
@@ -41,7 +43,7 @@ class Tunnel(Field):
         return self.choose_field(snake.direction).check_snake_move(snake)
 
     def snake_entered(self, snake):
-        self.choose_field(snake.direction).snake_entered(snake)
+        return self.choose_field(snake.direction).snake_entered(snake)
 
     def snake_left(self):
         return

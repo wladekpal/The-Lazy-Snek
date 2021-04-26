@@ -14,6 +14,18 @@ class Field:
         self.snake_layer = None
         self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/field.png"))
 
+    def copy(self):
+        return type(self)()
+
+    def get_additional_data(self):
+        return {}
+
+    def set_additional_data(self, key, data):
+        return
+
+    def manage_additional_data(self):
+        return
+
     def set_coordinates(self, coordinates):
         self.coordinates = coordinates
 
@@ -48,6 +60,8 @@ class Field:
 
         if snake.state == SnakeState.ALIVE:
             self.snake_layer = snake
+
+        return self.coordinates
 
     def snake_left(self):
         self.snake_layer = None

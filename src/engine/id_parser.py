@@ -1,6 +1,7 @@
 from .blocks import Wall, TurnLeft, TurnRight, Skull, Spikes, Apple, Box, InfinityTail, Finish, Dye
 from .field import Field
 from .tunnel import Tunnel
+from .teleport import BeginTeleport, EndTeleport
 from .direction import Direction
 import enum
 
@@ -36,6 +37,8 @@ FIELDS_DICT = {
     1: (lambda: Field()),
     17: (lambda: Tunnel(direction=Direction('N'))),
     18: (lambda: Tunnel(direction=Direction('E'))),
+    69: (lambda: BeginTeleport()),
+    70: (lambda: EndTeleport()),
 }
 
 
