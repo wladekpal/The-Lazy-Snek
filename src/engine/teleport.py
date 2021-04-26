@@ -33,7 +33,7 @@ class BeginTeleport(Field):
             self.linked_coordinates = (data[0], data[1])
 
     def manage_additional_data(self):
-        self.linked_end =self.board.request_field(self.linked_coordinates)
+        self.linked_end = self.board.request_field(self.linked_coordinates)
 
     def link(self):
         self.linked_end = self.board.request_field(self.linked_coordinates)
@@ -48,7 +48,10 @@ class BeginTeleport(Field):
         return self.linked_end.check_snake_move(snake)
 
     def snake_entered(self, snake):
-        return self.linked_end.snake_entered(snake)
+        self.linked_end.snake_entered(snake)
+
+    def get_coords_to_move(self):
+        return self.linked_end.get_coords_to_move()
 
     def place_snake(self, snake):
         return
@@ -67,5 +70,3 @@ class BeginTeleport(Field):
 
     def try_placing(self, block):
         return False
-
-    

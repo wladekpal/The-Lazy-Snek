@@ -43,7 +43,7 @@ class Snake:
     def initial_orientation(self):
         self.segments_orientation = []
         for segment in self.segments:
-            self.segments_orientation.append(self.calculate_neighbours_directions(segment))        
+            self.segments_orientation.append(self.calculate_neighbours_directions(segment))
 
     def get_direction_betwen_segments(segment, other_segments):
         possible_direcitons = ['N', 'E', 'S', 'W']
@@ -53,7 +53,6 @@ class Snake:
             if direction.move_in_direction(segment) == other_segments:
                 return str(direction)
 
-        return 'N'
         raise BadSegmentOrientation
 
     def calculate_neighbours_directions(self, segment):
@@ -141,7 +140,9 @@ class Snake:
         else:
             self.grow_at_next_move = self.infinite_grow
 
-        self.segments.append(new_field.snake_entered(self))
+        self.segments.append(new_field.get_coords_to_move())
+        new_field.snake_entered(self)
+
         self.segments_orientation.append(
             str(self.direction) + str(Direction(self.segments_orientation[-1][0]).give_reversed())
         )
@@ -174,7 +175,13 @@ class Snake:
         self.destroy()
 
     def reverse(self):
-        self.direction = Direction(Snake.get_direction_betwen_segments(self.segments[1], self.segments[0]))
+        self.direction = Direction(self.segments_orientation[0][0])
+        self.direction.reverse()
+
+        self.segments_orientation.reverse()
+        for i in range(len(self.segments_orientation)):
+            self.segments_orientation[i] = self.segments_orientation[i][::-1]
+
         self.segments.reverse()
 
     def change_color(self, new_color):

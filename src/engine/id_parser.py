@@ -1,4 +1,4 @@
-from .blocks import Wall, TurnLeft, TurnRight, Skull, Spikes, Apple, Box, InfinityTail, Finish, Dye
+from .blocks import Wall, TurnLeft, TurnRight, Skull, Spikes, Apple, Box, InfinityTail, Finish, Dye, Reverse, VeniceBlock
 from .field import Field
 from .tunnel import Tunnel
 from .teleport import BeginTeleport, EndTeleport
@@ -29,6 +29,11 @@ BLOCKS_DICT = {
     14: (lambda: Dye(color='green')),
     15: (lambda: Dye(color='red')),
     16: (lambda: Dye(color='blue')),
+    21: (lambda: Reverse()),
+    22: (lambda: VeniceBlock(direction=Direction('N'))),
+    23: (lambda: VeniceBlock(direction=Direction('W'))),
+    24: (lambda: VeniceBlock(direction=Direction('S'))),
+    25: (lambda: VeniceBlock(direction=Direction('E'))),
 }
 
 
@@ -37,8 +42,8 @@ FIELDS_DICT = {
     1: (lambda: Field()),
     17: (lambda: Tunnel(direction=Direction('N'))),
     18: (lambda: Tunnel(direction=Direction('E'))),
-    69: (lambda: BeginTeleport()),
-    70: (lambda: EndTeleport()),
+    19: (lambda: BeginTeleport()),
+    20: (lambda: EndTeleport()),
 }
 
 

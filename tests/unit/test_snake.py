@@ -35,7 +35,7 @@ def test_calculate_neighbours_directions():
     mock_direction.__str__.return_value = 'E'
     snake = Snake(segments, color, mock_direction, mock_board)
 
-    directions_list = [['S'], ['NE', 'EN'], ['WS', 'SW'], ['NS', 'SN'], ['NE', 'EN'], ['WE', 'EW'], ['EW', 'WE']]
+    directions_list = [['SS'], ['NE', 'EN'], ['WS', 'SW'], ['NS', 'SN'], ['NE', 'EN'], ['WE', 'EW'], ['EW', 'WE']]
 
     for i in range(len(segments)):
         assert snake.calculate_neighbours_directions(segments[i]) in directions_list[i]
@@ -104,8 +104,9 @@ def test_check_snake_move_false():
     mock_board = mock.Mock()
     segments = [(1, 1), (1, 2), (2, 2)]
     color = "green"
-    mock_direction = mock.Mock()
+    mock_direction = mock.MagicMock()
     mock_direction.move_in_direction.side_effect = move_coord_north
+    mock_direction.__str__.return_value = 'N'
     snake = Snake(segments, color, mock_direction, mock_board)
 
     mock_field = mock.Mock()
@@ -124,12 +125,14 @@ def test_snake_enters_field_no_grow():
     mock_board = mock.Mock()
     segments = [(1, 1), (1, 2), (2, 2)]
     color = "green"
-    mock_direction = mock.Mock()
+    mock_direction = mock.MagicMock()
     mock_direction.move_in_direction.side_effect = move_coord_north
+    mock_direction.__str__.return_value = 'N'
     snake = Snake(segments, color, mock_direction, mock_board)
 
     mock_field = mock.Mock()
     mock_field.check_snake_move.return_value = True
+    mock_field.get_coords_to_move.return_value = (2, 1)
     mock_board.request_field.return_value = mock_field
 
     snake.move()
@@ -142,12 +145,14 @@ def test_snake_enters_field_and_grows():
     mock_board = mock.Mock()
     segments = [(1, 1), (1, 2), (2, 2)]
     color = "green"
-    mock_direction = mock.Mock()
+    mock_direction = mock.MagicMock()
     mock_direction.move_in_direction.side_effect = move_coord_north
+    mock_direction.__str__.return_value = 'N'
     snake = Snake(segments, color, mock_direction, mock_board)
 
     mock_field = mock.Mock()
     mock_field.check_snake_move.return_value = True
+    mock_field.get_coords_to_move.return_value = (2, 1)
     mock_board.request_field.return_value = mock_field
 
     snake.grow()
@@ -162,14 +167,17 @@ def test_growing_snake_dies_when_entering_field():
     mock_board = mock.Mock()
     segments = [(1, 1), (1, 2), (2, 2)]
     color = "green"
-    mock_direction = mock.Mock()
+    mock_direction = mock.MagicMock()
     mock_direction.move_in_direction.side_effect = move_coord_north
-    snake = Snake(segments, color, mock_direction, mock_board)
+    mock_direction.__str__.return_value = 'N'
 
     mock_field = mock.Mock()
     mock_field.check_snake_move.return_value = True
     mock_field.snake_entered.side_effect = lambda snake: snake.destroy()
+    mock_field.get_coords_to_move.return_value = (2, 1)
     mock_board.request_field.return_value = mock_field
+
+    snake = Snake(segments, color, mock_direction, mock_board)
 
     snake.grow()
     snake.move()

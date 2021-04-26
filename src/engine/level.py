@@ -4,8 +4,6 @@ from .blocks import Convex, Flat
 from .field import Field
 from .board import Board
 from .snake import Snake, SnakeState
-from .tunnel import Tunnel
-from .teleport import BeginTeleport, EndTeleport
 from .direction import Direction
 from .id_parser import EntityKind, get_entity_kind, get_block_from_id, get_field_from_id
 
@@ -94,7 +92,7 @@ class Level:
                     field = field_dict['field']
                     field.set_coordinates((j, i))
 
-                    for key, val in  field_dict['additional'].items():
+                    for key, val in field_dict['additional'].items():
                         field.set_additional_data(key, val)
 
                     flat_layer, convex_layer = field_dict['blocks']

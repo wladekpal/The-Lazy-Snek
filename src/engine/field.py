@@ -61,6 +61,7 @@ class Field:
         if snake.state == SnakeState.ALIVE:
             self.snake_layer = snake
 
+    def get_coords_to_move(self):
         return self.coordinates
 
     def snake_left(self):

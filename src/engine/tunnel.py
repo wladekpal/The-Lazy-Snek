@@ -43,7 +43,7 @@ class Tunnel(Field):
         return self.choose_field(snake.direction).check_snake_move(snake)
 
     def snake_entered(self, snake):
-        return self.choose_field(snake.direction).snake_entered(snake)
+        self.choose_field(snake.direction).snake_entered(snake)
 
     def snake_left(self):
         return
