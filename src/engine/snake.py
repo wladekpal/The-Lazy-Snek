@@ -20,6 +20,7 @@ class Snake:
         self.color = color
         self.direction = direction
         self.board = board
+        self.initial_orientation()
         self.reload_textures()
 
         for segment in self.segments:
@@ -38,6 +39,11 @@ class Snake:
         self.body_texture = pygame.image.load(body_path)
         self.bent_body_texture = pygame.image.load(bent_body_path)
         self.tail_texture = pygame.image.load(tail_path)
+
+    def initial_orientation(self):
+        self.segments_orientation = []
+        for segment in self.segments:
+            self.segments_orientation.append(self.calculate_neighbours_directions(segment))
 
     def get_direction_betwen_segments(segment, other_segments):
         possible_direcitons = ['N', 'E', 'S', 'W']
@@ -70,6 +76,8 @@ class Snake:
 
         if next_segment is not None:
             neighbours_directions += Snake.get_direction_betwen_segments(segment, next_segment)
+        else:
+            neighbours_directions += neighbours_directions
 
         return neighbours_directions
 
@@ -98,18 +106,20 @@ class Snake:
         if self.state != SnakeState.ALIVE:
             return
 
-        neighbours_directions = self.calculate_neighbours_directions(segment_coords)
+        neighbours_directions = self.segments_orientation[self.segments.index(segment_coords)]
         segment_texture = self.get_segment_texture(segment_coords, neighbours_directions)
         resized_segment_texture = pygame.transform.scale(segment_texture, (side_length, side_length))
 
-        if neighbours_directions in ['N', 'NE', 'EN', 'NS']:
+        if neighbours_directions in ['NN', 'NE', 'EN', 'NS']:
             rotated_segment_texture = resized_segment_texture
-        elif neighbours_directions in ['E', 'ES', 'SE', 'EW']:
+        elif neighbours_directions in ['EE', 'ES', 'SE', 'EW']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -90)
-        elif neighbours_directions in ['S', 'SW', 'WS', 'SN']:
+        elif neighbours_directions in ['SS', 'SW', 'WS', 'SN']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -180)
-        elif neighbours_directions in ['W', 'WN', 'NW', 'WE']:
+        elif neighbours_directions in ['WW', 'WN', 'NW', 'WE']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -270)
+        else:
+            rotated_segment_texture = resized_segment_texture
 
         frame.blit(rotated_segment_texture, draw_coords)
 
@@ -126,11 +136,17 @@ class Snake:
             field_to_remove = self.board.request_field(self.segments[0])
             field_to_remove.remove_snake(self)
             self.segments.pop(0)
+            self.segments_orientation.pop(0)
         else:
             self.grow_at_next_move = self.infinite_grow
 
-        self.segments.append(new_head_coords)
+        self.segments.append(new_field.get_coords_to_move())
         new_field.snake_entered(self)
+
+        self.segments_orientation.append(
+            str(self.direction) + str(Direction(self.segments_orientation[-1][0]).give_reversed())
+        )
+        self.segments_orientation[0] = self.segments_orientation[0][0]*2
 
     def grow(self):
         self.grow_at_next_move = True
@@ -159,7 +175,13 @@ class Snake:
         self.destroy()
 
     def reverse(self):
-        self.direction = Direction(Snake.get_direction_betwen_segments(self.segments[1], self.segments[0]))
+        self.direction = Direction(self.segments_orientation[0][0])
+        self.direction.reverse()
+
+        self.segments_orientation.reverse()
+        for i in range(len(self.segments_orientation)):
+            self.segments_orientation[i] = self.segments_orientation[i][::-1]
+
         self.segments.reverse()
 
     def change_color(self, new_color):

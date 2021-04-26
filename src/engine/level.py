@@ -4,7 +4,6 @@ from .blocks import Convex, Flat
 from .field import Field
 from .board import Board
 from .snake import Snake, SnakeState
-from .tunnel import Tunnel
 from .direction import Direction
 from .id_parser import EntityKind, get_entity_kind, get_block_from_id, get_field_from_id
 
@@ -24,6 +23,7 @@ class Level:
         self.level_name = self.level_description["level_name"]
         self.level_creator = self.level_description["level_creator"]
         self.block_placement = self.level_description["block_placement"]
+        self.block_additional_data = self.level_description["block_additional_data"]
         self.snake_data = self.level_description["snake_data"]
         self.available_blocks_data = self.level_description["available_blocks"]
 
@@ -67,34 +67,35 @@ class Level:
             for field in row:
                 if field is None:
                     self.board_backup[-1].append(None)
-                elif isinstance(field, Tunnel):
-                    self.board_backup[-1].append(field.direction)
                 else:
-                    field_layers = [None, None]
+                    field_dict = {}
+                    field_dict['field'] = field.copy()
+                    field_dict['blocks'] = [None, None]
+                    field_dict['additional'] = field.get_additional_data()
 
                     if field.flat_layer is not None:
-                        field_layers[0] = field.flat_layer.copy()
+                        field_dict['blocks'][0] = field.flat_layer.copy()
                     if field.convex_layer is not None:
-                        field_layers[1] = field.convex_layer.copy()
+                        field_dict['blocks'][1] = field.convex_layer.copy()
 
-                    self.board_backup[-1].append(field_layers)
+                    self.board_backup[-1].append(field_dict)
 
     def reload_board(self):
         board = []
         for i in range(len(self.board_backup)):
             board.append([])
             for j in range(len(self.board_backup[i])):
-                backup_obj = self.board_backup[i][j]
-                if backup_obj is None:
+                field_dict = self.board_backup[i][j]
+                if field_dict is None:
                     board[-1].append(None)
-                elif isinstance(backup_obj, Direction):
-                    tunnel = Tunnel(backup_obj)
-                    tunnel.set_coordinates((j, i))
-                    board[-1].append(tunnel)
                 else:
-                    field = Field()
+                    field = field_dict['field']
                     field.set_coordinates((j, i))
-                    flat_layer, convex_layer = backup_obj
+
+                    for key, val in field_dict['additional'].items():
+                        field.set_additional_data(key, val)
+
+                    flat_layer, convex_layer = field_dict['blocks']
                     if flat_layer is not None:
                         flat = flat_layer
                         field.place_flat(flat)
@@ -112,11 +113,14 @@ class Level:
             board.append([])
             for j in range(len(self.block_placement[i])):
                 id = self.block_placement[i][j]
+                additional = self.block_additional_data[i][j]
                 if id == 0:
                     board[i].append(None)
                 elif get_entity_kind(id) == EntityKind.FIELD:
                     field = get_field_from_id(id)
                     field.set_coordinates((j, i))
+                    for key, val in additional.items():
+                        field.set_additional_data(key, val)
                     board[i].append(field)
                 else:
                     field = Field()
