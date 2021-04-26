@@ -1,5 +1,5 @@
 from src.engine.blocks import Block, Convex, Flat, Wall, WallInteractionError
-from src.engine.blocks import TurnLeft, TurnRight, Box, Spikes, Skull, Apple, InfinityTail, Reverse, VeniceBlock
+from src.engine.blocks import TurnLeft, TurnRight, Box, Spikes, Skull, Apple, InfinityTail, Reverse, VeniceBlock, Door, Key
 import pytest
 import mock
 
@@ -491,3 +491,86 @@ def test_venice_check_snake_move():
 
     assert venice.check_snake_move(snake_mock)
     assert not venice.check_snake_move(snake2_mock)
+
+
+def test_key_creation():
+    Key()
+
+
+def test_key_check_move_calls_appropriate_methods():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    return_mock = mock.Mock()
+    direction_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+    field_two_mock.check_convex_move.return_value = return_mock
+
+    key = Key()
+    key.set_field(field_one_mock)
+
+    assert key.check_move(direction_mock) == return_mock
+    field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
+    field_two_mock.check_convex_move.assert_called_once_with(direction_mock)
+
+
+def test_key_moves():
+    field_one_mock = mock.Mock()
+    field_two_mock = mock.Mock()
+    direction_mock = mock.Mock()
+
+    field_one_mock.give_field_in_direction.return_value = field_two_mock
+
+    key = Key()
+    key.set_field(field_one_mock)
+    key.move(direction_mock)
+
+    field_one_mock.give_field_in_direction.assert_called_once_with(direction_mock)
+    field_one_mock.convex_left.assert_called_once_with(direction_mock)
+    field_two_mock.convex_entered.assert_called_once_with(key, direction_mock)
+
+
+def test_key_destroyed_after_interacting_with_snake():
+    snake_mock = mock.Mock()
+    field_mock = mock.Mock()
+    key = Key()
+    key.set_field(field_mock)
+
+    key.interact_with_snake(snake_mock)
+    assert snake_mock.mock_calls == []
+    assert not key.is_alive
+    field_mock.remove_convex.assert_called_once()
+
+
+def test_key_informs_snake_about_collecting():
+    snake_mock = mock.Mock()
+    key = Key()
+    assert key.check_snake_move(snake_mock)
+    snake_mock.get_key.assert_called_once()
+
+
+def test_snake_destroys_door_when_snake_with_key():
+    snake_mock = mock.Mock()
+    field_mock = mock.Mock()
+    snake_mock.has_key = True
+
+    door = Door()
+    door.set_field(field_mock)
+
+    door.interact_with_snake(snake_mock)
+    assert snake_mock.mock_calls == []
+    assert not door.is_alive
+    field_mock.remove_convex.assert_called_once()
+
+
+def test_snake_destroys_snake_when_snake_without_key():
+    snake_mock = mock.Mock()
+    field_mock = mock.Mock()
+    snake_mock.has_key = False
+
+    door = Door()
+    door.set_field(field_mock)
+
+    door.interact_with_snake(snake_mock)
+    assert snake_mock.destroy
+    assert door.is_alive

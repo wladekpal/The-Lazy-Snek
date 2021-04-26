@@ -14,6 +14,8 @@ class Snake:
     grow_at_next_move = False
     infinite_grow = False
     wait_turns = 0
+    has_key = False
+    rev = False
 
     def __init__(self, segments, color, direction, board):
         self.state = SnakeState.ALIVE
@@ -148,13 +150,21 @@ class Snake:
         self.segments.append(new_field.get_coords_to_move())
         new_field.snake_entered(self)
 
-        self.segments_orientation.append(
-            str(self.direction) + str(Direction(self.segments_orientation[-1][0]).give_reversed())
-        )
-        self.segments_orientation[0] = self.segments_orientation[0][0]*2
+        if self.rev:
+            orientation = str(Direction(self.segments_orientation[0][1]).give_reversed())
+            self.segments_orientation = [orientation*2] + self.segments_orientation
+        else:
+            self.segments_orientation.append(
+                str(self.direction) + str(Direction(self.segments_orientation[-1][0]).give_reversed())
+            )
+            self.segments_orientation[0] = self.segments_orientation[0][0]*2
+        self.rev = False
 
     def grow(self):
         self.grow_at_next_move = True
+
+    def get_key(self):
+        self.has_key = True
 
     def enable_infinite_grow(self):
         self.infinite_grow = True
@@ -183,14 +193,17 @@ class Snake:
         self.wait_turns = turns
 
     def reverse(self):
-        self.direction = Direction(self.segments_orientation[0][0])
-        self.direction.reverse()
+        self.rev = True
+        self.direction = Direction(self.segments_orientation[0][0]).give_reversed()
 
         self.segments_orientation.reverse()
         for i in range(len(self.segments_orientation)):
             self.segments_orientation[i] = self.segments_orientation[i][::-1]
 
         self.segments.reverse()
+        if self.segments_orientation[-1][0] == self.segments_orientation[-1][1]:
+            orientation = str(Direction(self.segments_orientation[-1][0]).give_reversed())
+            self.segments_orientation[-1] = orientation + self.segments_orientation[-1][1]
 
     def change_color(self, new_color):
         self.color = new_color

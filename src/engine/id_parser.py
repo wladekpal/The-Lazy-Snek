@@ -1,4 +1,5 @@
-from .blocks import Wall, TurnLeft, TurnRight, Skull, Spikes, Apple, Box, InfinityTail, Finish, Dye, Reverse, VeniceBlock
+from .blocks import Wall, TurnLeft, TurnRight, Skull, Spikes, Apple, Box, InfinityTail
+from .blocks import Finish, Dye, Reverse, VeniceBlock, Door, Key, Timer
 from .field import Field
 from .tunnel import Tunnel
 from .teleport import BeginTeleport, EndTeleport
@@ -35,6 +36,9 @@ BLOCKS_DICT = {
     23: (lambda: VeniceBlock(direction=Direction('W'))),
     24: (lambda: VeniceBlock(direction=Direction('S'))),
     25: (lambda: VeniceBlock(direction=Direction('E'))),
+    27: (lambda: Door()),
+    28: (lambda: Key()),
+    29: (lambda: Timer()),
 }
 
 
