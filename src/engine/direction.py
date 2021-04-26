@@ -32,3 +32,10 @@ class Direction:
     def reverse(self):
         self.index += REVERSE_SHIFT
         self.index %= len(self.direction_name)
+
+    def __eq__(self, direction):
+        return self.index == direction.index
+
+    def give_reversed(self):
+        reversed_index = (self.index + REVERSE_SHIFT) % len(self.direction_name)
+        return Direction(self.direction_name[reversed_index])

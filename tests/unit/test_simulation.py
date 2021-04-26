@@ -1,4 +1,4 @@
-from src.gameplay.simulation import SimulationState, Simulation
+from src.display.simulation import SimulationState, Simulation
 import mock
 
 

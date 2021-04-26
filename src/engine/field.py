@@ -1,22 +1,38 @@
 import pygame
 import os
 from .blocks import Flat, Convex
+from .snake import SnakeState
 
 
 class Field:
 
-    def __init__(self, coordinates):
-        self.coordinates = coordinates
+    def __init__(self):
+        self.coordinates = None
         self.board = None
         self.flat_layer = None
         self.convex_layer = None
         self.snake_layer = None
         self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/field.png"))
 
+    def copy(self):
+        return type(self)()
+
+    def get_additional_data(self):
+        return {}
+
+    def set_additional_data(self, key, data):
+        return
+
+    def manage_additional_data(self):
+        return
+
+    def set_coordinates(self, coordinates):
+        self.coordinates = coordinates
+
     # orientation
     def give_field_in_direction(self, direction):
         coordinates = direction.move_in_direction(self.coordinates)
-        return self.board.give_field(coordinates)
+        return self.board.request_field(coordinates)
 
     # board
     def set_board(self, board):
@@ -24,10 +40,14 @@ class Field:
 
     # snake
     def check_snake_move(self, snake) -> bool:
-        if self.convex_layer is None:
-            return True
-        else:
-            return self.convex_layer.check_snake_move(snake)
+        flat_permission = True
+        convex_permission = True
+        if self.flat_layer is not None:
+            flat_permission = self.flat_layer.check_snake_move(snake)
+        if self.convex_layer is not None:
+            convex_permission = self.convex_layer.check_snake_move(snake)
+
+        return flat_permission and convex_permission
 
     def snake_entered(self, snake):
         if self.snake_layer is not None:
@@ -38,8 +58,11 @@ class Field:
         if self.snake_layer is None and self.flat_layer is not None:
             self.flat_layer.interact_with_snake(snake)
 
-        if snake.is_alive:
+        if snake.state == SnakeState.ALIVE:
             self.snake_layer = snake
+
+    def get_coords_to_move(self):
+        return self.coordinates
 
     def snake_left(self):
         self.snake_layer = None
@@ -61,10 +84,14 @@ class Field:
 
     # convex
     def check_convex_move(self, direction) -> bool:
-        if self.convex_layer is None:
-            return True
-        else:
-            return self.convex_layer.check_move(direction)
+        flat_permission = True
+        convex_permission = True
+        if self.flat_layer is not None:
+            flat_permission = self.flat_layer.check_move(direction)
+        if self.convex_layer is not None:
+            convex_permission = self.convex_layer.check_move(direction)
+
+        return flat_permission and convex_permission
 
     def convex_entered(self, convex, direction):
         if self.snake_layer is not None:
@@ -78,7 +105,7 @@ class Field:
         self.convex_layer = convex
         self.convex_layer.set_field(self)
 
-    def convex_left(self):
+    def convex_left(self, direction):
         self.convex_layer = None
 
     def remove_convex(self):
@@ -108,6 +135,7 @@ class Field:
                 self.flat_layer = block
             else:
                 raise UnknownBlockType
+            block.set_field(self)
             return True
         else:
             return False

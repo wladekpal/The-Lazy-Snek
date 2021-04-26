@@ -16,6 +16,11 @@ class Board:
                 if field is not None:
                     field.set_board(self)
 
+        for row in self.fields:
+            for field in row:
+                if field is not None:
+                    field.manage_additional_data()
+
     def self_draw(self, frame: pygame.Surface):
         board_height = frame.get_height()
         board_width = frame.get_width()

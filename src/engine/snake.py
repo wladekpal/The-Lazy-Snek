@@ -1,32 +1,52 @@
 import pygame
 import os
+import enum
 from .direction import Direction
 
 
+class SnakeState(enum.Enum):
+    ALIVE = 1,
+    DEAD = 2,
+    FINISHED = 3,
+
+
 class Snake:
-    is_alive = True
     grow_at_next_move = False
+    infinite_grow = False
+    wait_turns = 0
+    has_key = False
+    rev = False
 
     def __init__(self, segments, color, direction, board):
+        self.state = SnakeState.ALIVE
         self.segments = segments
         self.color = color
         self.direction = direction
         self.board = board
+        self.initial_orientation()
+        self.reload_textures()
+
+        for segment in self.segments:
+            field_to_place = self.board.request_field(segment)
+            field_to_place.place_snake(self)
+
+    def reload_textures(self):
         dirname = os.path.dirname(__file__)
-        head_path = os.path.join(dirname, '../../assets/snek-head-' + color + '.png')
-        bent_head_path = os.path.join(dirname, '../../assets/snek-bent-head-' + color + '.png')
-        body_path = os.path.join(dirname, '../../assets/snek-body-' + color + '.png')
-        bent_body_path = os.path.join(dirname, '../../assets/snek-bent-body-' + color + '.png')
-        tail_path = os.path.join(dirname, '../../assets/snek-tail-' + color + '.png')
+        head_path = os.path.join(dirname, '../../assets/snek-head-' + self.color + '.png')
+        bent_head_path = os.path.join(dirname, '../../assets/snek-bent-head-' + self.color + '.png')
+        body_path = os.path.join(dirname, '../../assets/snek-body-' + self.color + '.png')
+        bent_body_path = os.path.join(dirname, '../../assets/snek-bent-body-' + self.color + '.png')
+        tail_path = os.path.join(dirname, '../../assets/snek-tail-' + self.color + '.png')
         self.head_texture = pygame.image.load(head_path)
         self.bent_head_texture = pygame.image.load(bent_head_path)
         self.body_texture = pygame.image.load(body_path)
         self.bent_body_texture = pygame.image.load(bent_body_path)
         self.tail_texture = pygame.image.load(tail_path)
 
+    def initial_orientation(self):
+        self.segments_orientation = []
         for segment in self.segments:
-            field_to_place = self.board.request_field(segment)
-            field_to_place.place_snake(self)
+            self.segments_orientation.append(self.calculate_neighbours_directions(segment))
 
     def get_direction_betwen_segments(segment, other_segments):
         possible_direcitons = ['N', 'E', 'S', 'W']
@@ -59,6 +79,8 @@ class Snake:
 
         if next_segment is not None:
             neighbours_directions += Snake.get_direction_betwen_segments(segment, next_segment)
+        else:
+            neighbours_directions += neighbours_directions
 
         return neighbours_directions
 
@@ -84,25 +106,31 @@ class Snake:
         if segment_coords not in self.segments:
             raise SegmentNotInSnake
 
-        if not self.is_alive:
+        if self.state != SnakeState.ALIVE:
             return
 
-        neighbours_directions = self.calculate_neighbours_directions(segment_coords)
+        neighbours_directions = self.segments_orientation[self.segments.index(segment_coords)]
         segment_texture = self.get_segment_texture(segment_coords, neighbours_directions)
         resized_segment_texture = pygame.transform.scale(segment_texture, (side_length, side_length))
 
-        if neighbours_directions in ['N', 'NE', 'EN', 'NS']:
+        if neighbours_directions in ['NN', 'NE', 'EN', 'NS']:
             rotated_segment_texture = resized_segment_texture
-        elif neighbours_directions in ['E', 'ES', 'SE', 'EW']:
+        elif neighbours_directions in ['EE', 'ES', 'SE', 'EW']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -90)
-        elif neighbours_directions in ['S', 'SW', 'WS', 'SN']:
+        elif neighbours_directions in ['SS', 'SW', 'WS', 'SN']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -180)
-        elif neighbours_directions in ['W', 'WN', 'NW', 'WE']:
+        elif neighbours_directions in ['WW', 'WN', 'NW', 'WE']:
             rotated_segment_texture = pygame.transform.rotate(resized_segment_texture, -270)
+        else:
+            rotated_segment_texture = resized_segment_texture
 
         frame.blit(rotated_segment_texture, draw_coords)
 
     def move(self):
+        if self.wait_turns > 0:
+            self.wait_turns -= 1
+            return
+
         current_head_coords = self.segments[-1]
         new_head_coords = self.direction.move_in_direction(current_head_coords)
         new_field = self.board.request_field(new_head_coords)
@@ -115,20 +143,41 @@ class Snake:
             field_to_remove = self.board.request_field(self.segments[0])
             field_to_remove.remove_snake(self)
             self.segments.pop(0)
+            self.segments_orientation.pop(0)
         else:
-            self.grow_at_next_move = False
+            self.grow_at_next_move = self.infinite_grow
 
-        self.segments.append(new_head_coords)
+        self.segments.append(new_field.get_coords_to_move())
         new_field.snake_entered(self)
+
+        if self.rev:
+            orientation = str(Direction(self.segments_orientation[0][1]).give_reversed())
+            self.segments_orientation = [orientation*2] + self.segments_orientation
+        else:
+            self.segments_orientation.append(
+                str(self.direction) + str(Direction(self.segments_orientation[-1][0]).give_reversed())
+            )
+            self.segments_orientation[0] = self.segments_orientation[0][0]*2
+        self.rev = False
 
     def grow(self):
         self.grow_at_next_move = True
 
-    def destroy(self):
+    def get_key(self):
+        self.has_key = True
+
+    def enable_infinite_grow(self):
+        self.infinite_grow = True
+        self.grow_at_next_move = True
+
+    def destroy(self, state=SnakeState.DEAD):
         for segment_coords in self.segments:
             field = self.board.request_field(segment_coords)
             field.remove_snake(self)
-        self.is_alive = False
+        self.state = state
+
+    def finish(self):
+        self.destroy(state=SnakeState.FINISHED)
 
     def interact_with_snake(self, other_snake):
         snake_head_coords = self.segments[-1]
@@ -136,6 +185,45 @@ class Snake:
         if snake_head_coords == other_head_coords:
             self.destroy()
         other_snake.destroy()
+
+    def interact_with_convex(self, convex):
+        self.destroy()
+
+    def wait(self, turns):
+        self.wait_turns = turns
+
+    def reverse(self):
+        self.rev = True
+        self.direction = Direction(self.segments_orientation[0][0]).give_reversed()
+
+        self.segments_orientation.reverse()
+        for i in range(len(self.segments_orientation)):
+            self.segments_orientation[i] = self.segments_orientation[i][::-1]
+
+        self.segments.reverse()
+        if self.segments_orientation[-1][0] == self.segments_orientation[-1][1]:
+            orientation = str(Direction(self.segments_orientation[-1][0]).give_reversed())
+            self.segments_orientation[-1] = orientation + self.segments_orientation[-1][1]
+
+    def change_color(self, new_color):
+        self.color = new_color
+        self.reload_textures()
+
+    def give_segment_direction(self, coordinates):
+        index = self.segments.index(coordinates)
+        if index == len(self.segments)-1:
+            return self.direction
+        else:
+            x_delta = self.segments[index+1][0]-self.segments[index][0]
+            y_delta = self.segments[index+1][1]-self.segments[index][1]
+            if x_delta > 0:
+                return Direction('E')
+            elif x_delta < 0:
+                return Direction('W')
+            elif y_delta > 0:
+                return Direction('S')
+            else:
+                return Direction('N')
 
 
 class BadSegmentOrientation(Exception):

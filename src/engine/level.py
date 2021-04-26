@@ -1,9 +1,17 @@
 import json
-from .blocks import Wall, TurnLeft, TurnRight
+import enum
+from .blocks import Convex, Flat
 from .field import Field
 from .board import Board
-from .snake import Snake
+from .snake import Snake, SnakeState
 from .direction import Direction
+from .id_parser import EntityKind, get_entity_kind, get_block_from_id, get_field_from_id
+
+
+class LevelState(enum.Enum):
+    UNDECIDED = 1,
+    WIN = 2,
+    LOSS = 3,
 
 
 class Level:
@@ -15,6 +23,7 @@ class Level:
         self.level_name = self.level_description["level_name"]
         self.level_creator = self.level_description["level_creator"]
         self.block_placement = self.level_description["block_placement"]
+        self.block_additional_data = self.level_description["block_additional_data"]
         self.snake_data = self.level_description["snake_data"]
         self.available_blocks_data = self.level_description["available_blocks"]
 
@@ -59,31 +68,39 @@ class Level:
                 if field is None:
                     self.board_backup[-1].append(None)
                 else:
-                    field_layers = [None, None]
+                    field_dict = {}
+                    field_dict['field'] = field.copy()
+                    field_dict['blocks'] = [None, None]
+                    field_dict['additional'] = field.get_additional_data()
 
                     if field.flat_layer is not None:
-                        field_layers[0] = (type(field.flat_layer), field.flat_layer.pane_index)
+                        field_dict['blocks'][0] = field.flat_layer.copy()
                     if field.convex_layer is not None:
-                        field_layers[1] = (type(field.convex_layer), field.convex_layer.pane_index)
+                        field_dict['blocks'][1] = field.convex_layer.copy()
 
-                    self.board_backup[-1].append(field_layers)
+                    self.board_backup[-1].append(field_dict)
 
     def reload_board(self):
         board = []
         for i in range(len(self.board_backup)):
             board.append([])
             for j in range(len(self.board_backup[i])):
-                if self.board_backup[i][j] is None:
+                field_dict = self.board_backup[i][j]
+                if field_dict is None:
                     board[-1].append(None)
                 else:
-                    field = Field((j, i))
-                    flat_layer, convex_layer = self.board_backup[i][j]
+                    field = field_dict['field']
+                    field.set_coordinates((j, i))
 
+                    for key, val in field_dict['additional'].items():
+                        field.set_additional_data(key, val)
+
+                    flat_layer, convex_layer = field_dict['blocks']
                     if flat_layer is not None:
-                        flat = flat_layer[0](flat_layer[1])
+                        flat = flat_layer
                         field.place_flat(flat)
                     if convex_layer is not None:
-                        convex = convex_layer[0](convex_layer[1])
+                        convex = convex_layer
                         field.place_convex(convex)
 
                     board[-1].append(field)
@@ -95,25 +112,30 @@ class Level:
         for i in range(len(self.block_placement)):
             board.append([])
             for j in range(len(self.block_placement[i])):
-                if self.block_placement[i][j] == 1:
-                    board[i].append(Field((j, i)))
-                elif self.block_placement[i][j] == 2:
-                    field = Field((j, i))
-                    wall = Wall()
-                    field.place_convex(wall)
-                    board[i].append(field)
-                elif self.block_placement[i][j] == 3:
-                    field = Field((j, i))
-                    turn_left = TurnLeft()
-                    field.place_flat(turn_left)
-                    board[i].append(field)
-                elif self.block_placement[i][j] == 4:
-                    field = Field((j, i))
-                    turn_right = TurnRight()
-                    field.place_flat(turn_right)
+                id = self.block_placement[i][j]
+                additional = self.block_additional_data[i][j]
+                if id == 0:
+                    board[i].append(None)
+                elif get_entity_kind(id) == EntityKind.FIELD:
+                    field = get_field_from_id(id)
+                    field.set_coordinates((j, i))
+                    for key, val in additional.items():
+                        field.set_additional_data(key, val)
                     board[i].append(field)
                 else:
-                    board[i].append(None)
+                    field = Field()
+                    field.set_coordinates((j, i))
+                    block = get_block_from_id(id)
+                    if block is not None:
+                        if isinstance(block, Convex):
+                            field.place_convex(block)
+                        elif isinstance(block, Flat):
+                            field.place_flat(block)
+                        block.set_field(field)
+                    else:
+                        # it's custom field
+                        pass
+                    board[i].append(field)
 
         self.board = Board(board)
 
@@ -132,22 +154,22 @@ class Level:
         self.available_blocks = []
         cur_pane_index = 0
         for block_id, count in self.available_blocks_data:
-            if block_id == 2:
-                block_type = Wall
-            elif block_id == 3:
-                block_type = TurnLeft
-            else:
-                block_type = TurnRight
-
-            for i in range(count):
-                self.available_blocks.append(block_type(cur_pane_index))
+            for _ in range(count):
+                self.available_blocks.append(get_block_from_id(block_id))
+                self.available_blocks[-1].pane_index = cur_pane_index
                 cur_pane_index += 1
 
-    def is_any_alive(self):
-        alive = False
+    def is_any_dead(self):
         for snake in self.snakes:
-            alive = alive or snake.is_alive
-        return alive
+            if snake.state == SnakeState.DEAD:
+                return True
+        return False
+
+    def did_all_snakes_finish(self):
+        for snake in self.snakes:
+            if snake.state != SnakeState.FINISHED:
+                return False
+        return True
 
     def tick(self) -> int:
         if self.simulation_tick_counter == 0:
@@ -156,19 +178,22 @@ class Level:
 
         self.snakes[self.snake_pointer].move()
 
-        if not self.is_any_alive():
-            return -1
+        if self.did_all_snakes_finish():
+            return LevelState.WIN
+
+        if self.is_any_dead():
+            return LevelState.LOSS
 
         self.update_snake_pointer()
-        return 0
+        return LevelState.UNDECIDED
 
     def update_snake_pointer(self):
-        if not self.is_any_alive():
+        if self.is_any_dead():
             raise Exception
 
         self.snake_pointer += 1
         self.snake_pointer %= len(self.snakes)
-        while not self.snakes[self.snake_pointer].is_alive:
+        while self.snakes[self.snake_pointer].state != SnakeState.ALIVE:
             self.snake_pointer += 1
             self.snake_pointer %= len(self.snakes)
 
