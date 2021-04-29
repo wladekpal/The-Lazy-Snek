@@ -6,7 +6,7 @@ from .field import Field
 class EndTeleport(Field):
     def __init__(self):
         super().__init__()
-        self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/end-teleport.png"))
+        self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/end-teleport.png"))
 
     def place_flat(self, flat):
         return
@@ -21,7 +21,7 @@ class EndTeleport(Field):
 class BeginTeleport(Field):
     def __init__(self):
         super().__init__()
-        self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/begin-teleport.png"))
+        self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/begin-teleport.png"))
         self.linked_coordinates = None
         self.linked_end = None
 

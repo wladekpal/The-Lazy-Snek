@@ -1,5 +1,5 @@
-from .blocks import Wall, TurnLeft, TurnRight, Skull, Spikes, Apple, Box, InfinityTail
-from .blocks import Finish, Dye, Reverse, VeniceBlock, Door, Key, Timer
+from .convex import Wall, Skull, Apple, Box, InfinityTail, Dye, Door, Key, Timer
+from .flat import Finish, Reverse, VeniceBlock, TurnLeft, TurnRight, Spikes
 from .field import Field
 from .tunnel import Tunnel
 from .teleport import BeginTeleport, EndTeleport
