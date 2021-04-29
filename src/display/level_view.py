@@ -22,13 +22,13 @@ MESSAGE_WIN = 'YOU WIN'
 MESSAGE_LOSS = 'YOU LOSE'
 
 # buttons textures
-PLAY_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/play-button.png")
-PAUSE_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/pause-button.png")
-RESET_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/restart-button.png")
-STOP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/stop-button.png")
-ACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/step-by-step-active.png")
+PLAY_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/play-button.png")
+PAUSE_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/pause-button.png")
+RESET_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/restart-button.png")
+STOP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/stop-button.png")
+ACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/step-by-step-active.png")
 INACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__),
-                                                       "../../assets/step-by-step-inactive.png")
+                                                       "../../assets/button/step-by-step-inactive.png")
 
 # mouse buttons
 LEFT_MOUSE_BUTTON = 1
