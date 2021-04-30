@@ -1,10 +1,11 @@
 import pygame
-from .view_controller import ApplicationView
+from .view_controller import ApplicationView, ViewInitAction
 from .level_view import LevelView
 from abc import ABCMeta
 import json
 import os
 from ..engine.level import Level
+from pygame.locals import K_ESCAPE
 
 TITLE_FRAME_HEIGHT_PERCENTAGE = 20
 TITLE_HEIGHT_PERCENTAGE_IN_TITLE_FRAME = 60
@@ -137,6 +138,28 @@ class MenuView(PickView):
         super().__init__(screen, title, tiles)
 
 
+class LevelSubmenuView(PickView):
+
+    def __init__(self, screen):
+
+        tiles = [
+            GoBackTile('Resume level'),
+            PickLevelViewTile('Choose another level', screen),
+            MenuTile('Main menu', screen),
+            QuitTile('Quit game'),
+        ]
+
+        title = 'Level paused'
+
+        super().__init__(screen, title, tiles)
+
+    def handle_pygame_event(self, event):
+        if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+            return (None, ViewInitAction.POP)
+        else:
+            return super().handle_pygame_event(event)
+
+
 class Tile(metaclass=ABCMeta):
     def __init__(self, text):
         self.text = text
@@ -182,7 +205,7 @@ class PickLevelViewTile(Tile):
         super().__init__(text)
 
     def action(self):
-        return PickLevelView(self.screen)
+        return (PickLevelView(self.screen), ViewInitAction.EMPTY_STACK)
 
 
 # temporary class to display example tiles that will be implemented in the future
@@ -199,7 +222,7 @@ class MenuTile(Tile):
         super().__init__(text)
 
     def action(self):
-        return MenuView(self.screen)
+        return (MenuView(self.screen), ViewInitAction.EMPTY_STACK)
 
 
 class PickLevelView(PickView):
@@ -228,4 +251,11 @@ class LevelTile(Tile):
         super().__init__(text)
 
     def action(self):
-        return LevelView(self.screen, Level(self.level_path), FRAMES_PER_SIMULATION_TICK)
+        return (LevelView(self.screen, Level(self.level_path), FRAMES_PER_SIMULATION_TICK),
+                ViewInitAction.EMPTY_STACK)
+
+
+class GoBackTile(Tile):
+
+    def action(self):
+        return (None, ViewInitAction.POP)

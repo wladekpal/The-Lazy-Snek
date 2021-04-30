@@ -4,7 +4,8 @@ from .button import PlayButton, CancelButton, RestartButton, StepByStepButton
 from .simulation import Simulation, SimulationState
 from .items_frame import BlocksPane
 from .item import Item
-from .view_controller import ApplicationView
+from .view_controller import ApplicationView, ViewInitAction
+from pygame.locals import K_ESCAPE
 
 
 # frames and their elements display details
@@ -128,6 +129,7 @@ class LevelView(ApplicationView):
         self.refresh_message()
 
     def handle_pygame_event(self, event):
+        from .menu_view import LevelSubmenuView
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
             self.handle_click(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP and event.button == LEFT_MOUSE_BUTTON:
@@ -136,6 +138,8 @@ class LevelView(ApplicationView):
             self.handle_rightclick(event.pos)
         elif event.type == pygame.MOUSEMOTION:
             self.handle_motion(event.pos)
+        elif event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+            return (LevelSubmenuView(self.screen), ViewInitAction.PUSH)
 
     def handle_click(self, pos):
 
