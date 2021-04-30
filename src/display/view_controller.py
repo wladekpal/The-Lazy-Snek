@@ -1,5 +1,13 @@
 from abc import ABCMeta, abstractmethod
 import pygame
+import enum
+
+
+class ViewInitAction(enum.Enum):
+    PUSH = 1
+    REPLACE = 2
+    POP = 3
+    EMPTY_STACK = 4
 
 
 class ApplicationView(metaclass=ABCMeta):
@@ -21,6 +29,7 @@ class ViewController():
     def __init__(self, screen, initial_view):
         self.screen = screen
         self.current_view = initial_view
+        self.stack = []
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -30,9 +39,21 @@ class ViewController():
             elif event.type == pygame.VIDEORESIZE:
                 self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             else:
-                view = self.current_view.handle_pygame_event(event)
-                if view:
-                    self.current_view = view
-
+                new_view_details = self.current_view.handle_pygame_event(event)
+                if new_view_details:
+                    new_view, action_type = new_view_details
+                    if action_type == ViewInitAction.PUSH:
+                        self.stack.append(self.current_view)
+                        self.current_view = new_view
+                    elif action_type == ViewInitAction.POP:
+                        self.current_view = self.stack.pop()
+                    elif action_type == ViewInitAction.REPLACE:
+                        self.current_view = new_view
+                    elif action_type == ViewInitAction.EMPTY_STACK:
+                        self.stack = []
+                        self.current_view = new_view
+                    else:
+                        raise ValueError
+                    
     def refresh(self):
         self.current_view.refresh()
