@@ -109,7 +109,7 @@ class Apple(Convex):
 class InfinityTail(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/infinity_tail.png")
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/infinity-tail.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
