@@ -54,6 +54,6 @@ class ViewController():
                         self.current_view = new_view
                     else:
                         raise ValueError
-                    
+
     def refresh(self):
         self.current_view.refresh()
