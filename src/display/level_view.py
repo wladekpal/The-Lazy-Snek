@@ -4,7 +4,8 @@ from .button import PlayButton, CancelButton, RestartButton, StepByStepButton
 from .simulation import Simulation, SimulationState
 from .items_frame import BlocksPane
 from .item import Item
-from .view_controller import ApplicationView
+from .view_controller import ApplicationView, ViewInitAction
+from pygame.locals import K_ESCAPE
 
 
 # frames and their elements display details
@@ -12,7 +13,7 @@ BOARD_FRAME_HEIGHT_PERCENTAGE = 85
 BOARD_FRAME_WIDTH_PERCENTAGE = 85
 CONTROLS_BUTTON_HEIGHT_PERCENTAGE = 60
 CONTROLS_BUTTONS_INTERSPACE = 40
-MAIN_FRAME_BACKGROUND_COLOR = (0, 0, 0)
+MAIN_FRAME_BACKGROUND_COLOR = (30, 30, 30)
 BOARD_FRAME_BACKGROUND_COLOR = (33, 47, 61)
 CONTROLS_FRAME_BACKGROUND_COLOR = (33, 47, 61)
 
@@ -22,13 +23,13 @@ MESSAGE_WIN = 'YOU WIN'
 MESSAGE_LOSS = 'YOU LOSE'
 
 # buttons textures
-PLAY_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/play-button.png")
-PAUSE_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/pause-button.png")
-RESET_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/restart-button.png")
-STOP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/stop-button.png")
-ACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/step-by-step-active.png")
+PLAY_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/play-button.png")
+PAUSE_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/pause-button.png")
+RESET_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/restart-button.png")
+STOP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/stop-button.png")
+ACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/button/step-by-step-active.png")
 INACTIVE_STEPBYSTEP_BUTTON_TEXTURE_PATH = os.path.join(os.path.dirname(__file__),
-                                                       "../../assets/step-by-step-inactive.png")
+                                                       "../../assets/button/step-by-step-inactive.png")
 
 # mouse buttons
 LEFT_MOUSE_BUTTON = 1
@@ -128,6 +129,7 @@ class LevelView(ApplicationView):
         self.refresh_message()
 
     def handle_pygame_event(self, event):
+        from .menu_view import LevelSubmenuView
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
             self.handle_click(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP and event.button == LEFT_MOUSE_BUTTON:
@@ -136,6 +138,8 @@ class LevelView(ApplicationView):
             self.handle_rightclick(event.pos)
         elif event.type == pygame.MOUSEMOTION:
             self.handle_motion(event.pos)
+        elif event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+            return (LevelSubmenuView(self.screen), ViewInitAction.PUSH)
 
     def handle_click(self, pos):
 

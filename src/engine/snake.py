@@ -32,11 +32,11 @@ class Snake:
 
     def reload_textures(self):
         dirname = os.path.dirname(__file__)
-        head_path = os.path.join(dirname, '../../assets/snek-head-' + self.color + '.png')
-        bent_head_path = os.path.join(dirname, '../../assets/snek-bent-head-' + self.color + '.png')
-        body_path = os.path.join(dirname, '../../assets/snek-body-' + self.color + '.png')
-        bent_body_path = os.path.join(dirname, '../../assets/snek-bent-body-' + self.color + '.png')
-        tail_path = os.path.join(dirname, '../../assets/snek-tail-' + self.color + '.png')
+        head_path = os.path.join(dirname, '../../assets/snake/snek-head-' + self.color + '.png')
+        bent_head_path = os.path.join(dirname, '../../assets/snake/snek-bent-head-' + self.color + '.png')
+        body_path = os.path.join(dirname, '../../assets/snake/snek-body-' + self.color + '.png')
+        bent_body_path = os.path.join(dirname, '../../assets/snake/snek-bent-body-' + self.color + '.png')
+        tail_path = os.path.join(dirname, '../../assets/snake/snek-tail-' + self.color + '.png')
         self.head_texture = pygame.image.load(head_path)
         self.bent_head_texture = pygame.image.load(bent_head_path)
         self.body_texture = pygame.image.load(body_path)
@@ -204,6 +204,9 @@ class Snake:
         if self.segments_orientation[-1][0] == self.segments_orientation[-1][1]:
             orientation = str(Direction(self.segments_orientation[-1][0]).give_reversed())
             self.segments_orientation[-1] = orientation + self.segments_orientation[-1][1]
+        else:
+            first_letter = str(Direction(self.segments_orientation[-1][1]).give_reversed())
+            self.segments_orientation[-1] = first_letter + self.segments_orientation[-1][1]
 
     def change_color(self, new_color):
         self.color = new_color
