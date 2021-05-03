@@ -7,7 +7,7 @@ class TurnLeft(Flat):
 
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/turn_left.png")
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/turn-left.png")
         return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
@@ -21,7 +21,7 @@ class TurnRight(Flat):
 
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/turn_right.png")
+        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/turn-right.png")
         return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
