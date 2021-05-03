@@ -176,7 +176,9 @@ class Level:
             self.backup_board()
         self.simulation_tick_counter += 1
 
-        self.snakes[self.snake_pointer].move()
+        for snake in self.snakes:
+            if snake.state != SnakeState.FINISHED and snake.state != SnakeState.DEAD:
+                snake.move()
 
         if self.did_all_snakes_finish():
             return LevelState.WIN
@@ -184,7 +186,6 @@ class Level:
         if self.is_any_dead():
             return LevelState.LOSS
 
-        self.update_snake_pointer()
         return LevelState.UNDECIDED
 
     def update_snake_pointer(self):

@@ -204,6 +204,9 @@ class Snake:
         if self.segments_orientation[-1][0] == self.segments_orientation[-1][1]:
             orientation = str(Direction(self.segments_orientation[-1][0]).give_reversed())
             self.segments_orientation[-1] = orientation + self.segments_orientation[-1][1]
+        else:
+            first_letter = str(Direction(self.segments_orientation[-1][1]).give_reversed())
+            self.segments_orientation[-1] = first_letter + self.segments_orientation[-1][1]
 
     def change_color(self, new_color):
         self.color = new_color
