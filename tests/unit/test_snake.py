@@ -54,6 +54,34 @@ def test_get_segment_texture():
     assert snake.get_segment_texture(segments[-1], 'E') == snake.head_texture
 
 
+def test_get_segment_texture_bent_head():
+    mock_board = mock.Mock()
+    segments = [(2, 2), (2, 1), (2, 0)]
+    color = "green"
+    mock_direction = mock.MagicMock()
+    snake = Snake(segments, color, mock_direction, mock_board)
+
+    assert snake.get_segment_texture(segments[-1], 'ES') == snake.bent_head_texture
+
+
+def test_get_rotation():
+    rotation_table = [(['NN', 'NE', 'EN', 'NS'], 0),
+                      (['EE', 'ES', 'SE', 'EW'], -90),
+                      (['SS', 'SW', 'WS', 'SN'], -180),
+                      (['WW', 'WN', 'NW', 'WE'], -270)]
+
+    for rotation_list in rotation_table:
+        desired_rotation = rotation_list[1]
+        directions = rotation_list[0]
+        for direction in directions:
+            assert Snake.get_rotation(direction) == desired_rotation
+
+    bad_directions = ['AB', 17, '$@', 'NNE', 'N', '']
+    for bad_direction in bad_directions:
+        with pytest.raises(BadSegmentOrientation):
+            Snake.get_rotation(bad_direction)
+
+
 def test_exception_in_segment_draw():
     mock_board = mock.Mock()
     segments = [(1, 1), (1, 2), (2, 2)]
