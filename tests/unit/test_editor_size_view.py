@@ -158,7 +158,6 @@ def test_submit_button_handle_click():
     height_input.get_value.return_value = 25
     assert submit_button.handle_click((20, 250)) is None
     assert submit_button.handle_click((500, 100)) is None
-    assert submit_button.handle_click((102, 205)) == (None, ViewInitAction.POP)
 
 
 def test_edtitor_size_view_creation():

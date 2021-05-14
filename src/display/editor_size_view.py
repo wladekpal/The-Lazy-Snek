@@ -2,6 +2,7 @@ from src.display.level_view import LEFT_MOUSE_BUTTON
 import pygame
 from pygame.constants import KEYDOWN, K_ESCAPE, MOUSEBUTTONDOWN
 from .view_controller import ApplicationView, ViewInitAction
+from .editor_view import EditorView
 
 BACKGROUND_COLOR = (207, 207, 207)
 INPUT_BOX_COLOR = (255, 255, 255)
@@ -73,8 +74,8 @@ class SubmitButton():
         self.height_input = height_input
 
     def action(self, width_value, height_value):
-        print('NEW LEVEL SIZE: ' + str(width_value) + ', ' + str(height_value))
-        return (None, ViewInitAction.POP)
+        level_dimensions = (width_value, height_value)
+        return (EditorView(pygame.display.get_surface(), level_dimensions), ViewInitAction.EMPTY_STACK)
 
     def self_draw(self, frame, pos, dimensions):
         self.pos = pos
