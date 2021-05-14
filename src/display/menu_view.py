@@ -138,6 +138,9 @@ class MenuView(PickView):
 
         super().__init__(screen, title, tiles)
 
+    def restore(self):
+        self.force_refresh()
+
 
 class LevelSubmenuView(PickView):
 

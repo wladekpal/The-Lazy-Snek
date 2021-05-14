@@ -29,7 +29,7 @@ class InputBox():
         rectangle = pygame.Rect(pos, dimensions)
         font = pygame.font.Font(pygame.font.get_default_font(), 50)
         text = font.render(self.input_text, True, TEXT_COLOR)
-        text_box = text.get_rect(center = rectangle.center)
+        text_box = text.get_rect(center=rectangle.center)
         pygame.draw.rect(frame, self.color, rectangle)
         frame.blit(text, text_box)
 
@@ -50,7 +50,7 @@ class InputBox():
         if event.type != KEYDOWN:
             raise UnsupportedEvent
 
-        if event.key ==pygame.K_BACKSPACE:
+        if event.key == pygame.K_BACKSPACE:
             self.input_text = self.input_text[:-1]
         else:
             if len(self.input_text) < 2 and event.unicode >= '0' and event.unicode <= '9':
@@ -131,7 +131,6 @@ class EditorSizeView(ApplicationView):
             return (None, ViewInitAction.POP)
         elif event.type == KEYDOWN and self.focused_input is not None:
             self.focused_input.handle_key(event)
-        
 
     def refresh(self):
         frame_width = self.screen.get_width()
@@ -140,25 +139,20 @@ class EditorSizeView(ApplicationView):
 
         font = pygame.font.Font(pygame.font.get_default_font(), 50)
         instruction_text = font.render('Input new level size:', True, TEXT_COLOR)
-        instruction_text_box = instruction_text.get_rect(center = (frame_width * 0.5, frame_height * 0.2))
+        instruction_text_box = instruction_text.get_rect(center=(frame_width * 0.5, frame_height * 0.2))
 
         height_text = font.render('Height:', True, TEXT_COLOR)
-        height_text_box = height_text.get_rect(center = (frame_width * 0.5, frame_height * 0.3))
+        height_text_box = height_text.get_rect(center=(frame_width * 0.5, frame_height * 0.3))
         height_text_box.right = frame_width * 0.5
 
         width_text = font.render('Width:', True, TEXT_COLOR)
-        width_text_box = width_text.get_rect(center = (frame_width * 0.5, frame_height * 0.4))
+        width_text_box = width_text.get_rect(center=(frame_width * 0.5, frame_height * 0.4))
         width_text_box.right = frame_width * 0.5
 
         background.fill(BACKGROUND_COLOR)
         self.screen.blit(instruction_text, instruction_text_box)
         self.screen.blit(height_text, height_text_box)
         self.screen.blit(width_text, width_text_box)
-        self.height_input.self_draw(self.screen, (frame_width * 0.5, frame_height * 0.3 - 25) , (75, 50))
-        self.width_input.self_draw(self.screen, (frame_width * 0.5, frame_height * 0.4 - 25) , (75, 50))
-        self.submit.self_draw(self.screen, (frame_width * 0.5 - 100, frame_height * 0.5), (300, 50))
-
-
-
-
-
+        self.height_input.self_draw(self.screen, (frame_width * 0.5, frame_height * 0.3 - 25), (75, 50))
+        self.width_input.self_draw(self.screen, (frame_width * 0.5, frame_height * 0.4 - 25), (75, 50))
+        self.submit.self_draw(self.screen, (frame_width * 0.5 - 150, frame_height * 0.5), (300, 50))
