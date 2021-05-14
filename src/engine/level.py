@@ -34,7 +34,7 @@ class Level:
         self.board_backup = None
         self.available_blocks = None
 
-        self.convert_board()
+        self.create_initial_board()
         self.convert_snakes()
         self.convert_available_blocks()
 
@@ -43,7 +43,7 @@ class Level:
         self.simulation_tick_counter = 0
         self.board_backup = None
 
-        self.convert_board()
+        self.create_initial_board()
         self.convert_snakes()
         self.convert_available_blocks()
 
@@ -56,88 +56,101 @@ class Level:
         self.snake_pointer = 0
         self.simulation_tick_counter = 0
 
-        self.reload_board()
+        self.reload_board_from_backup()
         self.convert_snakes()
         self.convert_available_blocks()
 
+    def create_board_from_data(self, data, entity_creation):
+        new_board = []
+        x, y = 0, 0
+        for row in data:
+            new_board.append([])
+            x = 0
+            for data in row:
+                entity = entity_creation(data, (x, y))
+                new_board[-1].append(entity)
+                x += 1
+            y += 1
+
+        return new_board
+
+    def create_entity_from_id(self, id, coordinates):
+        entity_kind = get_entity_kind(id)
+        x, y = coordinates
+        additional = self.block_additional_data[y][x]
+
+        if entity_kind == EntityKind.EMPTY:
+            return None
+
+        if entity_kind == EntityKind.FIELD:
+            field = get_field_from_id(id)
+            field.set_coordinates((x, y))
+            for key, val in additional.items():
+                field.set_additional_data(key, val)
+
+            return field
+
+        if entity_kind == EntityKind.BLOCK:
+            field = Field()
+            field.set_coordinates((x, y))
+            block = get_block_from_id(id)
+
+            if isinstance(block, Convex):
+                field.place_convex(block)
+            elif isinstance(block, Flat):
+                field.place_flat(block)
+            block.set_field(field)
+
+            return field
+
+    def create_entity_from_field_dict(self, field_dict, coordinates):
+        x, y = coordinates
+
+        if field_dict is None:
+            return None
+
+        field = field_dict['field']
+        field.set_coordinates((x, y))
+
+        for key, val in field_dict['additional'].items():
+            field.set_additional_data(key, val)
+
+        flat_layer, convex_layer = field_dict['blocks']
+        if flat_layer is not None:
+            flat = flat_layer
+            field.place_flat(flat)
+        if convex_layer is not None:
+            convex = convex_layer
+            field.place_convex(convex)
+
+        return field
+
+    def create_backup_entity(self, field, _):
+        if field is None:
+            return None
+
+        field_dict = {}
+        field_dict['field'] = field.copy()
+        field_dict['blocks'] = [None, None]
+        field_dict['additional'] = field.get_additional_data()
+
+        if field.flat_layer is not None:
+            field_dict['blocks'][0] = field.flat_layer.copy()
+        if field.convex_layer is not None:
+            field_dict['blocks'][1] = field.convex_layer.copy()
+
+        return field_dict
+
+    def reload_board_from_backup(self):
+        new_board = self.create_board_from_data(self.board_backup, self.create_entity_from_field_dict)
+        self.board = Board(new_board)
+
+    def create_initial_board(self):
+        new_board = self.create_board_from_data(self.block_placement, self.create_entity_from_id)
+        self.board = Board(new_board)
+
     def backup_board(self):
-        self.board_backup = []
-        for row in self.board.fields:
-            self.board_backup.append([])
-            for field in row:
-                if field is None:
-                    self.board_backup[-1].append(None)
-                else:
-                    field_dict = {}
-                    field_dict['field'] = field.copy()
-                    field_dict['blocks'] = [None, None]
-                    field_dict['additional'] = field.get_additional_data()
-
-                    if field.flat_layer is not None:
-                        field_dict['blocks'][0] = field.flat_layer.copy()
-                    if field.convex_layer is not None:
-                        field_dict['blocks'][1] = field.convex_layer.copy()
-
-                    self.board_backup[-1].append(field_dict)
-
-    def reload_board(self):
-        board = []
-        for i in range(len(self.board_backup)):
-            board.append([])
-            for j in range(len(self.board_backup[i])):
-                field_dict = self.board_backup[i][j]
-                if field_dict is None:
-                    board[-1].append(None)
-                else:
-                    field = field_dict['field']
-                    field.set_coordinates((j, i))
-
-                    for key, val in field_dict['additional'].items():
-                        field.set_additional_data(key, val)
-
-                    flat_layer, convex_layer = field_dict['blocks']
-                    if flat_layer is not None:
-                        flat = flat_layer
-                        field.place_flat(flat)
-                    if convex_layer is not None:
-                        convex = convex_layer
-                        field.place_convex(convex)
-
-                    board[-1].append(field)
-
-        self.board = Board(board)
-
-    def convert_board(self):
-        board = []
-        for i in range(len(self.block_placement)):
-            board.append([])
-            for j in range(len(self.block_placement[i])):
-                id = self.block_placement[i][j]
-                additional = self.block_additional_data[i][j]
-                if id == 0:
-                    board[i].append(None)
-                elif get_entity_kind(id) == EntityKind.FIELD:
-                    field = get_field_from_id(id)
-                    field.set_coordinates((j, i))
-                    for key, val in additional.items():
-                        field.set_additional_data(key, val)
-                    board[i].append(field)
-                else:
-                    field = Field()
-                    field.set_coordinates((j, i))
-                    block = get_block_from_id(id)
-                    if block is not None:
-                        if isinstance(block, Convex):
-                            field.place_convex(block)
-                        elif isinstance(block, Flat):
-                            field.place_flat(block)
-                        block.set_field(field)
-                    else:
-                        # it's custom field
-                        pass
-                    board[i].append(field)
-
-        self.board = Board(board)
+        self.board_backup = self.create_board_from_data(self.board.fields, self.create_backup_entity)
 
     def convert_snakes(self):
         self.snakes = []
