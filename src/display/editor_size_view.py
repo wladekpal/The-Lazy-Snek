@@ -97,8 +97,6 @@ class SubmitButton():
         frame.blit(text, text_rectangle)
 
     def handle_click(self, pos):
-        if self.pos is None:
-            return None
         self_x, self_y = self.pos
         mouse_x, mouse_y = pos
         if self_x <= mouse_x <= self_x + self.width and self_y <= mouse_y <= self_y + self.height:
@@ -106,8 +104,8 @@ class SubmitButton():
             height_value = self.height_input.get_value()
             if width_value and height_value:
                 return self.action(width_value, height_value)
-        else:
-            return None
+
+        return None
 
 
 class EditorSizeView(ApplicationView):
@@ -126,7 +124,6 @@ class EditorSizeView(ApplicationView):
             submit_return = self.submit.handle_click(event.pos)
             if submit_return:
                 return submit_return
-
         elif event.type == KEYDOWN and event.key == K_ESCAPE:
             return (None, ViewInitAction.POP)
         elif event.type == KEYDOWN and self.focused_input is not None:
