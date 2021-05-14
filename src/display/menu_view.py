@@ -1,5 +1,6 @@
 import pygame
 from .view_controller import ApplicationView, ViewInitAction
+from .editor_size_view import EditorSizeView
 from .level_view import LevelView
 from abc import ABCMeta
 import json
@@ -129,7 +130,7 @@ class MenuView(PickView):
         tiles = [
             PickLevelViewTile('Base levels', screen),
             DummyTile('Custom levels'),
-            DummyTile('Level editor'),
+            LevelEditorTile('Level editor', screen),
             QuitTile('Quit game'),
         ]
 
@@ -206,6 +207,15 @@ class PickLevelViewTile(Tile):
 
     def action(self):
         return (PickLevelView(self.screen), ViewInitAction.EMPTY_STACK)
+
+
+class LevelEditorTile(Tile):
+    def __init__(self, text, screen):
+        self.screen = screen
+        super().__init__(text)
+
+    def action(self):
+        return (EditorSizeView(self.screen), ViewInitAction.PUSH)
 
 
 # temporary class to display example tiles that will be implemented in the future
