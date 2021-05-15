@@ -74,7 +74,7 @@ class SubmitButton():
         self.height_input = height_input
 
     def action(self, width_value, height_value):
-        level_dimensions = (width_value, height_value)
+        level_dimensions = (height_value, width_value)
         return (EditorView(pygame.display.get_surface(), level_dimensions), ViewInitAction.EMPTY_STACK)
 
     def self_draw(self, frame, pos, dimensions):
