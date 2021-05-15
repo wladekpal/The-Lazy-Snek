@@ -1,7 +1,9 @@
 from .view_controller import ApplicationView
-import enum
 import pygame
-from abc import ABCMeta, abstractmethod
+from .tools_frame import ToolsFrame
+from .board_frame import BoardFrame
+from .all_blocks_frame import AllBlocksFrame
+from .level_blocks_frame import LevelBlocksFrame
 
 BUTTONS_FRAME_HEIGTH_PERCENTAGE = 18
 
@@ -11,27 +13,19 @@ ALL_BLOCKS_FRAME_WIDTH_PERCENTAGE = 15
 LEVEL_BLOCKS_FRAME_WIDTH_PERCENTAGE = 15
 assert BOARD_FRAME_WIDTH_PERCENTAGE + ALL_BLOCKS_FRAME_WIDTH_PERCENTAGE + LEVEL_BLOCKS_FRAME_WIDTH_PERCENTAGE == 100
 
-BOARD_FRAME_BACKGROUND_COLOR = (25, 25, 25)
-ALL_BLOCKS_FRAME_BACKGROUND_COLOR = (75, 75, 75)
-LEVEL_BLOCKS_FRAME_BACKGROUND_COLOR = (125, 125, 125)
-TOOLS_FRAME_BACKGROUND_COLOR = (175, 175, 175)
-
 BOARD_FRAME_COLUMN_INDEX = 0
-ALL_BLOCKS_FRAME_COLUMN_INDEX = 1
-LEVEL_BLOCKS_FRAME_COLUMN_INDEX = 2
+ALL_BLOCKS_FRAME_COLUMN_INDEX = 2
+LEVEL_BLOCKS_FRAME_COLUMN_INDEX = 1
 
 NON_TOOLS_FRAMES_ROW_INDEX = 0
 TOOLS_FRAME_ROW_INDEX = 1
 
 BOARD_FRAME_DETAILS_INDEX = 0
-ALL_BLOCKS_FRAME_DETAILS_INDEX = 1
-LEVEL_BLOCKS_FRAME_DETAILS_INDEX = 2
+ALL_BLOCKS_FRAME_DETAILS_INDEX = 2
+LEVEL_BLOCKS_FRAME_DETAILS_INDEX = 1
 TOOLS_FRAME_DETAILS_INDEX = 3
 
-
-# types of active editor tools
-class EditorToolType(enum.Enum):
-    pass
+LEFT_MOUSE_BUTTON = 1
 
 
 class EditorView(ApplicationView):
@@ -57,7 +51,7 @@ class EditorView(ApplicationView):
         placements = [
             (0, 0),
             (widths[BOARD_FRAME_COLUMN_INDEX], 0),
-            (widths[BOARD_FRAME_COLUMN_INDEX] + widths[ALL_BLOCKS_FRAME_COLUMN_INDEX], 0),
+            (widths[BOARD_FRAME_COLUMN_INDEX] + widths[LEVEL_BLOCKS_FRAME_COLUMN_INDEX], 0),
             (0, heights[NON_TOOLS_FRAMES_ROW_INDEX])
         ]
         return placements
@@ -65,8 +59,8 @@ class EditorView(ApplicationView):
     def calculate_frames_dimensions(self, widths, heights):
         dimensions = [
             (widths[BOARD_FRAME_COLUMN_INDEX], heights[NON_TOOLS_FRAMES_ROW_INDEX]),
-            (widths[ALL_BLOCKS_FRAME_COLUMN_INDEX], heights[NON_TOOLS_FRAMES_ROW_INDEX]),
             (widths[LEVEL_BLOCKS_FRAME_COLUMN_INDEX], heights[NON_TOOLS_FRAMES_ROW_INDEX]),
+            (widths[ALL_BLOCKS_FRAME_COLUMN_INDEX], heights[NON_TOOLS_FRAMES_ROW_INDEX]),
             (self.screen.get_width(), heights[TOOLS_FRAME_ROW_INDEX])
         ]
         return dimensions
@@ -85,10 +79,16 @@ class EditorView(ApplicationView):
         details = self.calculate_frames_details()
         return [
             BoardFrame(self.screen, details[BOARD_FRAME_DETAILS_INDEX]),
-            AllBlocksFrame(self.screen, details[ALL_BLOCKS_FRAME_DETAILS_INDEX]),
-            LevelBlocksFrame(self.screen, details[LEVEL_BLOCKS_FRAME_DETAILS_INDEX]),
+            LevelBlocksFrame(self.screen, details[ALL_BLOCKS_FRAME_DETAILS_INDEX]),
+            AllBlocksFrame(self.screen, details[LEVEL_BLOCKS_FRAME_DETAILS_INDEX]),
             ToolsFrame(self.screen, details[TOOLS_FRAME_DETAILS_INDEX]),
         ]
+
+    def get_active_tool(self):
+        return self.frames[TOOLS_FRAME_DETAILS_INDEX].get_active_tool()
+
+    def get_active_id(self):
+        return self.frames[ALL_BLOCKS_FRAME_DETAILS_INDEX].get_active_id()
 
     def resize_frames(self):
         details = self.calculate_frames_details()
@@ -107,66 +107,7 @@ class EditorView(ApplicationView):
             frame.refresh()
 
     def handle_pygame_event(self, event):
-        pass
-
-
-class EditorFrame(metaclass=ABCMeta):
-
-    def __init__(self, screen, details):
-        self.resize(screen, details)
-
-    def resize(self, screen, details):
-        position, dimensions = details
-        self.position = position
-        self.width, self.height = dimensions
-        x, y = self.position
-        self.surface = screen.subsurface(pygame.Rect(x, y, self.width, self.height))
-
-    def pos_in_frame_area(self, pos):
-        x, y = pos
-        self_x, self_y = self.position
-        return self_x <= x <= self_x + self.width and self_y <= y <= self_y + self.height
-
-    @abstractmethod
-    def handle_event(self, event):
-        pass
-
-    @abstractmethod
-    def refresh(self):
-        pass
-
-
-class BoardFrame(EditorFrame):
-
-    def handle_event(self, event):
-        pass
-
-    def refresh(self):
-        self.surface.fill(BOARD_FRAME_BACKGROUND_COLOR)
-
-
-class AllBlocksFrame(EditorFrame):
-
-    def handle_event(self, event):
-        pass
-
-    def refresh(self):
-        self.surface.fill(ALL_BLOCKS_FRAME_BACKGROUND_COLOR)
-
-
-class LevelBlocksFrame(EditorFrame):
-
-    def handle_event(self, event):
-        pass
-
-    def refresh(self):
-        self.surface.fill(LEVEL_BLOCKS_FRAME_BACKGROUND_COLOR)
-
-
-class ToolsFrame(EditorFrame):
-
-    def handle_event(self, event):
-        pass
-
-    def refresh(self):
-        self.surface.fill(TOOLS_FRAME_BACKGROUND_COLOR)
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
+            for frame in self.frames:
+                if frame.pos_in_frame_area(event.pos):
+                    frame.handle_click(frame.get_relative_pos(event.pos), self.get_active_tool(), self.get_active_id())
