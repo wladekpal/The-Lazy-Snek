@@ -77,5 +77,14 @@ def get_field_from_id(id):
     return FIELDS_DICT[id]()
 
 
+def get_all_ids():
+    ids = []
+    for key in BLOCKS_DICT.keys():
+        ids.append(key)
+    for key in FIELDS_DICT.keys():
+        ids.append(key)
+    return ids
+
+
 class EntityDifferentingKindError(Exception):
     pass
