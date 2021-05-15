@@ -101,17 +101,18 @@ class ItemWrapper():
         if self.active_texture_size != size:
             self.active_texture = pygame.transform.scale(self.active_texture_base, (size, size))
 
-    def __init__(self, id):
-        kind = get_entity_kind(id)
+    def __init__(self, item_id):
+        kind = get_entity_kind(item_id)
         if kind == EntityKind.BLOCK:
-            self.wrapped_entity = get_block_from_id(id)
+            self.wrapped_entity = get_block_from_id(item_id)
         elif kind == EntityKind.FIELD:
-            self.wrapped_entity = get_field_from_id(id)
+            self.wrapped_entity = get_field_from_id(item_id)
         else:
             raise ValueError
         self.active = False
         self.active_texture_size = None
         self.active_texture_base = pygame.image.load(ACTIVE_TEXTURE_PATH)
+        self.id = item_id
 
     def set_active(self):
         self.active = True
@@ -131,7 +132,6 @@ class ItemWrapper():
         self.pos = pos
         self.side_length = side_length
         self.wrapped_entity.self_draw(surface, pos, side_length)
-        self.id = id
         if self.active:
             self.refresh_active_texture(side_length)
             surface.blit(self.active_texture, pos)

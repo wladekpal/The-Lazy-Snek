@@ -108,26 +108,28 @@ class Board:
             x, y = self.get_screen_position_coordinates(position)
             if self.valid_coordinates((x, y)):
                 field = get_field_from_id(entity_id)
-                field.set_coordinates((x, y))
+                field.set_coordinates((y, x))
                 field.set_board(self)
-                self.fields[x][y] = field
+                self.fields[y][x] = field
                 return True
 
         return False
 
-    def remove_highest(self, position):
+    def try_removing_highest(self, position):
         field = self.request_field_on_screen(position)
         if field is None:
-            return
+            return False
 
         if field.convex_layer is not None:
             field.remove_convex()
-        elif field.flat_later is not None:
+        elif field.flat_layer is not None:
             field.remove_flat()
         else:
             x, y = self.get_screen_position_coordinates(position)
-            if self.valid_coordinates((x, y)):
-                self.fields[x][y] = None
+            if not self.valid_coordinates((x, y)):
+                return False
+            self.fields[y][x] = None
+        return True
 
 class OutOfRange(Exception):
     pass

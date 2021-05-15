@@ -12,8 +12,6 @@ class EditorContainer():
         self.creator = creator
         self.dimensions = dimensions
         self.board = Board(self.create_entity_filled_board(dimensions, lambda: None))
-        self.board.fields[0][0] = Field()
-        self.board.fields[0][0].set_coordinates((0, 0))
         self.additional_data = self.create_entity_filled_board(dimensions, dict)
         self.block_placement_stack_matrix = self.create_entity_filled_board(dimensions, lambda: [])
         self.snakes = []
@@ -27,11 +25,12 @@ class EditorContainer():
             new_board.append([entity_constructor() for _ in range(x)])
         return new_board
 
-    def try_place_entity(self, entity_id, position):
-        is_placed = self.board.try_place_entity(entity_id, position)
+    def try_placing_entity(self, entity_id, position):
+        is_placed = self.board.try_placing_entity(entity_id, position)
         if is_placed:
             x, y = self.board.get_screen_position_coordinates(position)
-            self.block_placement_stack_matrix[x][y].append(entity_id)
+            self.block_placement_stack_matrix[y][x].append(entity_id)
+        return is_placed
 
     def try_place_snake(self, snake, position):
         pass
@@ -41,10 +40,10 @@ class EditorContainer():
         if field is not None and field.snake_layer is not None:
             pass
         else:
-            is_removed = self.board.try_remove_highest(position)
+            is_removed = self.board.try_removing_highest(position)
             if is_removed:
                 x, y = self.board.get_screen_position_coordinates(position)
-                self.block_placement_stack_matrix[x][y].pop()
+                self.block_placement_stack_matrix[y][x].pop()
 
     def add_available_block(self, block_id):
         for block_data in self.available_blocks:
@@ -80,5 +79,3 @@ class EditorContainer():
 
     def self_draw(self, frame):
         self.board.self_draw(frame)
-
-
