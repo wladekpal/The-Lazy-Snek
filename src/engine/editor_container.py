@@ -52,6 +52,16 @@ class EditorContainer():
                 return
         self.available_blocks.append([block_id, 1])
 
+    def remove_available_block(self, block_id_to_remove):
+        for i in range(len(self.available_blocks)):
+            block_id, count = self.available_blocks[i]
+            if block_id == block_id_to_remove:
+                if count > 1:
+                    self.available_blocks[i][1] -= 1
+                else:
+                    self.available_blocks.pop(i)
+                return
+
     def get_block_placement(self):
         block_placement = []
         for row in self.block_placement_stack_matrix:

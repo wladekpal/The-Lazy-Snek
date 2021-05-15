@@ -6,12 +6,12 @@ from .all_blocks_frame import AllBlocksFrame
 from .level_blocks_frame import LevelBlocksFrame
 from ..engine.editor_container import EditorContainer
 
-BUTTONS_FRAME_HEIGTH_PERCENTAGE = 18
+BUTTONS_FRAME_HEIGTH_PERCENTAGE = 14
 
 # these 3 values must add up to 100
-BOARD_FRAME_WIDTH_PERCENTAGE = 70
-ALL_BLOCKS_FRAME_WIDTH_PERCENTAGE = 15
-LEVEL_BLOCKS_FRAME_WIDTH_PERCENTAGE = 15
+BOARD_FRAME_WIDTH_PERCENTAGE = 74
+ALL_BLOCKS_FRAME_WIDTH_PERCENTAGE = 13
+LEVEL_BLOCKS_FRAME_WIDTH_PERCENTAGE = 13
 assert BOARD_FRAME_WIDTH_PERCENTAGE + ALL_BLOCKS_FRAME_WIDTH_PERCENTAGE + LEVEL_BLOCKS_FRAME_WIDTH_PERCENTAGE == 100
 
 BOARD_FRAME_COLUMN_INDEX = 0
@@ -80,7 +80,7 @@ class EditorView(ApplicationView):
         details = self.calculate_frames_details()
         return [
             BoardFrame(self.screen, details[BOARD_FRAME_DETAILS_INDEX], self.editor_container),
-            LevelBlocksFrame(self.screen, details[ALL_BLOCKS_FRAME_DETAILS_INDEX]),
+            LevelBlocksFrame(self.screen, details[ALL_BLOCKS_FRAME_DETAILS_INDEX], self.editor_container),
             AllBlocksFrame(self.screen, details[LEVEL_BLOCKS_FRAME_DETAILS_INDEX]),
             ToolsFrame(self.screen, details[TOOLS_FRAME_DETAILS_INDEX]),
         ]

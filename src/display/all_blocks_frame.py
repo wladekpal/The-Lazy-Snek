@@ -8,6 +8,7 @@ MAXIMUM_COLUMNS = 6
 ITEMS_INTERSPACE = 5
 ACTIVE_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/editor/active.png")
 
+INVALID_LEVEL_AVAILABLE_BLOCKS_IDS = [1, 17, 18, 19, 20, 26, 2, 10, 11, 12, 13]
 
 class AllBlocksFrame(EditorFrame):
 
@@ -16,11 +17,12 @@ class AllBlocksFrame(EditorFrame):
         super().__init__(screen, details)
         self.active_id = None
         self.items = [ItemWrapper(id) for id in get_all_ids()]
+        self.background = ALL_BLOCKS_FRAME_BACKGROUND_COLOR
 
     def get_active_id(self):
         return self.active_id
 
-    def refresh(self):
+    def refresh(self, fixed_number_of_items=None):
 
         def best_columns_number(number_of_items):
 
@@ -59,21 +61,27 @@ class AllBlocksFrame(EditorFrame):
                     y_pos = ITEMS_INTERSPACE
                 return placements[:number_of_items]
 
-            number_of_items = len(get_all_ids())
+            if not fixed_number_of_items:
+                number_of_items = len(self.items)
+            else:
+                number_of_items = fixed_number_of_items
             number_of_columns, item_side_length = best_columns_number(number_of_items)
             return (create_placements(number_of_columns, number_of_items, item_side_length), item_side_length)
 
         placements, side_length = calculate_placements()
-        self.surface.fill(ALL_BLOCKS_FRAME_BACKGROUND_COLOR)
-        assert len(placements) == len(self.items)
-        for i in range(len(placements)):
+        self.surface.fill(self.background)
+        for i in range(len(self.items)):
             self.items[i].self_draw(placements[i], side_length, self.surface)
 
-    def handle_example_tool_click(self, pos):
-        pass
+    def add_to_level_handler(self, pos, active_id, editor_container):
+        for item in self.items:
+            if item.pos_in_area(pos):
+                clicked_id = item.get_id()
+                if clicked_id not in INVALID_LEVEL_AVAILABLE_BLOCKS_IDS:
+                    editor_container.add_available_block(clicked_id)
 
     TOOLS_HANDLERS = {
-        EditorTool.EXAMPLE: handle_example_tool_click
+        EditorTool.ADD_TO_LEVEL: add_to_level_handler,
     }
 
     def set_all_items_inactive(self):
@@ -92,7 +100,7 @@ class AllBlocksFrame(EditorFrame):
         if active_tool not in self.TOOLS_HANDLERS:
             self.default_click_handler(pos)
             return None
-        self.TOOLS_HANDLERS[active_tool](pos)
+        self.TOOLS_HANDLERS[active_tool](self, pos, active_id, editor_container)
 
 
 class ItemWrapper():
