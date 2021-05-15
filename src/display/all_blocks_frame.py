@@ -88,7 +88,7 @@ class AllBlocksFrame(EditorFrame):
                 self.active_id = item.get_id()
                 return
 
-    def handle_click(self, pos, active_tool, active_id):
+    def handle_click(self, pos, active_tool, active_id, editor_container):
         if active_tool not in self.TOOLS_HANDLERS:
             self.default_click_handler(pos)
             return None

@@ -4,6 +4,7 @@ from .tools_frame import ToolsFrame
 from .board_frame import BoardFrame
 from .all_blocks_frame import AllBlocksFrame
 from .level_blocks_frame import LevelBlocksFrame
+from ..engine.editor_container import EditorContainer
 
 BUTTONS_FRAME_HEIGTH_PERCENTAGE = 18
 
@@ -78,7 +79,7 @@ class EditorView(ApplicationView):
     def new_editor_view_frames(self):
         details = self.calculate_frames_details()
         return [
-            BoardFrame(self.screen, details[BOARD_FRAME_DETAILS_INDEX]),
+            BoardFrame(self.screen, details[BOARD_FRAME_DETAILS_INDEX], self.editor_container),
             LevelBlocksFrame(self.screen, details[ALL_BLOCKS_FRAME_DETAILS_INDEX]),
             AllBlocksFrame(self.screen, details[LEVEL_BLOCKS_FRAME_DETAILS_INDEX]),
             ToolsFrame(self.screen, details[TOOLS_FRAME_DETAILS_INDEX]),
@@ -98,6 +99,7 @@ class EditorView(ApplicationView):
 
     def __init__(self, screen, level_dimensions):
         super().__init__(screen)
+        self.editor_container = EditorContainer(level_dimensions, "abba", "ojcze")
         self.frames = self.new_editor_view_frames()
 
     def refresh(self):
@@ -110,4 +112,7 @@ class EditorView(ApplicationView):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
             for frame in self.frames:
                 if frame.pos_in_frame_area(event.pos):
-                    frame.handle_click(frame.get_relative_pos(event.pos), self.get_active_tool(), self.get_active_id())
+                    frame.handle_click(frame.get_relative_pos(event.pos), 
+                                       self.get_active_tool(), 
+                                       self.get_active_id(), 
+                                       self.editor_container)

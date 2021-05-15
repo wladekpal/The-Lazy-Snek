@@ -1,4 +1,4 @@
-from .editor_frame import EditorFrame
+from .editor_frame import EditorFrame, EditorTool
 import os
 import pygame
 
@@ -15,18 +15,13 @@ class ToolsFrame(EditorFrame):
 
     def create_buttons(self):
         buttons = [
-            ToolButton(1, 'placeholder', active=True),
-            ToolButton(2, 'placeholder'),
-            ToolButton(3, 'placeholder'),
-            ToolButton(4, 'placeholder'),
-            ToolButton(5, 'placeholder'),
-            ToolButton(6, 'placeholder'),
-            ToolButton(7, 'placeholder'),
-            ToolButton(8, 'placeholder'),
-            ToolButton(9, 'placeholder'),
-            ToolButton(10, 'placeholder'),
-            ToolButton(11, 'placeholder'),
-            ToolButton(12, 'placeholder'),
+            ToolButton(EditorTool.ADD_BLOCK, 'add-to-board', active=True),
+            ToolButton(EditorTool.ERASE, 'erase'),
+            ToolButton(EditorTool.SNAKE_CREATOR, 'snake-creator'),
+            ToolButton(EditorTool.SNAKE_CHANGE_COLOR, 'snake-change-color'),
+            ToolButton(EditorTool.SNAKE_ROTATE_HEAD, 'snake-head-rotate'),
+            ToolButton(EditorTool.TELEPORT_LINKER, 'teleport-linker'),
+            ToolButton(EditorTool.ADD_TO_LEVEL, 'add-to-solve'),
         ]
         return buttons
 
@@ -47,7 +42,7 @@ class ToolsFrame(EditorFrame):
         for button in self.buttons:
             button.active = False
 
-    def handle_click(self, pos, active_tool, active_id):
+    def handle_click(self, pos, active_tool, active_id, editor_container):
         for button in self.buttons:
             if button.pos_in_area(pos):
                 self.set_all_buttons_inactive()

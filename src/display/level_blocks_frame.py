@@ -15,7 +15,7 @@ class LevelBlocksFrame(EditorFrame):
         EditorTool.EXAMPLE: handle_example_tool_click
     }
 
-    def handle_click(self, pos, active_tool, active_id):
+    def handle_click(self, pos, active_tool, active_id, editor_container):
         if active_tool not in self.TOOLS_HANDLERS:
             return None
         self.TOOLS_HANDLERS[active_tool](pos)
