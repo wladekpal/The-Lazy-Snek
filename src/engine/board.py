@@ -1,6 +1,7 @@
 import pygame
 from .id_parser import EntityKind, get_entity_kind, get_block_from_id, get_field_from_id
 
+
 class Board:
     def __init__(self, fields):
         self.fields = fields
@@ -100,7 +101,7 @@ class Board:
 
             block = get_block_from_id(entity_id)
             return field.try_placing(block)
-        
+
         if entity_kind == EntityKind.FIELD:
             if field is not None:
                 return False
@@ -130,6 +131,7 @@ class Board:
                 return False
             self.fields[y][x] = None
         return True
+
 
 class OutOfRange(Exception):
     pass

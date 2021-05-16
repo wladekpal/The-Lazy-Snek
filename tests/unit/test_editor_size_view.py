@@ -2,12 +2,12 @@ from src.display.level_view import LEFT_MOUSE_BUTTON
 from pygame.constants import KEYDOWN, K_BACKSPACE, K_ESCAPE, MOUSEBUTTONDOWN
 import pytest
 import mock
-from src.display.editor_size_view import InputBox, SubmitButton, EditorSizeView, UnsupportedEvent
+from src.display.editor_size_view import NumberInputBox, SubmitButton, EditorSizeView, UnsupportedEvent
 from src.display.view_controller import ViewInitAction
 
 
 def test_input_box_creation():
-    input_box = InputBox()
+    input_box = NumberInputBox()
     assert input_box.color == (255, 255, 255)
     assert not input_box.is_focused
     assert input_box.input_text == ''
@@ -26,7 +26,7 @@ def test_input_box_handle_click():
         [(125, 0), INPUT_BOX_COLOR, False]]
 
     for test in test_table:
-        input_box = InputBox()
+        input_box = NumberInputBox()
         input_box.pos = input_box_pos
         input_box.width, input_box.height = input_box_size
 
@@ -41,7 +41,7 @@ def test_input_box_handle_click():
 
 
 def test_input_box_handle_key_exception():
-    input_box = InputBox()
+    input_box = NumberInputBox()
 
     event_mock = mock.Mock()
     event_mock.type = MOUSEBUTTONDOWN
@@ -51,7 +51,7 @@ def test_input_box_handle_key_exception():
 
 
 def test_input_box_handle_key_backspace():
-    input_box = InputBox()
+    input_box = NumberInputBox()
 
     event_mock = mock.Mock()
     event_mock.type = KEYDOWN
@@ -73,7 +73,7 @@ def test_input_box_handle_key_backspace():
 
 
 def test_input_box_handle_key():
-    input_box = InputBox()
+    input_box = NumberInputBox()
 
     event_mock = mock.Mock()
     event_mock.type = KEYDOWN
@@ -100,12 +100,12 @@ def test_input_box_handle_key():
 
 
 def test_input_box_get_value_empty():
-    input_box = InputBox()
+    input_box = NumberInputBox()
     assert input_box.get_value() is None
 
 
 def test_input_box_get_value():
-    input_box = InputBox()
+    input_box = NumberInputBox()
 
     input_box.input_text = '0'
     assert input_box.get_value() is None
@@ -123,22 +123,27 @@ def test_input_box_get_value():
 def test_submit_button_creation():
     width_input = mock.Mock()
     height_input = mock.Mock()
+    name_input = mock.Mock()
+    author_input = mock.Mock()
 
-    submit_button = SubmitButton(width_input, height_input)
-    assert submit_button.width_input == width_input
-    assert submit_button.height_input == height_input
+    submit_button = SubmitButton([width_input, height_input, name_input, author_input])
+    assert submit_button.inputs == [width_input, height_input, name_input, author_input]
 
 
 def test_submit_button_handle_click():
     width_input = mock.Mock()
     height_input = mock.Mock()
+    name_input = mock.Mock()
+    author_input = mock.Mock()
 
-    submit_button = SubmitButton(width_input, height_input)
+    submit_button = SubmitButton([width_input, height_input, name_input, author_input])
     submit_button.pos = (100, 200)
     submit_button.width, submit_button.height = (50, 100)
 
     width_input.get_value.return_value = None
-    width_input.get_value.return_value = None
+    height_input.get_value.return_value = None
+    name_input.get_value.return_value = None
+    author_input.get_value.return_value = None
     assert submit_button.handle_click((20, 250)) is None
     assert submit_button.handle_click((500, 100)) is None
     assert submit_button.handle_click((52, 205)) is None
@@ -156,6 +161,8 @@ def test_submit_button_handle_click():
 
     width_input.get_value.return_value = 35
     height_input.get_value.return_value = 25
+    name_input.get_value.return_value = 'test'
+    author_input.get_value.return_value = 'test'
     assert submit_button.handle_click((20, 250)) is None
     assert submit_button.handle_click((500, 100)) is None
 

@@ -10,6 +10,7 @@ ACTIVE_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/edit
 
 INVALID_LEVEL_AVAILABLE_BLOCKS_IDS = [1, 17, 18, 19, 20, 26, 2, 10, 11, 12, 13]
 
+
 class AllBlocksFrame(EditorFrame):
 
     def __init__(self, screen, details):
