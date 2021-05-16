@@ -11,11 +11,7 @@ class EditorTool(enum.Enum):
     SNAKE_ROTATE_HEAD = 5
     TELEPORT_LINKER = 6
     ADD_TO_LEVEL = 7
-    EXAMPLE = 100
 
-class LevelButton(enum.Enum):
-    PLAY_SIMULATION = 1
-    SAVE = 2
 
 class EditorFrame(metaclass=ABCMeta):
 

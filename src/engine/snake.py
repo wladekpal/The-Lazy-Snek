@@ -44,7 +44,7 @@ class Snake:
         self.body_texture = pygame.image.load(body_path)
         self.bent_body_texture = pygame.image.load(bent_body_path)
         self.tail_texture = pygame.image.load(tail_path)
-        self.egg_texture = pygame.image.load(egg_path) #BAJO JAJO
+        self.egg_texture = pygame.image.load(egg_path)
 
     def initial_orientation(self):
         self.segments_orientation = []
@@ -83,8 +83,8 @@ class Snake:
     def get_segment_texture(self, segment, neighbours_directions):
         bent_directions = ['NE', 'EN', 'ES', 'SE', 'SW', 'WS', 'WN', 'NW']
         mirror_head_directions = ['EN', 'SE', 'WS', 'NW']
-        if len(self.segments) == 1: #BAJO JAJO
-            return self.egg_texture #BAJO JAJO
+        if len(self.segments) == 1:
+            return self.egg_texture
 
         if segment == self.segments[0]:
             return self.tail_texture

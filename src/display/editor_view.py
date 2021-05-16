@@ -1,4 +1,4 @@
-from .view_controller import ApplicationView
+from .view_controller import ApplicationView, ViewInitAction
 import pygame
 from .tools_frame import ToolsFrame
 from .nontools_frame import NonToolsFrame
@@ -6,6 +6,7 @@ from .board_frame import BoardFrame
 from .all_blocks_frame import AllBlocksFrame
 from .level_blocks_frame import LevelBlocksFrame
 from ..engine.editor_container import EditorContainer
+from pygame import K_ESCAPE
 
 BUTTONS_FRAME_HEIGTH_PERCENTAGE = 14
 TOOLS_FRAME_WIDTH_PERCENTAGE = 74
@@ -53,7 +54,8 @@ class EditorView(ApplicationView):
         third_column_width = screen_width * LEVEL_BLOCKS_FRAME_WIDTH_PERCENTAGE // 100
         first_column_width = screen_width - (second_column_width + third_column_width)
 
-        widths = [[first_column_width, second_column_width, third_column_width], [lower_first_column_width, lower_second_column_width]]
+        widths = [[first_column_width, second_column_width, third_column_width],
+                  [lower_first_column_width, lower_second_column_width]]
 
         return [widths, heights]
 
@@ -61,7 +63,8 @@ class EditorView(ApplicationView):
         placements = [
             (0, 0),
             (widths[NON_BUTTONS_FRAMES_ROW_INDEX][BOARD_FRAME_COLUMN_INDEX], 0),
-            (widths[NON_BUTTONS_FRAMES_ROW_INDEX][BOARD_FRAME_COLUMN_INDEX] + widths[NON_BUTTONS_FRAMES_ROW_INDEX][LEVEL_BLOCKS_FRAME_COLUMN_INDEX], 0),
+            (widths[NON_BUTTONS_FRAMES_ROW_INDEX][BOARD_FRAME_COLUMN_INDEX] +
+             widths[NON_BUTTONS_FRAMES_ROW_INDEX][LEVEL_BLOCKS_FRAME_COLUMN_INDEX], 0),
             (0, heights[NON_BUTTONS_FRAMES_ROW_INDEX]),
             (widths[BUTTONS_FRAME_ROW_INDEX][TOOLS_FRAME_COLUMN_INDEX], heights[NON_BUTTONS_FRAMES_ROW_INDEX])
         ]
@@ -128,7 +131,9 @@ class EditorView(ApplicationView):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
             for frame in self.frames:
                 if frame.pos_in_frame_area(event.pos):
-                    frame.handle_click(frame.get_relative_pos(event.pos),
-                                       self.get_active_tool(),
-                                       self.get_active_id(),
-                                       self.editor_container)
+                    return frame.handle_click(frame.get_relative_pos(event.pos),
+                                              self.get_active_tool(),
+                                              self.get_active_id(),
+                                              self.editor_container)
+        elif event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+            return (None, ViewInitAction.POP)

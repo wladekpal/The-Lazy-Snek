@@ -122,7 +122,7 @@ class SubmitButton():
         frame.blit(text, text_rectangle)
 
     def action(self, level_data):
-        return (EditorView(pygame.display.get_surface(), level_data), ViewInitAction.EMPTY_STACK)
+        return (EditorView(pygame.display.get_surface(), level_data), ViewInitAction.REPLACE)
 
     def handle_click(self, pos):
         self_x, self_y = self.pos

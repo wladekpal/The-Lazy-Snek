@@ -1,8 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from .editor_frame import EditorFrame
-from src.engine.level_validator import level_validator
+from ..engine.level_validator import level_validator
+from ..engine.level import Level
 from .file_explorer import select_destination
-from .level_view import LevelView
+from .level_view import EditorLevelView
+from .view_controller import ViewInitAction
 import os
 import pygame
 
@@ -14,12 +16,14 @@ BUTTONS_INTERSPACE_PERCENTAGE = 20
 
 TOOLS_FRAME_BACKGROUND_COLOR = (255, 0, 0)
 
+FRAMES_PER_SIMULATION_TICK = 8
+
 
 class NonToolsFrame(EditorFrame):
 
     def create_buttons(self):
         buttons = [
-            SaveButton('placeholder'),
+            PlayButton('placeholder'),
             SaveButton('save'),
         ]
         return buttons
@@ -32,7 +36,7 @@ class NonToolsFrame(EditorFrame):
     def handle_click(self, pos, active_tool, active_id, editor_container):
         for button in self.buttons:
             if button.pos_in_area(pos) and button.active:
-                button.handle_click(editor_container)
+                return button.handle_click(editor_container)
 
     def validate_level(self, editor_container):
         level_dictionary = editor_container.convert_level_to_dictionary()
@@ -98,11 +102,17 @@ class NonToolButton(metaclass=ABCMeta):
     def handle_click(self, editor_container):
         pass
 
+
 class SaveButton(NonToolButton):
 
     def handle_click(self, editor_container):
         select_destination(editor_container.convert_level_to_dictionary())
         return None
 
-        
 
+class PlayButton(NonToolButton):
+
+    def handle_click(self, editor_container):
+        return (EditorLevelView(pygame.display.get_surface(),
+                Level(editor_container.convert_level_to_dictionary()),
+                FRAMES_PER_SIMULATION_TICK), ViewInitAction.PUSH)

@@ -1,5 +1,4 @@
 from .editor_frame import EditorFrame, EditorTool
-from .file_explorer import select_destination
 
 BOARD_FRAME_BACKGROUND_COLOR = (25, 25, 25)
 

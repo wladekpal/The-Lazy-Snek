@@ -104,7 +104,7 @@ def check_snakes(level_representation):
             return check_snake_placement(snake['placement'])
         except KeyError:
             return False
-    
+
     return False
 
 

@@ -1,4 +1,3 @@
-import json
 import enum
 from .blocks import Convex, Flat
 from .field import Field

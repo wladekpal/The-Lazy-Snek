@@ -99,7 +99,7 @@ class EditorContainer():
         snake_data = []
         for snake in self.snakes:
             snake_record = {
-                "name": "snake", 
+                "name": "snake",
                 "type": 0,
                 "color": snake.color,
                 "placement": snake.segments,
@@ -113,7 +113,7 @@ class EditorContainer():
         x, y = field.coordinates
         if abs(head_x - x) + abs(head_y - y) == 1:
             new_segments = snake.segments + [(x, y)]
-            new_direction = Snake.get_direction_betwen_segments(snake.segments[-1], (x,y))
+            new_direction = Snake.get_direction_betwen_segments(snake.segments[-1], (x, y))
             new_snake = Snake(new_segments, 'green', Direction(new_direction), self.board)
             snake.destroy()
             self.snakes.pop()
@@ -137,8 +137,8 @@ class EditorContainer():
     def finish_snake_building(self):
         if not self.active_snake:
             return
-        if len(self.active_snake.segments) < 2: #BAJO JAJO
-            self.remove_snake(self.active_snake) #BAJO JAJO
+        if len(self.active_snake.segments) < 2:
+            self.remove_snake(self.active_snake)
         self.active_snake = None
 
     def rotate_snake_head(self, position):
@@ -166,9 +166,8 @@ class EditorContainer():
                 if self.board.request_field((out_x, out_y)) == self.chosen_teleport:
                     in_x, in_y = field.coordinates
                     self.additional_data[in_y][in_x] = {"end_coordinates": (out_x, out_y)}
-                
         elif isinstance(field, EndTeleport):
-            self.chosen_teleport = field 
+            self.chosen_teleport = field
 
     def convert_level_to_dictionary(self):
         dict = {
