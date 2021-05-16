@@ -10,6 +10,8 @@ ACTIVE_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/edit
 
 INVALID_LEVEL_AVAILABLE_BLOCKS_IDS = [1, 17, 18, 19, 20, 26, 2, 10, 11, 12, 13]
 
+MAX_ITEM_SIZE = 30
+
 
 class AllBlocksFrame(EditorFrame):
 
@@ -23,7 +25,7 @@ class AllBlocksFrame(EditorFrame):
     def get_active_id(self):
         return self.active_id
 
-    def refresh(self, fixed_number_of_items=None):
+    def refresh(self, fixed_number_of_items=1):
 
         def best_columns_number(number_of_items):
 
@@ -62,10 +64,7 @@ class AllBlocksFrame(EditorFrame):
                     y_pos = ITEMS_INTERSPACE
                 return placements[:number_of_items]
 
-            if not fixed_number_of_items:
-                number_of_items = len(self.items)
-            else:
-                number_of_items = fixed_number_of_items
+            number_of_items = max(len(self.items), fixed_number_of_items)
             number_of_columns, item_side_length = best_columns_number(number_of_items)
             return (create_placements(number_of_columns, number_of_items, item_side_length), item_side_length)
 
@@ -79,7 +78,8 @@ class AllBlocksFrame(EditorFrame):
             if item.pos_in_area(pos):
                 clicked_id = item.get_id()
                 if clicked_id not in INVALID_LEVEL_AVAILABLE_BLOCKS_IDS:
-                    editor_container.add_available_block(clicked_id)
+                    if len(self.items) < MAX_ITEM_SIZE:
+                        editor_container.add_available_block(clicked_id)
 
     TOOLS_HANDLERS = {
         EditorTool.ADD_TO_LEVEL: add_to_level_handler,

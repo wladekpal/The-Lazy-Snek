@@ -36,6 +36,8 @@ NON_TOOLS_FRAME_DETAILS_INDEX = 4
 
 LEFT_MOUSE_BUTTON = 1
 
+BOARD_FRAME_BACKGROUND_COLOR = (33, 47, 61)
+
 
 class EditorView(ApplicationView):
 
@@ -114,14 +116,14 @@ class EditorView(ApplicationView):
 
     def __init__(self, screen, level_data):
         super().__init__(screen)
-        dimensions = (level_data[0], level_data[1])
+        dimensions = (level_data[1], level_data[0])
         name = level_data[2]
         author = level_data[3]
         self.editor_container = EditorContainer(dimensions, name, author)
         self.frames = self.new_editor_view_frames()
 
     def refresh(self):
-        self.screen.fill((21, 37, 69))
+        self.screen.fill(BOARD_FRAME_BACKGROUND_COLOR)
         self.resize_frames()
         self.frames[-1].validate_level(self.editor_container)
         for frame in self.frames:
