@@ -109,7 +109,7 @@ class Board:
             x, y = self.get_screen_position_coordinates(position)
             if self.valid_coordinates((x, y)):
                 field = get_field_from_id(entity_id)
-                field.set_coordinates((y, x))
+                field.set_coordinates((x, y))
                 field.set_board(self)
                 self.fields[y][x] = field
                 return True

@@ -1,4 +1,6 @@
+from src.engine.direction import Direction
 from .board import Board
+from .snake import Snake
 
 
 class EditorContainer():
@@ -13,6 +15,7 @@ class EditorContainer():
         self.snakes = []
         self.available_blocks = []
         self.tags = []
+        self.active_snake = None
 
     def create_entity_filled_board(self, dimensions, entity_constructor):
         new_board = []
@@ -67,6 +70,34 @@ class EditorContainer():
 
     def get_snake_data(self):
         return []
+
+    def check_snake_new_block(self, field, snake):
+        head_x, head_y = snake.segments[-1]
+        x, y = field.coordinates
+        if abs(head_x - x) + abs(head_y - y) == 1:
+            new_segments = snake.segments + [(x, y)]
+            new_direction = Snake.get_direction_betwen_segments(snake.segments[-1], (x,y))
+            new_snake = Snake(new_segments, 'green', new_direction, self.board)
+            snake.destroy()
+            self.snakes.pop()
+            self.snakes.append(new_snake)
+            self.active_snake = new_snake
+            field.place_snake(self.active_snake)
+
+
+    def try_placing_snake(self, position):
+        field = self.board.request_field_on_screen(position)
+
+        if not field:
+            return
+
+        if field.snake_layer is None and field.convex_layer is None and field.flat_layer is None:
+            if self.active_snake:
+                self.check_snake_new_block(field, self.active_snake)
+            else:
+                self.snakes.append(Snake([field.coordinates], 'green', Direction('N'), self.board))
+                self.active_snake = self.snakes[-1]
+                
 
     def convert_level_to_dictionary(self):
         dict = {

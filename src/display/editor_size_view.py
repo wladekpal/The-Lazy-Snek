@@ -129,7 +129,6 @@ class SubmitButton():
         mouse_x, mouse_y = pos
         if self_x <= mouse_x <= self_x + self.width and self_y <= mouse_y <= self_y + self.height:
             level_data = [input.get_value() for input in self.inputs]
-            print(level_data)
             if all(level_data):
                 return self.action(level_data)
 
