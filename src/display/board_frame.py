@@ -26,12 +26,7 @@ class BoardFrame(EditorFrame):
         editor_container.change_snake_color(pos)
 
     def handle_teleport_linker_tool_click(self, pos, active_id, editor_container):
-        if active_id == 26:
-            select_destination(editor_container.convert_level_to_dictionary())
         editor_container.link_teleport(pos)
-
-    def handle_save_tool_click(self, pos, active_id, editor_container):
-        select_destination(editor_container.convert_level_to_dictionary())
 
     TOOLS_HANDLERS = {
         EditorTool.ADD_BLOCK: handle_add_block_tool_click,

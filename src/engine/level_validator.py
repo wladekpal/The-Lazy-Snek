@@ -33,9 +33,9 @@ def wall_perimeter(level_representation):
     for x in range(len(board)):
         for y in range(len(board[x])):
             if board[x][y] not in NOT_ENCLOSED_IDS:
-                if x == 0 or x == len(board):
+                if x == 0 or x == len(board)-1:
                     return False
-                if y == 0 or y == len(board[x]):
+                if y == 0 or y == len(board[x])-1:
                     return False
                 if board[x-1][y] == 0 or board[x+1][y] == 0 or board[x][y-1] == 0 or board[x][y+1] == 0:
                     return False
@@ -69,6 +69,9 @@ VALID_SNALE_DIRECTIONS = ['N', 'E', 'S', 'W']
 
 
 def check_snake_placement(segments):
+    if len(segments) < 2:
+        return False
+
     try:
         prev_segment_x, prev_segment_y = tuple(segments[0])
         for segment in segments[1:]:
@@ -101,6 +104,8 @@ def check_snakes(level_representation):
             return check_snake_placement(snake['placement'])
         except KeyError:
             return False
+    
+    return False
 
 
 PLACABLE_BLOCKS = [3, 4, 5, 6, 7, 8, 9, 14, 15, 16, 21, 22, 23, 24, 25, 27, 28, 29]

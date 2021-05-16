@@ -54,10 +54,10 @@ class EditorContainer():
 
             for i in range(len(self.board.fields)):
                 for j in range(len(self.board.fields[i])):
-                    if self.additional_data[j][i] == deleted_teleport_dict:
-                        self.additional_data[j][i] = {}
-                        self.board.fields[j][i] = None
-                        self.block_placement_stack_matrix[j][i].pop()
+                    if self.additional_data[i][j] == deleted_teleport_dict:
+                        self.additional_data[i][j] = {}
+                        self.board.fields[i][j] = None
+                        self.block_placement_stack_matrix[i][j].pop()
         elif isinstance(field, BeginTeleport):
             is_removed = self.board.try_removing_highest(position)
             if is_removed:
@@ -105,7 +105,7 @@ class EditorContainer():
                 "placement": snake.segments,
                 "direction": str(snake.direction)
             }
-        snake_data.append(snake_record)
+            snake_data.append(snake_record)
         return snake_data
 
     def check_snake_new_block(self, field, snake):
