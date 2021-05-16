@@ -44,6 +44,7 @@ class ToolsFrame(EditorFrame):
 
     def handle_click(self, pos, active_tool, active_id, editor_container):
         for button in self.buttons:
+            editor_container.finish_snake_building()
             if button.pos_in_area(pos):
                 self.set_all_buttons_inactive()
                 button.active = True

@@ -34,10 +34,14 @@ class EditorContainer():
     def try_place_snake(self, snake, position):
         pass
 
+    def remove_snake(self, snake):
+        self.snakes.remove(snake)
+        snake.destroy()
+
     def remove_highest_entity(self, position):
         field = self.board.request_field_on_screen(position)
         if field is not None and field.snake_layer is not None:
-            pass
+            self.remove_snake(field.snake_layer)
         else:
             is_removed = self.board.try_removing_highest(position)
             if is_removed:
@@ -97,7 +101,9 @@ class EditorContainer():
             else:
                 self.snakes.append(Snake([field.coordinates], 'green', Direction('N'), self.board))
                 self.active_snake = self.snakes[-1]
-                
+
+    def finish_snake_building(self):
+        self.active_snake = None
 
     def convert_level_to_dictionary(self):
         dict = {
