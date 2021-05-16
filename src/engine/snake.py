@@ -213,6 +213,14 @@ class Snake:
         index = self.segments.index(coordinates)
         return Direction(self.segments_orientation[index][0])
 
+    def rotate_head_right(self):
+        forbidden_direction = Snake.get_direction_betwen_segments(self.segments[-1], self.segments[-2])
+        self.direction.turn_right()
+        self.segments_orientation[-1] = str(self.direction) + self.segments_orientation[-1][1]
+        if str(self.direction) == forbidden_direction:
+            self.direction.turn_right()
+            self.segments_orientation[-1] = str(self.direction) + self.segments_orientation[-1][1]
+
 
 class BadSegmentOrientation(Exception):
     pass

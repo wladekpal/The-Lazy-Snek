@@ -8,7 +8,6 @@ class WallInteractionError(Exception):
 
 
 class Wall(Convex):
-
     @staticmethod
     def texture():
         texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/wall.png")
@@ -34,7 +33,6 @@ class Wall(Convex):
 
 
 class Box(Convex):
-
     @staticmethod
     def texture():
         texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/box.png")

@@ -81,7 +81,7 @@ class EditorContainer():
         if abs(head_x - x) + abs(head_y - y) == 1:
             new_segments = snake.segments + [(x, y)]
             new_direction = Snake.get_direction_betwen_segments(snake.segments[-1], (x,y))
-            new_snake = Snake(new_segments, 'green', new_direction, self.board)
+            new_snake = Snake(new_segments, 'green', Direction(new_direction), self.board)
             snake.destroy()
             self.snakes.pop()
             self.snakes.append(new_snake)
@@ -104,6 +104,24 @@ class EditorContainer():
 
     def finish_snake_building(self):
         self.active_snake = None
+
+    def rotate_snake_head(self, position):
+        field = self.board.request_field_on_screen(position)
+        if field is not None and field.snake_layer is not None:
+            snake = field.snake_layer
+            snake.rotate_head_right()
+
+    def change_snake_color(self, position):
+        field = self.board.request_field_on_screen(position)
+        if field is not None and field.snake_layer is not None:
+            snake = field.snake_layer
+            if snake.color == 'green':
+                snake.change_color('blue')
+            elif snake.color == 'blue':
+                snake.change_color('red')
+            elif snake.color == 'red':
+                snake.change_color('green')
+
 
     def convert_level_to_dictionary(self):
         dict = {

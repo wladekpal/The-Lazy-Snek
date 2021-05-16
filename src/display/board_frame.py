@@ -18,10 +18,18 @@ class BoardFrame(EditorFrame):
     def handle_snake_creator_tool_click(self, pos, active_id, editor_container):
         editor_container.try_placing_snake(pos)
 
+    def handle_snake_rotate_head_tool_click(self, pos, active_id, editor_container):
+        editor_container.rotate_snake_head(pos)
+
+    def handle_snake_change_color_tool_click(self, pos, active_id, editor_container):
+        editor_container.change_snake_color(pos)
+
     TOOLS_HANDLERS = {
         EditorTool.ADD_BLOCK: handle_add_block_tool_click,
         EditorTool.ERASE: handle_erase_tool_click,
         EditorTool.SNAKE_CREATOR: handle_snake_creator_tool_click,
+        EditorTool.SNAKE_ROTATE_HEAD: handle_snake_rotate_head_tool_click,
+        EditorTool.SNAKE_CHANGE_COLOR: handle_snake_change_color_tool_click,
     }
 
     def handle_click(self, pos, active_tool, active_id, editor_container):
