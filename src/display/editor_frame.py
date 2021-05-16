@@ -4,7 +4,13 @@ import enum
 
 
 class EditorTool(enum.Enum):
-    EXAMPLE = 1
+    ADD_BLOCK = 1
+    ERASE = 2
+    SNAKE_CREATOR = 3
+    SNAKE_CHANGE_COLOR = 4
+    SNAKE_ROTATE_HEAD = 5
+    TELEPORT_LINKER = 6
+    ADD_TO_LEVEL = 7
 
 
 class EditorFrame(metaclass=ABCMeta):
@@ -30,7 +36,7 @@ class EditorFrame(metaclass=ABCMeta):
         return (pos_x - self_x, pos_y - self_y)
 
     @abstractmethod
-    def handle_click(self, pos, active_tool, active_id):
+    def handle_click(self, pos, active_tool, active_id, editor_container):
         pass
 
     @abstractmethod

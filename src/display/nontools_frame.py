@@ -1,4 +1,10 @@
-from .editor_frame import EditorFrame, EditorTool
+from abc import ABCMeta, abstractmethod
+from .editor_frame import EditorFrame
+from ..engine.level_validator import level_validator
+from ..engine.level import Level
+from .file_explorer import select_destination
+from .level_view import EditorLevelView
+from .view_controller import ViewInitAction
 import os
 import pygame
 
@@ -8,50 +14,35 @@ BUTTONS_HEIGHT_PERCENTAGE = 80
 MAXIMUM_BUTTONS_WIDTH_PERCENTAGE = 96
 BUTTONS_INTERSPACE_PERCENTAGE = 20
 
-TOOLS_FRAME_BACKGROUND_COLOR = (175, 175, 175)
+TOOLS_FRAME_BACKGROUND_COLOR = (255, 0, 0)
+
+FRAMES_PER_SIMULATION_TICK = 8
 
 
-class ToolsFrame(EditorFrame):
+class NonToolsFrame(EditorFrame):
 
     def create_buttons(self):
         buttons = [
-            ToolButton(EditorTool.ADD_BLOCK, 'add-to-board', active=True),
-            ToolButton(EditorTool.ERASE, 'erase'),
-            ToolButton(EditorTool.SNAKE_CREATOR, 'snake-creator'),
-            ToolButton(EditorTool.SNAKE_CHANGE_COLOR, 'snake-change-color'),
-            ToolButton(EditorTool.SNAKE_ROTATE_HEAD, 'snake-head-rotate'),
-            ToolButton(EditorTool.TELEPORT_LINKER, 'teleport-linker'),
-            ToolButton(EditorTool.ADD_TO_LEVEL, 'add-to-solve'),
+            PlayButton('placeholder'),
+            SaveButton('save'),
         ]
         return buttons
 
     def __init__(self, screen, details):
 
-        def find_active_tool():
-            for button in self.buttons:
-                if button.active:
-                    self.active_tool = button.tool_type
-                    return
-            self.active_tool = None
-
         super().__init__(screen, details)
         self.buttons = self.create_buttons()
-        find_active_tool()
-
-    def set_all_buttons_inactive(self):
-        for button in self.buttons:
-            button.active = False
 
     def handle_click(self, pos, active_tool, active_id, editor_container):
         for button in self.buttons:
-            editor_container.finish_snake_building()
-            if button.pos_in_area(pos):
-                self.set_all_buttons_inactive()
-                button.active = True
-                self.active_tool = button.tool_type
+            if button.pos_in_area(pos) and button.active:
+                return button.handle_click(editor_container)
 
-    def get_active_tool(self):
-        return self.active_tool
+    def validate_level(self, editor_container):
+        level_dictionary = editor_container.convert_level_to_dictionary()
+        is_valid = level_validator(level_dictionary)
+        for button in self.buttons:
+            button.active = is_valid
 
     def refresh(self):
         def calculate_buttons_dimensions_and_placement():
@@ -77,15 +68,13 @@ class ToolsFrame(EditorFrame):
         refresh_buttons()
 
 
-class ToolButton():
+class NonToolButton(metaclass=ABCMeta):
 
-    def __init__(self, tool_type, texture_name_core, active=False, tools_pool=True):
-        self.active = active
-        self.tool_type = tool_type
+    def __init__(self, texture_name_core):
+        self.active = False
         self.active_texture = pygame.image.load(os.path.join(BUTTONS_GRAPHICS_PATH, f'{texture_name_core}-active.png'))
         self.inactive_texture = pygame.image.load(os.path.join(BUTTONS_GRAPHICS_PATH, f'{texture_name_core}-inactive.png'))
         self.side_length = None
-        self.tools_pool = tools_pool
 
     def scale_textures(self):
         self.displayed_active_texture = pygame.transform.scale(self.active_texture, (self.side_length, self.side_length))
@@ -108,3 +97,22 @@ class ToolButton():
         x, y = pos
         self_x, self_y = self.pos
         return self_x <= x <= self_x + self.side_length and self_y <= y <= self_y + self.side_length
+
+    @abstractmethod
+    def handle_click(self, editor_container):
+        pass
+
+
+class SaveButton(NonToolButton):
+
+    def handle_click(self, editor_container):
+        select_destination(editor_container.convert_level_to_dictionary())
+        return None
+
+
+class PlayButton(NonToolButton):
+
+    def handle_click(self, editor_container):
+        return (EditorLevelView(pygame.display.get_surface(),
+                Level(editor_container.convert_level_to_dictionary()),
+                FRAMES_PER_SIMULATION_TICK), ViewInitAction.PUSH)

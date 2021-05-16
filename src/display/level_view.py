@@ -178,3 +178,12 @@ class LevelView(ApplicationView):
 
     def reset_simulation_ticks(self):
         self.frames_till_next_tick = self.frames_per_simulation_tick
+
+
+class EditorLevelView(LevelView):
+
+    def handle_pygame_event(self, event):
+        if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+            return (None, ViewInitAction.POP)
+        else:
+            super().handle_pygame_event(event)
