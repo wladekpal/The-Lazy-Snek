@@ -264,8 +264,10 @@ class LevelTile(Tile):
         super().__init__(text)
 
     def action(self):
-        return (LevelView(self.screen, Level(self.level_path), FRAMES_PER_SIMULATION_TICK),
-                ViewInitAction.EMPTY_STACK)
+        with open(self.level_path) as json_file:
+            level_description = json.load(json_file)
+            return (LevelView(self.screen, Level(level_description), FRAMES_PER_SIMULATION_TICK),
+                    ViewInitAction.EMPTY_STACK)
 
 
 class GoBackTile(Tile):

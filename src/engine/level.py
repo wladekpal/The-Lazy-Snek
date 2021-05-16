@@ -16,9 +16,8 @@ class LevelState(enum.Enum):
 
 class Level:
 
-    def __init__(self, file_name):
-        with open(file_name) as json_file:
-            self.level_description = json.load(json_file)
+    def __init__(self, level_description):
+        self.level_description = level_description
 
         self.level_name = self.level_description["level_name"]
         self.level_creator = self.level_description["level_creator"]
