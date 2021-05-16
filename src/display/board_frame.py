@@ -11,7 +11,7 @@ class BoardFrame(EditorFrame):
 
     def handle_add_block_tool_click(self, pos, active_id, editor_container):
         editor_container.try_placing_entity(active_id, pos)
-        
+
     def handle_erase_tool_click(self, pos, active_id, editor_container):
         editor_container.remove_highest_entity(pos)
 
@@ -24,7 +24,7 @@ class BoardFrame(EditorFrame):
         if active_tool not in self.TOOLS_HANDLERS:
             return
         self.TOOLS_HANDLERS[active_tool](self, pos, active_id, editor_container)
-        
+
     def refresh(self):
         self.surface.fill(BOARD_FRAME_BACKGROUND_COLOR)
         self.editor_container.self_draw(self.surface)

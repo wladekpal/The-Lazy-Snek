@@ -97,9 +97,12 @@ class EditorView(ApplicationView):
         for i in range(len(details)):
             self.frames[i].resize(self.screen, details[i])
 
-    def __init__(self, screen, level_dimensions):
+    def __init__(self, screen, level_data):
         super().__init__(screen)
-        self.editor_container = EditorContainer(level_dimensions, "abba", "ojcze")
+        dimensions = (level_data[0], level_data[1])
+        name = level_data[2]
+        author = level_data[3]
+        self.editor_container = EditorContainer(dimensions, name, author)
         self.frames = self.new_editor_view_frames()
 
     def refresh(self):
@@ -112,7 +115,7 @@ class EditorView(ApplicationView):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
             for frame in self.frames:
                 if frame.pos_in_frame_area(event.pos):
-                    frame.handle_click(frame.get_relative_pos(event.pos), 
-                                       self.get_active_tool(), 
-                                       self.get_active_id(), 
+                    frame.handle_click(frame.get_relative_pos(event.pos),
+                                       self.get_active_tool(),
+                                       self.get_active_id(),
                                        self.editor_container)

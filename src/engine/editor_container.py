@@ -1,8 +1,4 @@
-
-from .id_parser import EntityKind, get_entity_kind
-from typing import get_type_hints
 from .board import Board
-from .field import Field
 
 
 class EditorContainer():

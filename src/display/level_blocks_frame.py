@@ -1,7 +1,8 @@
-from .editor_frame import EditorFrame, EditorTool
+from .editor_frame import EditorTool
 from .all_blocks_frame import AllBlocksFrame, ItemWrapper
 
 LEVEL_BLOCKS_FRAME_BACKGROUND_COLOR = (125, 125, 125)
+
 
 class LevelBlocksFrame(AllBlocksFrame):
 
