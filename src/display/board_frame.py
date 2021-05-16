@@ -1,4 +1,5 @@
 from .editor_frame import EditorFrame, EditorTool
+from .file_explorer import select_destination
 
 BOARD_FRAME_BACKGROUND_COLOR = (25, 25, 25)
 
@@ -24,12 +25,21 @@ class BoardFrame(EditorFrame):
     def handle_snake_change_color_tool_click(self, pos, active_id, editor_container):
         editor_container.change_snake_color(pos)
 
+    def handle_teleport_linker_tool_click(self, pos, active_id, editor_container):
+        if active_id == 26:
+            select_destination(editor_container.convert_level_to_dictionary())
+        editor_container.link_teleport(pos)
+
+    def handle_save_tool_click(self, pos, active_id, editor_container):
+        select_destination(editor_container.convert_level_to_dictionary())
+
     TOOLS_HANDLERS = {
         EditorTool.ADD_BLOCK: handle_add_block_tool_click,
         EditorTool.ERASE: handle_erase_tool_click,
         EditorTool.SNAKE_CREATOR: handle_snake_creator_tool_click,
         EditorTool.SNAKE_ROTATE_HEAD: handle_snake_rotate_head_tool_click,
         EditorTool.SNAKE_CHANGE_COLOR: handle_snake_change_color_tool_click,
+        EditorTool.TELEPORT_LINKER: handle_teleport_linker_tool_click,
     }
 
     def handle_click(self, pos, active_tool, active_id, editor_container):
