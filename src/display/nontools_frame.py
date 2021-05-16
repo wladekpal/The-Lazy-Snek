@@ -14,7 +14,7 @@ BUTTONS_HEIGHT_PERCENTAGE = 80
 MAXIMUM_BUTTONS_WIDTH_PERCENTAGE = 96
 BUTTONS_INTERSPACE_PERCENTAGE = 20
 
-TOOLS_FRAME_BACKGROUND_COLOR = (255, 0, 0)
+TOOLS_FRAME_BACKGROUND_COLOR = (30, 30, 30)
 
 FRAMES_PER_SIMULATION_TICK = 8
 
@@ -23,7 +23,7 @@ class NonToolsFrame(EditorFrame):
 
     def create_buttons(self):
         buttons = [
-            PlayButton('placeholder'),
+            PlayButton('play'),
             SaveButton('save'),
         ]
         return buttons
