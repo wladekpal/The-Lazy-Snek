@@ -1,4 +1,5 @@
 import pygame
+from .id_parser import EntityKind, get_entity_kind, get_block_from_id, get_field_from_id
 
 
 class Board:
@@ -50,9 +51,13 @@ class Board:
         self.displayed_field_side = field_side
         return field_side
 
+    def valid_coordinates(self, coordinates):
+        x, y = coordinates
+        return (len(self.fields) > y >= 0 and len(self.fields[0]) > x >= 0)
+
     def request_field(self, position):
         x, y = position
-        if len(self.fields) > y >= 0 and len(self.fields[0]) > x >= 0:
+        if self.valid_coordinates((x, y)):
             if self.fields[y][x] is not None:
                 return self.fields[y][x]
             else:
@@ -60,11 +65,18 @@ class Board:
         else:
             raise OutOfRange
 
+    def get_screen_position_coordinates(self, position):
+        if not self.top_left_corner:
+            raise ScreenPostionNotSet
+
+        x = (position[0] - self.top_left_corner[0]) // self.displayed_field_side
+        y = (position[1] - self.top_left_corner[1]) // self.displayed_field_side
+        return (x, y)
+
     def request_field_on_screen(self, position):
         if not self.top_left_corner:
             return None
-        x = (position[0] - self.top_left_corner[0]) // self.displayed_field_side
-        y = (position[1] - self.top_left_corner[1]) // self.displayed_field_side
+        x, y = self.get_screen_position_coordinates(position)
         try:
             return self.request_field((x, y))
         except (OutOfRange, NotExistingField):
@@ -78,6 +90,47 @@ class Board:
                     bind_x = x + j * field_side
                     bind_y = y + i * field_side
                     return (pos[0] - bind_x, pos[1] - bind_y)
+
+    def try_placing_entity(self, entity_id, position):
+        field = self.request_field_on_screen(position)
+        entity_kind = get_entity_kind(entity_id)
+
+        if entity_kind == EntityKind.BLOCK:
+            if field is None:
+                return False
+
+            block = get_block_from_id(entity_id)
+            return field.try_placing(block)
+
+        if entity_kind == EntityKind.FIELD:
+            if field is not None:
+                return False
+
+            x, y = self.get_screen_position_coordinates(position)
+            if self.valid_coordinates((x, y)):
+                field = get_field_from_id(entity_id)
+                field.set_coordinates((x, y))
+                field.set_board(self)
+                self.fields[y][x] = field
+                return True
+
+        return False
+
+    def try_removing_highest(self, position):
+        field = self.request_field_on_screen(position)
+        if field is None:
+            return False
+
+        if field.convex_layer is not None:
+            field.remove_convex()
+        elif field.flat_layer is not None:
+            field.remove_flat()
+        else:
+            x, y = self.get_screen_position_coordinates(position)
+            if not self.valid_coordinates((x, y)):
+                return False
+            self.fields[y][x] = None
+        return True
 
 
 class OutOfRange(Exception):
@@ -93,4 +146,8 @@ class NotExistingField(Exception):
 
 
 class WrongMatrix(Exception):
+    pass
+
+
+class ScreenPostionNotSet(Exception):
     pass

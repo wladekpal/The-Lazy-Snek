@@ -9,9 +9,10 @@ import enum
 
 
 class EntityKind(enum.Enum):
-    UNKNOWN = 1
+    EMPTY = 1
     BLOCK = 2
     FIELD = 3
+    UNKNOWN = 4
 
 
 # for swapping block id to object it represents
@@ -54,7 +55,9 @@ FIELDS_DICT = {
 
 
 def get_entity_kind(id):
-    if id in BLOCKS_DICT.keys():
+    if id == 0:
+        return EntityKind.EMPTY
+    elif id in BLOCKS_DICT.keys():
         return EntityKind.BLOCK
     elif id in FIELDS_DICT.keys():
         return EntityKind.FIELD
@@ -72,6 +75,15 @@ def get_field_from_id(id):
     if get_entity_kind(id) != EntityKind.FIELD:
         raise EntityDifferentingKindError
     return FIELDS_DICT[id]()
+
+
+def get_all_ids():
+    ids = []
+    for key in BLOCKS_DICT.keys():
+        ids.append(key)
+    for key in FIELDS_DICT.keys():
+        ids.append(key)
+    return ids
 
 
 class EntityDifferentingKindError(Exception):

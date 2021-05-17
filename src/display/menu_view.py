@@ -1,5 +1,6 @@
 import pygame
 from .view_controller import ApplicationView, ViewInitAction
+from .editor_size_view import EditorSizeView
 from .level_view import LevelView
 from abc import ABCMeta
 import json
@@ -129,13 +130,16 @@ class MenuView(PickView):
         tiles = [
             PickLevelViewTile('Base levels', screen),
             DummyTile('Custom levels'),
-            DummyTile('Level editor'),
+            LevelEditorTile('Level editor', screen),
             QuitTile('Quit game'),
         ]
 
         title = 'The Lazy Snek'
 
         super().__init__(screen, title, tiles)
+
+    def restore(self):
+        self.force_refresh()
 
 
 class LevelSubmenuView(PickView):
@@ -208,6 +212,15 @@ class PickLevelViewTile(Tile):
         return (PickLevelView(self.screen), ViewInitAction.EMPTY_STACK)
 
 
+class LevelEditorTile(Tile):
+    def __init__(self, text, screen):
+        self.screen = screen
+        super().__init__(text)
+
+    def action(self):
+        return (EditorSizeView(self.screen), ViewInitAction.PUSH)
+
+
 # temporary class to display example tiles that will be implemented in the future
 class DummyTile(Tile):
 
@@ -251,8 +264,10 @@ class LevelTile(Tile):
         super().__init__(text)
 
     def action(self):
-        return (LevelView(self.screen, Level(self.level_path), FRAMES_PER_SIMULATION_TICK),
-                ViewInitAction.EMPTY_STACK)
+        with open(self.level_path) as json_file:
+            level_description = json.load(json_file)
+            return (LevelView(self.screen, Level(level_description), FRAMES_PER_SIMULATION_TICK),
+                    ViewInitAction.EMPTY_STACK)
 
 
 class GoBackTile(Tile):

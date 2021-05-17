@@ -23,6 +23,9 @@ class ApplicationView(metaclass=ABCMeta):
     def refresh(self):
         pass
 
+    def restore(self):
+        self.refresh()
+
 
 class ViewController():
 
@@ -47,6 +50,7 @@ class ViewController():
                         self.current_view = new_view
                     elif action_type == ViewInitAction.POP:
                         self.current_view = self.stack.pop()
+                        self.current_view.restore()
                     elif action_type == ViewInitAction.REPLACE:
                         self.current_view = new_view
                     elif action_type == ViewInitAction.EMPTY_STACK:
