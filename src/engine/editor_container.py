@@ -50,7 +50,7 @@ class EditorContainer():
         if field is not None and field.snake_layer is not None:
             self.remove_snake(field.snake_layer)
             return
-        
+
         if self.board.try_removing_highest(position):
             x, y = field.coordinates
             self.block_placement_stack_matrix[y][x].pop()
@@ -141,8 +141,8 @@ class EditorContainer():
             snake = field.snake_layer
             new_color = {
                 "green": "blue",
-                "blue" : "red",
-                "red"  : "green", 
+                "blue": "red",
+                "red": "green",
             }
             snake.change_color(new_color[snake.color])
 
