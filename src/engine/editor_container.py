@@ -1,4 +1,4 @@
-from src.engine.direction import Direction
+from .direction import Direction
 from .board import Board
 from .snake import Snake
 from .teleport import BeginTeleport, EndTeleport
@@ -12,7 +12,7 @@ class EditorContainer():
         self.dimensions = dimensions
         self.board = Board(self.create_entity_filled_board(dimensions, lambda: None))
         self.additional_data = self.create_entity_filled_board(dimensions, dict)
-        self.block_placement_stack_matrix = self.create_entity_filled_board(dimensions, lambda: [])
+        self.block_placement_stack_matrix = self.create_entity_filled_board(dimensions, lambda: [0])
         self.snakes = []
         self.available_blocks = []
         self.tags = []
@@ -33,42 +33,30 @@ class EditorContainer():
             self.block_placement_stack_matrix[y][x].append(entity_id)
         return is_placed
 
-    def try_place_snake(self, snake, position):
-        pass
-
     def remove_snake(self, snake):
         self.snakes.remove(snake)
         snake.destroy()
+
+    def remove_all_connected_fields(self, coordinates):
+        for y in range(len(self.board.fields)):
+            for x in range(len(self.board.fields[y])):
+                if coordinates in self.additional_data[y][x].values():
+                    self.board.fields[y][x] = None
+                    self.additional_data[y][x] = {}
+                    self.block_placement_stack_matrix[y][x].pop()
 
     def remove_highest_entity(self, position):
         field = self.board.request_field_on_screen(position)
         if field is not None and field.snake_layer is not None:
             self.remove_snake(field.snake_layer)
-        elif isinstance(field, EndTeleport):
+            return
+        
+        if self.board.try_removing_highest(position):
             x, y = field.coordinates
-            deleted_teleport_dict = {"end_coordinates": (x, y)}
-            is_removed = self.board.try_removing_highest(position)
-            if is_removed:
-                x, y = self.board.get_screen_position_coordinates(position)
-                self.block_placement_stack_matrix[y][x].pop()
-
-            for i in range(len(self.board.fields)):
-                for j in range(len(self.board.fields[i])):
-                    if self.additional_data[i][j] == deleted_teleport_dict:
-                        self.additional_data[i][j] = {}
-                        self.board.fields[i][j] = None
-                        self.block_placement_stack_matrix[i][j].pop()
-        elif isinstance(field, BeginTeleport):
-            is_removed = self.board.try_removing_highest(position)
-            if is_removed:
-                x, y = self.board.get_screen_position_coordinates(position)
-                self.block_placement_stack_matrix[y][x].pop()
+            self.block_placement_stack_matrix[y][x].pop()
+            if len(self.block_placement_stack_matrix[y][x]) == 1:
                 self.additional_data[y][x] = {}
-        else:
-            is_removed = self.board.try_removing_highest(position)
-            if is_removed:
-                x, y = self.board.get_screen_position_coordinates(position)
-                self.block_placement_stack_matrix[y][x].pop()
+                self.remove_all_connected_fields((x, y))
 
     def add_available_block(self, block_id):
         for block_data in self.available_blocks:
@@ -92,20 +80,19 @@ class EditorContainer():
         for row in self.block_placement_stack_matrix:
             block_placement.append([])
             for stack in row:
-                block_placement[-1].append(0 if len(stack) == 0 else stack[-1])
+                block_placement[-1].append(stack[-1])
         return block_placement
 
     def get_snake_data(self):
         snake_data = []
         for snake in self.snakes:
-            snake_record = {
+            snake_data.append({
                 "name": "snake",
                 "type": 0,
                 "color": snake.color,
                 "placement": snake.segments,
                 "direction": str(snake.direction)
-            }
-            snake_data.append(snake_record)
+            })
         return snake_data
 
     def check_snake_new_block(self, field, snake):
@@ -114,16 +101,14 @@ class EditorContainer():
         if abs(head_x - x) + abs(head_y - y) == 1:
             new_segments = snake.segments + [(x, y)]
             new_direction = Snake.get_direction_betwen_segments(snake.segments[-1], (x, y))
-            new_snake = Snake(new_segments, 'green', Direction(new_direction), self.board)
             snake.destroy()
             self.snakes.pop()
+            new_snake = Snake(new_segments, 'green', Direction(new_direction), self.board)
             self.snakes.append(new_snake)
             self.active_snake = new_snake
-            field.place_snake(self.active_snake)
 
     def try_placing_snake(self, position):
         field = self.board.request_field_on_screen(position)
-
         if not field:
             return
 
@@ -141,6 +126,9 @@ class EditorContainer():
             self.remove_snake(self.active_snake)
         self.active_snake = None
 
+    def finish_teleport_linking(self):
+        self.chosen_teleport = None
+
     def rotate_snake_head(self, position):
         field = self.board.request_field_on_screen(position)
         if field is not None and field.snake_layer is not None:
@@ -151,26 +139,25 @@ class EditorContainer():
         field = self.board.request_field_on_screen(position)
         if field is not None and field.snake_layer is not None:
             snake = field.snake_layer
-            if snake.color == 'green':
-                snake.change_color('blue')
-            elif snake.color == 'blue':
-                snake.change_color('red')
-            elif snake.color == 'red':
-                snake.change_color('green')
+            new_color = {
+                "green": "blue",
+                "blue" : "red",
+                "red"  : "green", 
+            }
+            snake.change_color(new_color[snake.color])
 
     def link_teleport(self, position):
         field = self.board.request_field_on_screen(position)
         if isinstance(field, BeginTeleport):
             if self.chosen_teleport:
-                out_x, out_y = self.chosen_teleport.coordinates
-                if self.board.request_field((out_x, out_y)) == self.chosen_teleport:
-                    in_x, in_y = field.coordinates
-                    self.additional_data[in_y][in_x] = {"end_coordinates": (out_x, out_y)}
+                out_teleport_coordinates = self.chosen_teleport.coordinates
+                in_x, in_y = field.coordinates
+                self.additional_data[in_y][in_x] = {"end_coordinates": out_teleport_coordinates}
         elif isinstance(field, EndTeleport):
             self.chosen_teleport = field
 
     def convert_level_to_dictionary(self):
-        dict = {
+        return {
             "level_name": self.name,
             "level_creator": self.creator,
             "level_tags": self.tags,
@@ -179,7 +166,6 @@ class EditorContainer():
             "snake_data": self.get_snake_data(),
             "available_blocks": self.available_blocks
         }
-        return dict
 
     def get_available_blocks(self):
         return self.available_blocks
