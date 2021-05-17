@@ -94,6 +94,8 @@ def check_snake_placement(segments):
 
 def check_snakes(level_representation):
     snakes = level_representation['snake_data']
+    if len(snakes) < 1:
+        return False
 
     for snake in snakes:
         try:
@@ -101,11 +103,12 @@ def check_snakes(level_representation):
                 return False
             if snake['direction'] not in VALID_SNALE_DIRECTIONS:
                 return False
-            return check_snake_placement(snake['placement'])
+            if not check_snake_placement(snake['placement']):
+                return False
         except KeyError:
             return False
 
-    return False
+    return True
 
 
 PLACABLE_BLOCKS = [3, 4, 5, 6, 7, 8, 9, 14, 15, 16, 21, 22, 23, 24, 25, 27, 28, 29]

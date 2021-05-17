@@ -1,6 +1,6 @@
 from .editor_frame import EditorFrame, EditorTool
 
-BOARD_FRAME_BACKGROUND_COLOR = (25, 25, 25)
+BOARD_FRAME_BACKGROUND_COLOR = (33, 47, 61)
 
 
 class BoardFrame(EditorFrame):
