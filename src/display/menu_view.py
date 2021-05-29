@@ -3,6 +3,7 @@ from .view_controller import ApplicationView, ViewInitAction
 from .editor_size_view import EditorSizeView
 from .level_view import EditorLevelView, LevelView
 from .file_explorer import import_level
+from ..engine.level_validator import level_validator
 from abc import ABCMeta
 import json
 import os
@@ -23,6 +24,7 @@ TITLE_TEXT_COLOR = (0, 112, 144)
 TILES_FRAME_BACKGROUND_COLOR = (207, 207, 207)
 TILE_BACKGROUND_COLOR = (1, 167, 194)
 TILE_TEXT_COLOR = (0, 0, 0)
+INVALID_LEVEL_TEXT_COLOR = (255, 0, 0)
 
 LEFT_MOUSE_BUTTON = 1
 SCROLL_UP = 4
@@ -295,7 +297,6 @@ class AddLevelTile(Tile):
 
     def action(self):
         import_level()
-        return
 
 
 class CustomLevelsView(PickView):
@@ -317,7 +318,11 @@ class CustomLevelsView(PickView):
         for file in os.listdir(CUSTOM_LEVELS_PATH):
             level_path = os.path.join(CUSTOM_LEVELS_PATH, file)
             data = json.load(open(level_path,))
-            levels.append(CustomLevelTile(data['level_name'], screen, level_path))
+            if level_validator(data):
+                levels.append(CustomLevelTile(data['level_name'], screen, level_path))
+            else:
+                levels.append(InvalidLevelTile(data['level_name'], screen, level_path))
+
         return levels
 
     def handle_pygame_event(self, event):
@@ -337,8 +342,46 @@ class CustomLevelsView(PickView):
         return result
 
 
-class CustomLevelTile(LevelTile):
+class InvalidLevelTile(LevelTile):
+    def self_draw(self, frame, pos, dimensions):
+        x, y = pos
+        self.width, self.height = dimensions
+        self.pos = pos
+        self.name_pos = pos
+        self.delete_pos = (x + self.width - self.height, y)
+        self.name_dimensions = (self.width - self.height, self.height)
+        self.delete_dimensions = (self.height, self.height)
+        name_rectangle = pygame.Rect(self.name_pos, self.name_dimensions)
+        delete_rectangle = pygame.Rect(self.delete_pos, self.delete_dimensions)
+        pygame.draw.rect(frame, TILE_BACKGROUND_COLOR, name_rectangle)
+        pygame.draw.rect(frame, (130, 130, 130), delete_rectangle)
+        text_font = pygame.font.Font(pygame.font.get_default_font(),
+                                     self.height * TEXT_TILE_HEIGHT_PERCENTAGE // 100)
+        text = text_font.render(self.text, True, INVALID_LEVEL_TEXT_COLOR)
+        text_rectangle = text.get_rect()
+        text_rectangle.center = name_rectangle.center
+        delete_text = text_font.render('X', True, TILE_TEXT_COLOR)
+        delete_text_rectangle = delete_text.get_rect()
+        delete_text_rectangle.center = delete_rectangle.center
+        frame.blit(text, text_rectangle)
+        frame.blit(delete_text, delete_text_rectangle)
 
+    def delete_level(self):
+        os.remove(self.level_path)
+
+    def handle_click(self, pos):
+        if self.pos is None:
+            return None
+        del_x, del_y = self.delete_pos
+        mouse_x, mouse_y = pos
+        del_w, del_h = self.delete_dimensions
+        if del_x <= mouse_x <= del_x + del_w and del_y <= mouse_y <= del_y + del_h:
+            return self.delete_level()
+        else:
+            return None
+
+
+class CustomLevelTile(LevelTile):
     def self_draw(self, frame, pos, dimensions):
         x, y = pos
         self.width, self.height = dimensions
