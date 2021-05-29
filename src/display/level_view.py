@@ -186,4 +186,6 @@ class EditorLevelView(LevelView):
         if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
             return (None, ViewInitAction.POP)
         else:
-            super().handle_pygame_event(event)
+            return super().handle_pygame_event(event)
+
+
