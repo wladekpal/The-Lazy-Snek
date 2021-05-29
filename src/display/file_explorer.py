@@ -20,9 +20,10 @@ def select_destination(level_to_save):
 def import_level():
     root = tkinter.Tk()
     root.withdraw()
-    file = filedialog.askopenfile(mode ='r', filetypes =[('JSON file', '*.json')])
+    file = filedialog.askopenfile(mode='r', filetypes=[('JSON file', '*.json')])
 
     # Maybe validation
+    if file is None:
+        return
     shutil.copy(file.name, CUSTOM_LEVELS_FOLDER_PATH)
     file.close()
-

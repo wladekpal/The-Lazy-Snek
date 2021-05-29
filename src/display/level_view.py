@@ -187,5 +187,3 @@ class EditorLevelView(LevelView):
             return (None, ViewInitAction.POP)
         else:
             return super().handle_pygame_event(event)
-
-

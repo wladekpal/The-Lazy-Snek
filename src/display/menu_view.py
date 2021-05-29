@@ -2,6 +2,7 @@ import pygame
 from .view_controller import ApplicationView, ViewInitAction
 from .editor_size_view import EditorSizeView
 from .level_view import EditorLevelView, LevelView
+from .file_explorer import import_level
 from abc import ABCMeta
 import json
 import os
@@ -287,26 +288,40 @@ class CustomLevelsTile(Tile):
         return (CustomLevelsView(self.screen), ViewInitAction.EMPTY_STACK)
 
 
-class CustomLevelsView(PickView):
+class AddLevelTile(Tile):
+    def __init__(self, text, screen):
+        self.screen = screen
+        super().__init__(text)
 
+    def action(self):
+        import_level()
+        return
+
+
+class CustomLevelsView(PickView):
     def __init__(self, screen):
 
         tiles = [
             MenuTile('Back to menu', screen),
-            # TODO add new custom level tile
+            AddLevelTile('Add level', screen)
         ]
 
-        for file in os.listdir(CUSTOM_LEVELS_PATH):
-            level_path = os.path.join(CUSTOM_LEVELS_PATH, file)
-            data = json.load(open(level_path,))
-            tiles.append(CustomLevelTile(data['level_name'], screen, level_path))
+        tiles.extend(self.load_levels(screen))
 
         title = 'Custom levels'
 
         super().__init__(screen, title, tiles)
 
+    def load_levels(self, screen):
+        levels = []
+        for file in os.listdir(CUSTOM_LEVELS_PATH):
+            level_path = os.path.join(CUSTOM_LEVELS_PATH, file)
+            data = json.load(open(level_path,))
+            levels.append(CustomLevelTile(data['level_name'], screen, level_path))
+        return levels
+
     def handle_pygame_event(self, event):
-        result =  super().handle_pygame_event(event)
+        result = super().handle_pygame_event(event)
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
             i = 0
             while i < len(self.tiles):
@@ -314,10 +329,12 @@ class CustomLevelsView(PickView):
                 if isinstance(tile, CustomLevelTile):
                     if not os.path.exists(tile.level_path,):
                         self.tiles.pop(i)
+                elif isinstance(tile, AddLevelTile):
+                    self.tiles = self.tiles[:2]
+                    self.tiles.extend(self.load_levels(self.screen))
                 i += 1
         self.force_refresh()
         return result
-
 
 
 class CustomLevelTile(LevelTile):
@@ -368,4 +385,3 @@ class CustomLevelTile(LevelTile):
             return self.delete_level()
         else:
             return None
-
