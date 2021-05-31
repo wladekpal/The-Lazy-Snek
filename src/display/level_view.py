@@ -140,7 +140,7 @@ class LevelView(ApplicationView):
         if os.path.isfile(next_level_path):
             with open(next_level_path) as json_file:
                 level_description = json.load(json_file)
-                return (LevelView(self.screen, Level(level_description), self.frames_per_simulation_tick, 
+                return (LevelView(self.screen, Level(level_description), self.frames_per_simulation_tick,
                         base_path=next_level_path), ViewInitAction.EMPTY_STACK)
         else:
             return None
