@@ -127,6 +127,8 @@ class EditorContainer():
         self.active_snake = None
 
     def finish_teleport_linking(self):
+        if self.chosen_teleport:
+            self.chosen_teleport.active = False
         self.chosen_teleport = None
 
     def rotate_snake_head(self, position):
@@ -154,7 +156,9 @@ class EditorContainer():
                 in_x, in_y = field.coordinates
                 self.additional_data[in_y][in_x] = {"end_coordinates": out_teleport_coordinates}
         elif isinstance(field, EndTeleport):
+            self.finish_teleport_linking()
             self.chosen_teleport = field
+            field.active = True
 
     def convert_level_to_dictionary(self):
         return {
