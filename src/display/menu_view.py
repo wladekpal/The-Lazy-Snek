@@ -251,7 +251,10 @@ class PickLevelView(PickView):
             MenuTile('Back to menu', screen)
         ]
 
-        for file in os.listdir(BASE_LEVELS_PATH):
+        files_paths = os.listdir(BASE_LEVELS_PATH)
+        files_paths.sort()
+
+        for file in files_paths:
             level_path = os.path.join(BASE_LEVELS_PATH, file)
             data = json.load(open(level_path,))
             tiles.append(LevelTile(data['level_name'], screen, level_path))
