@@ -132,7 +132,7 @@ class LevelView(ApplicationView):
         self.refresh_message()
 
     def create_view_for_next_level(self, current_path):
-        current_level_number = int(current_path[-9:-5].strip('0'))
+        current_level_number = int(current_path[-9:-5].lstrip('0'))
         next_level_number = str(current_level_number + 1).zfill(4)
         next_level_char_list = list(current_path)
         next_level_char_list[-9:-5] = list(next_level_number)
