@@ -11,6 +11,7 @@ FPS = 60
 
 def run_lazy_snek():
     pygame.init()
+    pygame.display.set_caption('The Lazy Snek')
     running = True
     screen = pygame.display.set_mode((GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT), pygame.RESIZABLE)
     initial_view = MenuView(screen)

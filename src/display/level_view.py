@@ -1,11 +1,13 @@
 import pygame
 import os
+import json
 from .button import PlayButton, CancelButton, RestartButton, StepByStepButton
 from .simulation import Simulation, SimulationState
 from .items_frame import BlocksPane
 from .item import Item
 from .view_controller import ApplicationView, ViewInitAction
-from pygame.locals import K_ESCAPE
+from ..engine.level import Level
+from pygame.locals import K_ESCAPE, K_SPACE
 
 
 # frames and their elements display details
@@ -38,7 +40,7 @@ RIGHT_MOUSE_BUTTON = 3
 
 
 class LevelView(ApplicationView):
-    def __init__(self, screen, level, frames_per_simulation_tick):
+    def __init__(self, screen, level, frames_per_simulation_tick, base_path=None):
 
         super().__init__(screen)
 
@@ -63,6 +65,7 @@ class LevelView(ApplicationView):
                                       self.level.available_blocks,
                                       self)
         self.flowing_item = None
+        self.base_path = base_path
 
     def create_board_frame(self, screen):
         frame_width = screen.get_width() * BOARD_FRAME_WIDTH_PERCENTAGE // 100
@@ -128,6 +131,20 @@ class LevelView(ApplicationView):
         self.refresh_items()
         self.refresh_message()
 
+    def create_view_for_next_level(self, current_path):
+        current_level_number = int(current_path[-9:-5].strip('0'))
+        next_level_number = str(current_level_number + 1).zfill(4)
+        next_level_char_list = list(current_path)
+        next_level_char_list[-9:-5] = list(next_level_number)
+        next_level_path = "".join(next_level_char_list)
+        if os.path.isfile(next_level_path):
+            with open(next_level_path) as json_file:
+                level_description = json.load(json_file)
+                return (LevelView(self.screen, Level(level_description), self.frames_per_simulation_tick, 
+                        base_path=next_level_path), ViewInitAction.EMPTY_STACK)
+        else:
+            return None
+
     def handle_pygame_event(self, event):
         from .menu_view import LevelSubmenuView
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT_MOUSE_BUTTON:
@@ -140,6 +157,9 @@ class LevelView(ApplicationView):
             self.handle_motion(event.pos)
         elif event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
             return (LevelSubmenuView(self.screen), ViewInitAction.PUSH)
+        elif event.type == pygame.KEYDOWN and event.key == K_SPACE:
+            if self.base_path is not None and self.simulation.state == SimulationState.WIN:
+                return self.create_view_for_next_level(self.base_path)
 
     def handle_click(self, pos):
 
