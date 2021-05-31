@@ -1,7 +1,7 @@
 # The-Lazy-Snek
 Gra logiczna stworzona na labach z Inżynierii Oprogramowania.
 # Sposoby uruchomienia
-## Pobranie repoztyorium
+## Pobranie repozytorium
 Należy pobrać repozytorium (na przykład jako plik .zip lub przy pomocy polecenia git clone), następnie wejść w główny katalog i uruchomić grę poleceniem:
 `python .\lazy_snek.py`
 lub:
