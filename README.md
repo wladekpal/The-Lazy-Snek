@@ -16,6 +16,6 @@ Linki do pobranie pliku .zip to (zależnie od systemu):
 [Plik .zip z grą w wersji Linux](https://github.com/wladekpal/The-Lazy-Snek/releases/latest/download/lazy_snek_linux.zip)
 
 ## Wskazówki dotyczące sterowania w grze
-* Z edytora poziimów i symulacji poziomu w edytorze poziomów wychodzi się naciskając `ESCAPE`
+* Z edytora poziomów i symulacji poziomu w edytorze poziomów wychodzi się naciskając `ESCAPE`
 * W menu głównym i menu wyboru poziomów za przewijanie listy poziomów odpowiada `SCROLL`
 * W bazowych poziomach, po wygraniu poziomu można przejść do następnego poziomu naciskając `SPACE`
