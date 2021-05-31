@@ -7,6 +7,8 @@ class EndTeleport(Field):
     def __init__(self):
         super().__init__()
         self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/end-teleport.png"))
+        self.active_texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/active.png"))
+        self.active = False
 
     def place_flat(self, flat):
         return
@@ -16,6 +18,12 @@ class EndTeleport(Field):
 
     def try_placing(self, block):
         return False
+
+    def self_draw(self, frame, draw_coords, side_length):
+        super().self_draw(frame, draw_coords, side_length)
+        if self.active == True:
+            displayed_texture = pygame.transform.scale(self.active_texture, (side_length, side_length))
+            frame.blit(displayed_texture, draw_coords)
 
 
 class BeginTeleport(Field):
