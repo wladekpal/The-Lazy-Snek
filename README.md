@@ -11,6 +11,6 @@ Należy mieć zainstalowaną biblioteki pygame oraz tkinter.
 Alternatywnie można pobrać grę jako plik .zip zawierający jedynie plik wykonywalny oraz potrzebne pliki.
 Linki do pobranie pliku .zip to (zależnie od systemu):
 
-[Plik .zip z grą w wersji Windows](https:/github.com/wladekpal/The-Lazy-Snek/releases/latest/download/lazy_snek_win.zip)
+[Plik .zip z grą w wersji Windows](https://github.com/wladekpal/The-Lazy-Snek/releases/latest/download/lazy_snek_win.zip)
 
-[Plik .zip z grą w wersji Linux](https:/github.com/wladekpal/The-Lazy-Snek/releases/latest/download/lazy_snek_linux.zip)
+[Plik .zip z grą w wersji Linux](https://github.com/wladekpal/The-Lazy-Snek/releases/latest/download/lazy_snek_linux.zip)
