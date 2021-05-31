@@ -21,7 +21,7 @@ class EndTeleport(Field):
 
     def self_draw(self, frame, draw_coords, side_length):
         super().self_draw(frame, draw_coords, side_length)
-        if self.active == True:
+        if self.active is True:
             displayed_texture = pygame.transform.scale(self.active_texture, (side_length, side_length))
             frame.blit(displayed_texture, draw_coords)
 
