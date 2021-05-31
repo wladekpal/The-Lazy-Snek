@@ -1,5 +1,3 @@
-from pygame.constants import CONTROLLER_BUTTON_RIGHTSHOULDER
-from src.engine.convex import InfinityTail
 from src.engine.level import Level, LevelState
 from src.engine.convex import Apple, Box, Key, Dye, Skull, InfinityTail, Door
 from src.engine.flat import TurnLeft, TurnRight
@@ -34,9 +32,9 @@ def test_level1_loss_needs_same_number_of_ticks_after_reload():
 
 def create_convexes_list():
     return [
-        [Apple, 2], 
-        [Box, 2], 
-        [Key, 1], 
+        [Apple, 2],
+        [Box, 2],
+        [Key, 1],
         [Dye, 3],
         [Skull, 1],
         [InfinityTail, 1],
@@ -105,10 +103,10 @@ def update_current_level_state(current_expected_level_state, events):
     if current_expected_level_state['move_on_next_tick']:
         current_expected_level_state['snake_head_position'] += 1
     current_expected_level_state['move_on_next_tick'] = True
-    
+
     if current_expected_level_state['infinity_tail']:
         current_expected_level_state['snake_length'] += 1
-    
+
     snake_head_position = current_expected_level_state['snake_head_position']
     head_coords = current_expected_level_state['snake_path'][snake_head_position]
     if head_coords in events:
@@ -194,4 +192,3 @@ def test_level2_is_snake_modification_correct():
         level.tick()
         update_current_level_state(current_expected_level_state, events)
         check_snake_modification(current_expected_level_state, level)
-
