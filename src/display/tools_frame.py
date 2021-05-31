@@ -2,7 +2,7 @@ from .editor_frame import EditorFrame, EditorTool
 import os
 import pygame
 
-BUTTONS_GRAPHICS_PATH = os.path.join(os.path.dirname(__file__), "../../assets/editor/")
+BUTTONS_GRAPHICS_PATH = os.path.join("assets/editor/")
 
 BUTTONS_HEIGHT_PERCENTAGE = 80
 MAXIMUM_BUTTONS_WIDTH_PERCENTAGE = 96

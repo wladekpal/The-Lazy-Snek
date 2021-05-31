@@ -10,8 +10,8 @@ class Hole(Field):
         super().__init__()
         self.plugged_hole_field = Field()
         self.plugged = False
-        self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/hole.png"))
-        plugged_texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/plugged-hole.png"))
+        self.texture = pygame.image.load(os.path.join("assets/block/hole.png"))
+        plugged_texture = pygame.image.load(os.path.join("assets/block/plugged-hole.png"))
         self.plugged_hole_field.texture = plugged_texture
 
     def set_coordinates(self, coordinates):

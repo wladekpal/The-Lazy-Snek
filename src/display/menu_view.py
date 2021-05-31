@@ -7,6 +7,7 @@ from ..engine.level_validator import level_validator
 from abc import ABCMeta
 import json
 import os
+import sys
 from ..engine.level import Level
 from pygame.locals import K_ESCAPE
 
@@ -32,8 +33,8 @@ SCROLL_DOWN = 5
 
 FRAMES_PER_SIMULATION_TICK = 8
 
-BASE_LEVELS_PATH = os.path.join(os.path.dirname(__file__), "../../levels/base")
-CUSTOM_LEVELS_PATH = os.path.join(os.path.dirname(__file__), "../../levels/custom")
+BASE_LEVELS_PATH = "levels/base"
+CUSTOM_LEVELS_PATH = "levels/custom"
 
 
 class PickView(ApplicationView):
@@ -203,7 +204,7 @@ class QuitTile(Tile):
 
     def action(self):
         pygame.quit()
-        exit()
+        sys.exit()
 
 
 class PickLevelViewTile(Tile):

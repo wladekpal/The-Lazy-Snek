@@ -10,7 +10,7 @@ class WallInteractionError(Exception):
 class Wall(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/wall.png")
+        texture_path = os.path.join("assets/block/wall.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
@@ -35,7 +35,7 @@ class Wall(Convex):
 class Box(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/box.png")
+        texture_path = os.path.join("assets/block/box.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
@@ -61,7 +61,7 @@ class Box(Convex):
 class Skull(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/skull.png")
+        texture_path = os.path.join("assets/block/skull.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
@@ -84,7 +84,7 @@ class Skull(Convex):
 class Apple(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/apple.png")
+        texture_path = os.path.join("assets/block/apple.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
@@ -107,7 +107,7 @@ class Apple(Convex):
 class InfinityTail(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/infinity-tail.png")
+        texture_path = os.path.join("assets/block/infinity-tail.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
@@ -134,7 +134,7 @@ class Dye(Convex):
 
     @staticmethod
     def texture(color):
-        texture_path = os.path.join(os.path.dirname(__file__), f"../../assets/block/dye-{color}.png")
+        texture_path = os.path.join(f"assets/block/dye-{color}.png")
         return pygame.image.load(texture_path)
 
     def self_draw(self, frame, position, side_length):
@@ -166,7 +166,7 @@ class Dye(Convex):
 class Timer(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/timer.png")
+        texture_path = os.path.join("assets/block/timer.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
@@ -189,7 +189,7 @@ class Timer(Convex):
 class Key(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/key.png")
+        texture_path = os.path.join("assets/block/key.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:
@@ -216,7 +216,7 @@ class DoorInteractionError(Exception):
 class Door(Convex):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/door.png")
+        texture_path = os.path.join("assets/block/door.png")
         return pygame.image.load(texture_path)
 
     def check_move(self, direction) -> bool:

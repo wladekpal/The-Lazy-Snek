@@ -11,8 +11,8 @@ class Tunnel(Field):
         self.upper_field = Field()
         self.direction = direction
 
-        upper_texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/tunnel-upper.png"))
-        lower_texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/tunnel-lower.png"))
+        upper_texture = pygame.image.load(os.path.join("assets/block/tunnel-upper.png"))
+        lower_texture = pygame.image.load(os.path.join("assets/block/tunnel-lower.png"))
         if str(direction) == 'E' or str(direction) == 'W':
             upper_texture = pygame.transform.rotate(upper_texture, -90)
             lower_texture = pygame.transform.rotate(lower_texture, -90)

@@ -6,7 +6,7 @@ import pygame
 ALL_BLOCKS_FRAME_BACKGROUND_COLOR = (75, 75, 75)
 MAXIMUM_COLUMNS = 6
 ITEMS_INTERSPACE = 5
-ACTIVE_TEXTURE_PATH = os.path.join(os.path.dirname(__file__), "../../assets/editor/active.png")
+ACTIVE_TEXTURE_PATH = os.path.join("assets/editor/active.png")
 
 INVALID_LEVEL_AVAILABLE_BLOCKS_IDS = [1, 17, 18, 19, 20, 26, 2, 10, 11, 12, 13]
 

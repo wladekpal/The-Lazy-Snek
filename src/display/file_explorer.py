@@ -4,7 +4,7 @@ import json
 import os
 import shutil
 
-CUSTOM_LEVELS_FOLDER_PATH = os.path.join(os.path.dirname(__file__), '../../levels/custom/')
+CUSTOM_LEVELS_FOLDER_PATH = os.path.join('levels/custom/')
 
 
 def select_destination(level_to_save):
@@ -22,7 +22,6 @@ def import_level():
     root.withdraw()
     file = filedialog.askopenfile(mode='r', filetypes=[('JSON file', '*.json')])
 
-    # Maybe validation
     if file is None:
         return
     shutil.copy(file.name, CUSTOM_LEVELS_FOLDER_PATH)

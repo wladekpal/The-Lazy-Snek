@@ -7,7 +7,7 @@ class TurnLeft(Flat):
 
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/turn-left.png")
+        texture_path = os.path.join("assets/block/turn-left.png")
         return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
@@ -21,7 +21,7 @@ class TurnRight(Flat):
 
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/turn-right.png")
+        texture_path = os.path.join("assets/block/turn-right.png")
         return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
@@ -34,7 +34,7 @@ class TurnRight(Flat):
 class Spikes(Flat):
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/spikes.png")
+        texture_path = os.path.join("assets/block/spikes.png")
         return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
@@ -48,7 +48,7 @@ class Reverse(Flat):
 
     @staticmethod
     def texture():
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/reverse.png")
+        texture_path = os.path.join("assets/block/reverse.png")
         return pygame.image.load(texture_path)
 
     def interact_with_snake(self, snake):
@@ -67,9 +67,9 @@ class Finish(Flat):
     @staticmethod
     def texture(color):
         if color is None:
-            texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/finish.png")
+            texture_path = os.path.join("assets/block/finish.png")
         else:
-            texture_path = os.path.join(os.path.dirname(__file__), f"../../assets/block/finish-{color}.png")
+            texture_path = os.path.join(f"assets/block/finish-{color}.png")
         return pygame.image.load(texture_path)
 
     def self_draw(self, frame, position, side_length):
@@ -95,7 +95,7 @@ class VeniceBlock(Flat):
         super().__init__(pane_index=pane_index)
 
     def texture(self):
-        texture_path = os.path.join(os.path.dirname(__file__), "../../assets/block/venice_block.png")
+        texture_path = os.path.join("assets/block/venice_block.png")
         unoriented_texture = pygame.image.load(texture_path)
         if str(self.direction) == 'E':
             return pygame.transform.rotate(unoriented_texture, -90)

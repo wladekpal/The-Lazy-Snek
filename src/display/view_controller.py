@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import pygame
 import enum
+import sys
 
 
 class ViewInitAction(enum.Enum):
@@ -38,7 +39,7 @@ class ViewController():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
             elif event.type == pygame.VIDEORESIZE:
                 self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             else:

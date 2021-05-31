@@ -12,7 +12,7 @@ class Field:
         self.flat_layer = None
         self.convex_layer = None
         self.snake_layer = None
-        self.texture = pygame.image.load(os.path.join(os.path.dirname(__file__), "../../assets/block/field.png"))
+        self.texture = pygame.image.load(os.path.join("assets/block/field.png"))
 
     def copy(self):
         return type(self)()
