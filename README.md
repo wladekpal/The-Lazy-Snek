@@ -5,7 +5,7 @@ Logical desktop game created as part of completing Software Engineering course a
 Download this repository (for example using git clone command), then enter root directory of a project and run game with command:
 `python .\lazy_snek.py` (on windows)
 or:
-`python3 .\lazy_snek.py`(on linux or osx)
+`python3 .\lazy_snek.py`(on linux or osx).
 In order to run game this way, you should also have pygame and tkinter libraries installed for python.
 ## Downloading executable file
 As an alternative, it's possible to download game as .zip file including only executable file and assets (depending on operating system):
