@@ -14,7 +14,7 @@ As an alternative, it's possible to download game as .zip file including only ex
 
 [.zip file containing game for Linux](https://github.com/wladekpal/The-Lazy-Snek/releases/latest/download/lazy_snek_linux.zip)
 
-## Hints about game controlling.
+## Useful key controls:
 * You can exit level editor or level simulation in level editor using `ESCAPE` button.
 * In main menu and submenus, it's possible to `SCROLL` through available options.
 * After winning base level, you can easily jump to the next one using `SPACE`button.
