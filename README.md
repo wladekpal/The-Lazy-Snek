@@ -8,8 +8,7 @@ or:
 `python3 .\lazy_snek.py`(on linux or osx)
 In order to run game this way, you should also have pygame and tkinter libraries installed for python.
 ## Downloading executable file
-As an alternative, it's possible to download game as .zip file, which includes only manda
-Links .zip files with game (depending on operating system):
+As an alternative, it's possible to download game as .zip file including only executable file and assets (depending on operating system):
 
 [.zip file containing game for Windows](https://github.com/wladekpal/The-Lazy-Snek/releases/latest/download/lazy_snek_win.zip)
 
